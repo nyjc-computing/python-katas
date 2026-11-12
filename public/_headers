@@ -1,0 +1,9 @@
+/*
+  Cross-origin isolation so the Pyodide worker gets SharedArrayBuffer
+  (real Stop via the interrupt buffer, blocking input() reads).
+  Cloudflare Pages / Netlify convention; for nginx serve the equivalent
+  add_header lines (see README).
+*/
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp

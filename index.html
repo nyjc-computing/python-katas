@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230f172a'/%3E%3Ctext x='8' y='12' font-size='10' font-family='monospace' fill='%237dd3fc' text-anchor='middle'%3E%E2%96%B6%3C/text%3E%3C/svg%3E" />
+    <title>kata-runner</title>
+  </head>
+  <body>
+    <header id="toolbar">
+      <span id="brand">kata-runner</span>
+      <button id="btn-run" title="Run (Ctrl+Enter)">&#9654; Run</button>
+      <button id="btn-stop" title="Stop (Ctrl+C in the console)" disabled>&#9632; Stop</button>
+      <button id="btn-clear" title="Clear the console">Clear output</button>
+      <span class="spacer"></span>
+      <span id="run-status" aria-live="polite"></span>
+      <button id="btn-layout" title="Toggle editor/output layout">Layout: stacked</button>
+    </header>
+
+    <main id="app" class="layout-stack">
+      <!-- Reserved for the future file browser (left) and debugger (right) panels -->
+      <aside id="panel-left" class="panel-side" aria-hidden="true"></aside>
+
+      <section id="editor-pane" class="pane">
+        <div class="pane-title">main.py</div>
+        <div id="editor"></div>
+        <div id="editor-status">Ln 1, Col 1</div>
+      </section>
+
+      <section id="output-pane" class="pane">
+        <div class="pane-title">console</div>
+        <div id="console"></div>
+        <div id="console-input-row" hidden>
+          <span class="console-caret" aria-hidden="true">&#8250;</span>
+          <input id="console-input" autocomplete="off" spellcheck="false" aria-label="Program input" />
+        </div>
+      </section>
+
+      <aside id="panel-right" class="panel-side" aria-hidden="true"></aside>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

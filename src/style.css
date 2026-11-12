@@ -1,0 +1,248 @@
+:root {
+  --bg: #ffffff;
+  --chrome: #f3f4f6;
+  --border: #d1d5db;
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --console-bg: #0f172a;
+  --console-input-bg: #1e293b;
+  --console-text: #e2e8f0;
+  --console-accent: #7dd3fc;
+  --console-muted: #94a3b8;
+  --err: #f87171;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* the page itself never scrolls; only panes do */
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ── toolbar ─────────────────────────────────────────────── */
+
+#toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+
+#brand {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-right: 0.75rem;
+}
+
+button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.8rem;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.spacer {
+  flex: 1;
+}
+
+#run-status {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ── layout grid ─────────────────────────────────────────── */
+
+#app {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+/* stacked: editor above, console below (side panels reserved, collapsed) */
+#app.layout-stack {
+  grid-template-columns: 0fr 3fr 2fr 0fr;
+  grid-template-rows: 3fr 2fr;
+  grid-template-areas:
+    'left editor editor right'
+    'left output output right';
+}
+
+/* side-by-side: editor left, console right */
+#app.layout-side {
+  grid-template-columns: 0fr 3fr 2fr 0fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: 'left editor output right';
+}
+
+#panel-left {
+  grid-area: left;
+}
+
+#panel-right {
+  grid-area: right;
+}
+
+.panel-side {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--chrome);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
+.pane {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#editor-pane {
+  grid-area: editor;
+}
+
+#output-pane {
+  grid-area: output;
+}
+
+.pane-title {
+  flex: none;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 0.3rem 0.75rem;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── editor ──────────────────────────────────────────────── */
+
+#editor {
+  flex: 1;
+  min-height: 0;
+}
+
+#editor-status {
+  flex: none;
+  font-size: 0.72rem;
+  color: var(--muted);
+  padding: 0.2rem 0.75rem;
+  background: var(--chrome);
+  border-top: 1px solid var(--border);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-editor {
+  height: 100%;
+}
+
+.cm-scroller {
+  overflow: auto;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace !important;
+}
+
+.cm-overlength {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+/* ── console ─────────────────────────────────────────────── */
+
+#console {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--console-bg);
+  color: var(--console-text);
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  padding: 0.5rem 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  cursor: text;
+}
+
+.console-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 1.45em;
+}
+
+.console-line.stderr {
+  color: var(--err);
+}
+
+.console-line.status {
+  color: var(--console-muted);
+  font-style: italic;
+}
+
+.console-line.echo {
+  color: var(--console-accent);
+}
+
+#console-input-row {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--console-input-bg);
+  border-top: 1px solid #334155;
+}
+
+#console-input-row[hidden] {
+  display: none;
+}
+
+.console-caret {
+  color: var(--console-accent);
+  font-family: ui-monospace, monospace;
+}
+
+#console-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--console-text);
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+}
