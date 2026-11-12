@@ -307,36 +307,22 @@ export function createEditor(
 }
 
 // ── width lock ───────────────────────────────────────────────────────────────
-// Lock the editor box to exactly 100 text columns when the pane fits them,
-// dropping to 80 columns on a shrunk window; below that the editor stays
-// fluid. Makes the hard line limit visible without horizontal scrolling.
+// Lock the editor's text region to exactly 100 columns when the pane fits
+// them, dropping to 80 on a shrunk window; below that it stays fluid. The
+// cap is expressed in `ch` units of the content's own font (plus a small px
+// slack), so the visible region cannot exceed 100 columns no matter how the
+// font actually renders — px measurements have proven ~1% short on some
+// systems, which is exactly a "longer than 100 chars" editor.
 
-function measureCharWidth(view: EditorView): number {
-  // Prefer a real rendered line: probe spans resolve fonts slightly
-  // differently from the editor's own text, which is enough to overflow.
-  // .cm-line is a block element, so measure its *text* via a Range, not the
-  // element box.
-  const range = document.createRange()
-  for (const line of view.dom.querySelectorAll('.cm-line')) {
-    const len = (line.textContent ?? '').length
-    if (len < 10) continue
-    range.selectNodeContents(line)
-    const width = range.getBoundingClientRect().width
-    if (width > 0) return width / len
-  }
-  range.detach()
-  const contentEl = view.dom.querySelector('.cm-content')
-  if (!contentEl) return 0
-  const cs = getComputedStyle(contentEl)
+function measureCharWidth(contentEl: HTMLElement): number {
+  // Probe INSIDE .cm-content: it inherits the exact font context the text
+  // renders with (detached/body probes resolve differently on some systems).
   const probe = document.createElement('span')
   probe.style.position = 'absolute'
   probe.style.visibility = 'hidden'
   probe.style.whiteSpace = 'pre'
-  probe.style.fontFamily = cs.fontFamily
-  probe.style.fontSize = cs.fontSize
-  probe.style.fontWeight = cs.fontWeight
   probe.textContent = '0'.repeat(100)
-  document.body.appendChild(probe)
+  contentEl.appendChild(probe)
   const width = probe.getBoundingClientRect().width / 100
   probe.remove()
   return width
@@ -344,9 +330,10 @@ function measureCharWidth(view: EditorView): number {
 
 function applyWidthLock(view: EditorView): void {
   const host = view.dom.parentElement
-  if (!host || host.clientWidth === 0) return
+  const contentEl = view.dom.querySelector('.cm-content') as HTMLElement | null
+  if (!host || !contentEl || host.clientWidth === 0) return
 
-  const charWidth = measureCharWidth(view)
+  const charWidth = measureCharWidth(contentEl)
   if (charWidth <= 0) return
   const gutters = view.dom.querySelector('.cm-gutters') as HTMLElement | null
   const gutterWidth = gutters ? gutters.offsetWidth : 0
@@ -361,16 +348,16 @@ function applyWidthLock(view: EditorView): void {
     }
   }
   if (columns === null) {
-    view.dom.style.maxWidth = ''
+    contentEl.style.maxWidth = ''
     return
   }
 
-  let width = Math.round(gutterWidth + charWidth * columns + slack)
-  view.dom.style.maxWidth = `${width}px`
+  // `ch` is the "0" advance of the content font — exact by construction.
+  contentEl.style.maxWidth = `calc(${columns}ch + ${lockExtraPx(view, slack)}px)`
 
-  // The nominal font measurement can differ slightly from what the editor
-  // actually renders; true up against the real scroller so a doc that fits
-  // the chosen columns never horizontal-scrolls.
+  // The nominal font metrics can still differ a hair from real rendering;
+  // true up against the actual scroller so a doc that fits the chosen
+  // columns never horizontal-scrolls.
   let longest = 0
   for (const line of view.state.doc.iterLines()) longest = Math.max(longest, line.length)
   const scroller = view.dom.querySelector('.cm-scroller')
@@ -378,10 +365,17 @@ function applyWidthLock(view: EditorView): void {
     for (let i = 0; i < 3; i++) {
       const over = scroller.scrollWidth - scroller.clientWidth
       if (over <= 0) break
-      width += over + 1
-      view.dom.style.maxWidth = `${width}px`
+      lockExtraState.set(view, (lockExtraState.get(view) ?? 0) + over + 1)
+      contentEl.style.maxWidth = `calc(${columns}ch + ${lockExtraPx(view, slack)}px)`
     }
   }
+}
+
+// per-view px correction accumulated on top of the ch-based cap
+const lockExtraState = new WeakMap<EditorView, number>()
+
+function lockExtraPx(view: EditorView, slack: number): number {
+  return slack + (lockExtraState.get(view) ?? 0)
 }
 
 function debounce(fn: () => void, ms: number): () => void {
