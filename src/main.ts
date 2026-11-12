@@ -51,15 +51,32 @@ const decoder = new TextDecoder()
 let stdinHeader: Int32Array | null = null
 let stdinBytes: Uint8Array | null = null
 
-const consolePane = new Console(consoleHost, (line) => {
-  // A blocked readStdinLine() in the worker is waiting on this buffer.
-  if (!stdinHeader || !stdinBytes) return
-  const bytes = new TextEncoder().encode(line).slice(0, STDIN_MAX_BYTES)
-  stdinBytes.set(bytes)
-  stdinHeader[1] = bytes.length
-  Atomics.store(stdinHeader, 0, STDIN_STATE.ready)
-  Atomics.notify(stdinHeader, 0)
-})
+const consolePane = new Console(
+  consoleHost,
+  (line) => {
+    // A blocked readStdinLine() in the worker is waiting on this buffer.
+    // The payload carries its own trailing newline and never fills the
+    // buffer exactly: the newline survives truncation, and the buffer
+    // is never filled to the last byte.
+    if (!stdinHeader || !stdinBytes) return
+    const bytes = new TextEncoder().encode(line)
+    const capped = bytes.slice(0, STDIN_MAX_BYTES - 1)
+    const payload = new Uint8Array(capped.length + 1)
+    payload.set(capped)
+    payload[capped.length] = 10 // '\n'
+    stdinBytes.set(payload)
+    stdinHeader[1] = payload.length
+    Atomics.store(stdinHeader, 0, STDIN_STATE.ready)
+    Atomics.notify(stdinHeader, 0)
+  },
+  () => {
+    // Ctrl+D on an empty line: end-of-input, sticky for this run (the
+    // worker keeps returning EOF until the next run resets it).
+    if (!stdinHeader) return
+    Atomics.store(stdinHeader, 0, STDIN_STATE.eof)
+    Atomics.notify(stdinHeader, 0)
+  },
+)
 
 // Streamed output is coalesced onto a 100ms tick so a print-flood loop can't
 // drive one-DOM-append-per-message; backlog beyond ~1MB is dropped (terminal
@@ -118,11 +135,22 @@ fileStore.onSaveState((state) => {
 })
 
 // ── worker ───────────────────────────────────────────────────────────────────
+// Buttons are gated by a phase machine: Run only when the interpreter is
+// loaded and idle, Stop only while user code is actually executing (it is
+// the only recovery from a wedged run — never disabled mid-run).
+type Phase = 'loading' | 'idle' | 'running'
+let phase: Phase = 'loading'
 let interrupt: Int32Array | null = null
-let running = false
 let worker: Worker
 
+function setPhase(next: Phase): void {
+  phase = next
+  setButtons()
+}
+
 function spawnWorker(): void {
+  // The worker prewarms Pyodide immediately; pyodide-ready flips us to idle.
+  setPhase('loading')
   worker = new Worker(new URL('./pyworker/worker.ts', import.meta.url), { type: 'module' })
   worker.onmessage = (event: MessageEvent<FromWorker>) => {
     const msg = event.data
@@ -140,6 +168,19 @@ function spawnWorker(): void {
         }
         break
       }
+      case 'pyodide-ready':
+        if (phase === 'loading') setPhase('idle')
+        break
+      case 'pyodide-error':
+        // Load failed (bad deploy, blocked fetch). The worker cleared its
+        // cached load, so the next Run retries it.
+        setPhase('idle')
+        consolePane.write(`Python failed to load: ${msg.message}\nPress Run to retry.\n`, 'stderr')
+        break
+      case 'run-started':
+        // User code is about to execute: from here a Stop interrupt is safe.
+        setPhase('running')
+        break
       case 'stdout':
         pendingStdout.push(decoder.decode(new Uint8Array(msg.bytes), { stream: true }))
         pendingChars += 1
@@ -155,7 +196,6 @@ function spawnWorker(): void {
       case 'run-finished': {
         clearTimeout(stopWatchdog)
         drainPendingOutput()
-        running = false
         consolePane.endInput()
         consolePane.write('\n', '')
         if (msg.interrupted) {
@@ -165,7 +205,13 @@ function spawnWorker(): void {
         } else {
           consolePane.write(`── exited with code ${msg.exitCode} ──\n`, 'status')
         }
-        setButtons()
+        setPhase(msg.restart ? 'loading' : 'idle')
+        if (msg.restart) {
+          // Self-heal: the worker hit an interrupt it could not contain and
+          // asked to be replaced; the fresh worker prewarms immediately.
+          worker.terminate()
+          spawnWorker()
+        }
         break
       }
       case 'analysis':
@@ -185,9 +231,11 @@ spawnWorker()
 let stopWatchdog: ReturnType<typeof setTimeout> | undefined
 
 function run(): void {
-  if (running) return
-  running = true
-  setButtons()
+  if (phase !== 'idle') return
+  // 'loading' until the worker reports run-started. When the interpreter is
+  // already warm that gap is a millisecond; on a retry-after-load-failure it
+  // spans the reload, and pyodide-ready → run-started drive the phases.
+  setPhase('loading')
   consolePane.clear()
   worker.postMessage({
     type: 'run',
@@ -197,7 +245,7 @@ function run(): void {
 }
 
 function stop(): void {
-  if (!running) return
+  if (phase !== 'running') return
   if (stdinHeader) {
     // Wake a blocked input() read so the interrupt can take effect.
     Atomics.store(stdinHeader, 0, STDIN_STATE.cancel)
@@ -210,30 +258,27 @@ function stop(): void {
     // worker so Stop always works.
     clearTimeout(stopWatchdog)
     stopWatchdog = setTimeout(() => {
-      if (!running) return
-      running = false
+      if (phase !== 'running') return
       consolePane.endInput()
       consolePane.write('\n── stopped (worker restarted) ──\n', 'status')
       worker.terminate()
       spawnWorker()
-      setButtons()
     }, STOP_WATCHDOG_MS)
   } else {
     // Degraded mode (no SharedArrayBuffer): the only way to stop is to drop
     // the worker and start a fresh one.
-    running = false
     consolePane.endInput()
     consolePane.write('── stopped (worker restarted) ──\n', 'status')
     worker.terminate()
     spawnWorker()
-    setButtons()
   }
 }
 
 function setButtons(): void {
-  btnRun.disabled = running
-  btnStop.disabled = !running
-  runStatus.textContent = running ? 'running…' : ''
+  btnRun.disabled = phase !== 'idle'
+  btnStop.disabled = phase !== 'running'
+  runStatus.textContent =
+    phase === 'running' ? 'running…' : phase === 'loading' ? 'loading Python…' : ''
 }
 
 btnRun.addEventListener('click', run)
@@ -517,13 +562,13 @@ window.addEventListener('keydown', (e) => {
   }
   // Esc stops a running program; while renaming it cancels the rename first
   // (handled in the input's own keydown listener).
-  if (e.key === 'Escape' && running) {
+  if (e.key === 'Escape' && phase === 'running') {
     e.preventDefault()
     stop()
     return
   }
   // Ctrl+C interrupts a running program, unless the user is copying text.
-  if (e.ctrlKey && e.key === 'c' && running) {
+  if (e.ctrlKey && e.key === 'c' && phase === 'running') {
     const selection = window.getSelection()?.toString() ?? ''
     if (!selection) {
       e.preventDefault()

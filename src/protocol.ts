@@ -10,6 +10,7 @@ export const STDIN_STATE = {
   idle: 0,
   ready: 1, // main thread wrote a line into the payload
   cancel: 2, // main thread wants the blocked read to abort (Stop pressed)
+  eof: 3, // main thread signalled end-of-input (Ctrl+D on an empty line)
 } as const
 
 export interface Diagnostic {
@@ -31,10 +32,13 @@ export type FromWorker =
       crossIsolated: boolean
       buffers?: { interrupt: ArrayBufferLike; stdin: ArrayBufferLike }
     }
+  | { type: 'pyodide-ready' }
+  | { type: 'pyodide-error'; message: string }
+  | { type: 'run-started' } // user code is about to execute; Stop is safe from here
   | { type: 'stdout'; bytes: ArrayBufferLike }
   | { type: 'stderr'; bytes: ArrayBufferLike }
   | { type: 'input-request' }
-  | { type: 'run-finished'; exitCode: number; interrupted: boolean }
+  | { type: 'run-finished'; exitCode: number; interrupted: boolean; restart?: boolean }
   | { type: 'analysis'; version: number; diagnostics: Diagnostic[] }
   | { type: 'completions'; version: number; items: string[] }
   | { type: 'hover-info'; version: number; text: string | null }

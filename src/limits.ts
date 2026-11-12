@@ -23,6 +23,19 @@ export const OUTPUT_KEEP_CHUNK_CHARS = 150_000 // …keeps only the newest part
 // ── stop ─────────────────────────────────────────────────────────────────────
 export const STOP_WATCHDOG_MS = 2500 // interrupt first, then force-restart the worker
 
+// ── blocked imports ──────────────────────────────────────────────────────────
+// Clarity, not security: in a browser tab raw sockets fake-connect and then
+// hang until timeout, which reads as a hang to a learner. A meta-path finder
+// in the worker turns these imports into instant, guided errors. Pyodide's
+// own pyodide.http.pyfetch remains available for HTTP.
+export const BLOCKED_MODULES: Record<string, string> = {
+  socket:
+    'raw network sockets are disabled in kata-runner — a browser tab has no TCP. For HTTP, use pyodide.http.pyfetch.',
+  _socket: 'raw network sockets are disabled in kata-runner.',
+  ssl: 'TLS sockets are disabled in kata-runner — a browser tab has no raw TLS.',
+  socketserver: 'network servers are disabled in kata-runner.',
+}
+
 // ── editor indent ────────────────────────────────────────────────────────────
 export const INDENT_OPTIONS = [2, 4] as const // the only indent widths offered
 

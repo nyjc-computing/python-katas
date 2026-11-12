@@ -27,6 +27,7 @@ export class Console {
   constructor(
     root: HTMLElement,
     private readonly onInputLine: (line: string) => void,
+    private readonly onEof?: () => void,
   ) {
     this.root = root
     this.linesEl = root
@@ -34,6 +35,15 @@ export class Console {
     this.input = document.querySelector('#console-input') as HTMLInputElement
 
     this.input.addEventListener('keydown', (e) => {
+      // Ctrl+D on an empty line = end-of-input (terminal convention); a
+      // non-empty line deletes forward instead, so the guard on value.
+      if (e.ctrlKey && e.key === 'd' && this.acceptingInput && this.input.value === '') {
+        e.preventDefault()
+        this.write('<EOF>\n', 'status')
+        this.endInput()
+        this.onEof?.()
+        return
+      }
       if (e.key === 'Enter' && this.acceptingInput) {
         const value = this.input.value
         this.input.value = ''
