@@ -134,6 +134,14 @@ async function getPyodide(): Promise<PyodideInterface> {
       py.setStdout({ isatty: true, write: stdoutWriter.write })
       py.setStderr({ isatty: true, write: stderrWriter.write })
       py.setStdin({ stdin: readStdinLine })
+      // Workspace for the learner's virtual files: open('data.csv') and
+      // imports between .py files resolve against the process cwd.
+      try {
+        py.FS.mkdir('/kata')
+      } catch {
+        /* already exists */
+      }
+      py.FS.chdir('/kata')
       py.runPython(RUNNER_SOURCE)
       return py
     })()
@@ -173,8 +181,26 @@ def _kata_run(source):
 `
 
 let busy = false
+let syncedFileNames: Set<string> = new Set()
 
-async function run(code: string): Promise<void> {
+/** Mirror the sidebar's virtual files into the interpreter's cwd. */
+function syncVirtualFiles(py: PyodideInterface, files: Record<string, string>): void {
+  for (const name of syncedFileNames) {
+    if (!(name in files)) {
+      try {
+        py.FS.unlink(`/kata/${name}`)
+      } catch {
+        /* already gone */
+      }
+    }
+  }
+  for (const [name, content] of Object.entries(files)) {
+    py.FS.writeFile(`/kata/${name}`, content)
+  }
+  syncedFileNames = new Set(Object.keys(files))
+}
+
+async function run(code: string, files: Record<string, string>): Promise<void> {
   if (busy) return
   busy = true
   stdinCancelled = false
@@ -185,6 +211,7 @@ async function run(code: string): Promise<void> {
   let errText = ''
   try {
     const py = await getPyodide()
+    syncVirtualFiles(py, files)
     py.globals.set('__kata_source', code)
     const result = (await py.runPythonAsync('_kata_run(__kata_source)')) as [number, string]
     exitCode = result[0]
@@ -235,7 +262,7 @@ ctx.onmessage = (event: MessageEvent<ToWorker>) => {
   const msg = event.data
   switch (msg.type) {
     case 'run':
-      void run(msg.code)
+      void run(msg.code, msg.files)
       break
     case 'analyze':
       analyze(msg.code, msg.version)

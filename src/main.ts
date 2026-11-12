@@ -1,6 +1,7 @@
 import './style.css'
-import { createEditor } from './editor'
+import { createEditor, setIndentWidth, setLanguage } from './editor'
 import { Console } from './console'
+import { FileStore, extOf } from './files'
 import {
   FromWorker,
   STDIN_HEADER_INTS,
@@ -9,6 +10,7 @@ import {
   ToWorker,
 } from './protocol'
 import {
+  INDENT_OPTIONS,
   OUTPUT_DROP_CHUNK_CHARS,
   OUTPUT_KEEP_CHUNK_CHARS,
   OUTPUT_TICK_MS,
@@ -25,6 +27,17 @@ const btnRun = document.querySelector('#btn-run') as HTMLButtonElement
 const btnStop = document.querySelector('#btn-stop') as HTMLButtonElement
 const btnClear = document.querySelector('#btn-clear') as HTMLButtonElement
 const btnLayout = document.querySelector('#btn-layout') as HTMLButtonElement
+const btnFiles = document.querySelector('#btn-files') as HTMLButtonElement
+const indentSelect = document.querySelector('#indent-select') as HTMLSelectElement
+const activeFileName = document.querySelector('#active-file-name') as HTMLElement
+const saveStateEl = document.querySelector('#save-state') as HTMLElement
+const fileList = document.querySelector('#file-list') as HTMLElement
+const newFileName = document.querySelector('#new-file-name') as HTMLInputElement
+const btnCreate = document.querySelector('#btn-create') as HTMLButtonElement
+const fileHint = document.querySelector('#file-hint') as HTMLElement
+
+// ── virtual files ────────────────────────────────────────────────────────────
+const fileStore = new FileStore()
 
 // ── console ──────────────────────────────────────────────────────────────────
 const decoder = new TextDecoder()
@@ -71,19 +84,31 @@ setInterval(drainPendingOutput, OUTPUT_TICK_MS)
 let analyzeTimer: ReturnType<typeof setTimeout> | undefined
 let analyzeVersion = 0
 
-const editor = createEditor(editorHost, {
+const editor = createEditor(editorHost, fileStore.get(fileStore.activeName()), {
   onCodeChanged: (code) => {
-    localStorage.setItem('kata.editor', code)
+    fileStore.write(fileStore.activeName(), code)
     clearTimeout(analyzeTimer)
     analyzeTimer = setTimeout(() => {
       analyzeVersion++
-      worker.postMessage({ type: 'analyze', code, version: analyzeVersion } satisfies ToWorker)
+      worker.postMessage({
+        type: 'analyze',
+        code,
+        version: analyzeVersion,
+      } satisfies ToWorker)
     }, 800)
   },
   onRun: () => run(),
   onCursor: ({ line, col }) => {
     editorStatus.textContent = `Ln ${line}, Col ${col}`
   },
+})
+
+setLanguage(editor, extOf(fileStore.activeName()))
+setIndentWidth(editor, savedIndent())
+
+fileStore.onSaveState((state) => {
+  saveStateEl.dataset.state = state
+  saveStateEl.textContent = state === 'dirty' ? '● unsaved' : '✓ saved'
 })
 
 // ── worker ───────────────────────────────────────────────────────────────────
@@ -158,7 +183,11 @@ function run(): void {
   running = true
   setButtons()
   consolePane.clear()
-  worker.postMessage({ type: 'run', code: editor.state.doc.toString() } satisfies ToWorker)
+  worker.postMessage({
+    type: 'run',
+    code: editor.state.doc.toString(),
+    files: fileStore.all(),
+  } satisfies ToWorker)
 }
 
 function stop(): void {
@@ -205,6 +234,94 @@ btnRun.addEventListener('click', run)
 btnStop.addEventListener('click', stop)
 btnClear.addEventListener('click', () => consolePane.clear())
 
+// ── virtual files UI ─────────────────────────────────────────────────────────
+
+function renderFileList(): void {
+  const active = fileStore.activeName()
+  fileList.innerHTML = ''
+  for (const name of fileStore.names()) {
+    const row = document.createElement('li')
+    row.className = 'file-row' + (name === active ? ' active' : '')
+
+    const open = document.createElement('button')
+    open.type = 'button'
+    open.className = 'file-name'
+    open.textContent = name
+    open.title = `Open ${name}`
+    open.addEventListener('click', () => fileStore.setActive(name))
+
+    const del = document.createElement('button')
+    del.type = 'button'
+    del.className = 'file-del'
+    del.textContent = '✕'
+    del.title = `Delete ${name}`
+    del.addEventListener('click', () => {
+      if (!confirm(`Delete ${name}? This cannot be undone.`)) return
+      fileStore.remove(name)
+    })
+
+    row.append(open, del)
+    fileList.appendChild(row)
+  }
+  activeFileName.textContent = active
+}
+
+/** Swap the editor's content and language to the active file. */
+function syncEditorToActive(): void {
+  editor.dispatch({
+    changes: { from: 0, to: editor.state.doc.length, insert: fileStore.get(fileStore.activeName()) },
+  })
+  setLanguage(editor, extOf(fileStore.activeName()))
+  activeFileName.textContent = fileStore.activeName()
+}
+
+fileStore.onChange(() => {
+  renderFileList()
+  syncEditorToActive()
+})
+renderFileList()
+activeFileName.textContent = fileStore.activeName()
+
+function showFileHint(message: string): void {
+  fileHint.textContent = message
+  fileHint.hidden = false
+}
+
+function createFromFileInput(): void {
+  const name = newFileName.value.trim()
+  if (!name) return
+  const error = fileStore.create(name)
+  if (error) {
+    showFileHint(error)
+    return
+  }
+  newFileName.value = ''
+  fileHint.hidden = true
+  // setActive() (inside create) emits change → list rerendered, editor synced
+}
+
+btnCreate.addEventListener('click', createFromFileInput)
+newFileName.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    createFromFileInput()
+  }
+})
+
+// ── indentation ──────────────────────────────────────────────────────────────
+
+function savedIndent(): number {
+  const stored = localStorage.getItem('kata.indent')
+  return (INDENT_OPTIONS as readonly number[]).includes(Number(stored)) ? Number(stored) : INDENT_OPTIONS[1]
+}
+
+indentSelect.value = String(savedIndent())
+indentSelect.addEventListener('change', () => {
+  const width = Number(indentSelect.value)
+  setIndentWidth(editor, width)
+  localStorage.setItem('kata.indent', String(width))
+})
+
 // ── layout ───────────────────────────────────────────────────────────────────
 
 function applyLayout(layout: 'stack' | 'side'): void {
@@ -220,6 +337,19 @@ btnLayout.addEventListener('click', () => {
   applyLayout(app.classList.contains('layout-stack') ? 'side' : 'stack')
 })
 
+function applySidebar(open: boolean): void {
+  app.classList.toggle('sidebar-open', open)
+  btnFiles.setAttribute('aria-expanded', String(open))
+  btnFiles.classList.toggle('active-toggle', open)
+  localStorage.setItem('kata.sidebar', open ? 'open' : 'closed')
+}
+
+applySidebar(localStorage.getItem('kata.sidebar') !== 'closed')
+
+btnFiles.addEventListener('click', () => {
+  applySidebar(!app.classList.contains('sidebar-open'))
+})
+
 // ── keyboard ─────────────────────────────────────────────────────────────────
 
 window.addEventListener('keydown', (e) => {
@@ -228,9 +358,13 @@ window.addEventListener('keydown', (e) => {
     run()
     return
   }
-  // Esc stops a running program (unless the user is copying text with Ctrl+C
-  // below, Escape has no conflicting editor role we need to preserve while
-  // code is running).
+  // Ctrl+S flushes the debounced file save immediately.
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault()
+    fileStore.flush()
+    return
+  }
+  // Esc stops a running program.
   if (e.key === 'Escape' && running) {
     e.preventDefault()
     stop()

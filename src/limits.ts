@@ -22,3 +22,15 @@ export const OUTPUT_KEEP_CHUNK_CHARS = 150_000 // …keeps only the newest part
 
 // ── stop ─────────────────────────────────────────────────────────────────────
 export const STOP_WATCHDOG_MS = 2500 // interrupt first, then force-restart the worker
+
+// ── editor indent ────────────────────────────────────────────────────────────
+export const INDENT_OPTIONS = [2, 4] as const // the only indent widths offered
+
+// ── virtual files ────────────────────────────────────────────────────────────
+// Text-only, localStorage-backed; caps keep a curious learner inside the
+// storage budget (localStorage ~5 MB per origin).
+export const FILE_SAVE_DEBOUNCE_MS = 800
+export const MAX_FILE_CHARS = 200_000
+export const MAX_TOTAL_FILE_CHARS = 2_000_000
+export const MAX_FILES = 50
+export const ALLOWED_FILE_EXTS: readonly string[] = ['py', 'csv', 'json', 'md', 'html', 'css', 'txt']

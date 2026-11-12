@@ -10,19 +10,35 @@
     <header id="toolbar">
       <span id="brand">kata-runner</span>
       <button id="btn-run" title="Run (Ctrl+Enter)">&#9654; Run</button>
-      <button id="btn-stop" title="Stop (Ctrl+C in the console)" disabled>&#9632; Stop</button>
+      <button id="btn-stop" title="Stop (Esc, or Ctrl+C in the console)" disabled>&#9632; Stop</button>
       <button id="btn-clear" title="Clear the console">Clear output</button>
       <span class="spacer"></span>
       <span id="run-status" aria-live="polite"></span>
+      <label for="indent-select" id="indent-label" title="Indent width (spaces)">Indent</label>
+      <select id="indent-select" title="Indent width (spaces)">
+        <option value="2">2 spaces</option>
+        <option value="4" selected>4 spaces</option>
+      </select>
       <button id="btn-layout" title="Toggle editor/output layout">Layout: stacked</button>
+      <button id="btn-files" title="Toggle the file browser" aria-expanded="false">Files</button>
     </header>
 
     <main id="app" class="layout-stack">
-      <!-- Reserved for the future file browser (left) and debugger (right) panels -->
-      <aside id="panel-left" class="panel-side" aria-hidden="true"></aside>
+      <aside id="panel-left" class="panel-side">
+        <div class="side-head">FILES</div>
+        <div id="new-file-row">
+          <input id="new-file-name" placeholder="new file, e.g. data.csv" spellcheck="false" aria-label="New file name" />
+          <button id="btn-create" title="Create file">+</button>
+        </div>
+        <div id="file-hint" hidden></div>
+        <ul id="file-list"></ul>
+      </aside>
 
       <section id="editor-pane" class="pane">
-        <div class="pane-title">main.py</div>
+        <div class="pane-title">
+          <span id="active-file-name">main.py</span>
+          <span id="save-state" data-state="saved">&#10003; saved</span>
+        </div>
         <div id="editor"></div>
         <div id="editor-status">Ln 1, Col 1</div>
       </section>
@@ -36,6 +52,7 @@
         </div>
       </section>
 
+      <!-- Reserved for the future debugger panel -->
       <aside id="panel-right" class="panel-side" aria-hidden="true"></aside>
     </main>
 

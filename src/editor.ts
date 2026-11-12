@@ -1,15 +1,89 @@
 import { basicSetup, EditorView } from 'codemirror'
 import { python } from '@codemirror/lang-python'
+import { json } from '@codemirror/lang-json'
+import { html } from '@codemirror/lang-html'
+import { css } from '@codemirror/lang-css'
+import { markdown } from '@codemirror/lang-markdown'
+import { indentUnit } from '@codemirror/language'
 import { indentWithTab } from '@codemirror/commands'
 import { keymap } from '@codemirror/view'
 import { Decoration, ViewPlugin, ViewUpdate } from '@codemirror/view'
-import { ChangeSpec, EditorState, Prec, Transaction, Range } from '@codemirror/state'
-import { MAX_EDITOR_LINES, MAX_LINE_LEN } from './limits'
+import { ChangeSpec, Compartment, EditorState, Prec, Transaction, Range } from '@codemirror/state'
+import { INDENT_OPTIONS, MAX_EDITOR_LINES, MAX_LINE_LEN } from './limits'
 
-const DEFAULT_DOC = `# kata-runner
-# Write your program below, then press Run (Ctrl+Enter).
-# Lines are hard-limited to ${MAX_LINE_LEN} characters.
-`
+// Language per file extension; anything not listed opens as plain text.
+const LANGUAGES: Record<string, () => ReturnType<typeof python>> = {
+  py: () => python(),
+  json: () => json(),
+  html: () => html(),
+  css: () => css(),
+  md: () => markdown(),
+}
+
+const languageComp = new Compartment()
+const indentComp = new Compartment()
+
+function indentExtension(width: number) {
+  return [
+    indentUnit.of(' '.repeat(width)),
+    EditorState.tabSize.of(width),
+    indentGuidePlugin(width),
+  ]
+}
+
+/** Reconfigure the editor for a file extension ('py', 'csv', …). */
+export function setLanguage(view: EditorView, ext: string): void {
+  const make = LANGUAGES[ext]
+  view.dispatch({ effects: languageComp.reconfigure(make ? make() : []) })
+}
+
+/** Set the indent width (2 or 4 — see INDENT_OPTIONS). Never re-indents code. */
+export function setIndentWidth(view: EditorView, width: number): void {
+  view.dispatch({ effects: indentComp.reconfigure(indentExtension(width)) })
+}
+
+// ── indentation guides ───────────────────────────────────────────────────────
+// One vertical mark per indent level (skipping level 0, which hugs the
+// gutter). Only space-based indentation gets guides; tabs render via tabSize.
+
+const guideMark = Decoration.mark({ class: 'cm-indent-guide' })
+
+function buildIndentGuides(view: EditorView, size: number): DecorationSet2 {
+  const builder: Range<Decoration>[] = []
+  for (const { from, to } of view.visibleRanges) {
+    for (let pos = from; pos <= to; ) {
+      const line = view.state.doc.lineAt(pos)
+      const m = /^ +/.exec(line.text)
+      if (m) {
+        // One guide per indent level: mark the (g-1)*size..g*size whitespace
+        // run and draw its right border — lands exactly on column g*size and
+        // works even on lines made only of indentation.
+        const groups = Math.floor(m[0].length / size)
+        for (let g = 1; g <= groups; g++) {
+          const start = line.from + (g - 1) * size
+          builder.push(guideMark.range(start, start + size))
+        }
+      }
+      pos = line.to + 1
+    }
+  }
+  return Decoration.set(builder, true)
+}
+
+function indentGuidePlugin(size: number) {
+  return ViewPlugin.fromClass(
+    class {
+      decorations: DecorationSet2
+      constructor(view: EditorView) {
+        this.decorations = buildIndentGuides(view, size)
+      }
+      update(u: ViewUpdate) {
+        if (u.docChanged || u.viewportChanged) this.decorations = buildIndentGuides(u.view, size)
+      }
+    },
+    { decorations: (v) => v.decorations },
+  )
+}
 
 /**
  * Hard-split one line so no piece exceeds MAX_LINE_LEN. Breaks at the last
@@ -163,6 +237,7 @@ const overlengthHighlight = ViewPlugin.fromClass(
 
 export function createEditor(
   parent: HTMLElement,
+  initialDoc: string,
   handlers: {
     onCodeChanged: (code: string) => void
     onRun: () => void
@@ -171,7 +246,7 @@ export function createEditor(
 ): EditorView {
   const view = new EditorView({
     parent,
-    doc: localStorage.getItem('kata.editor') ?? DEFAULT_DOC,
+    doc: initialDoc,
     extensions: [
       // Runs before the default keymap so Ctrl+Enter never reaches the
       // "insert line" binding.
@@ -187,8 +262,9 @@ export function createEditor(
         ]),
       ),
       basicSetup, // line numbers, history, bracket matching, default keymap — not toggleable here by design
-      python(),
+      languageComp.of(python()),
       // deliberately no EditorView.lineWrapping: long lines scroll horizontally
+      indentComp.of(indentExtension(INDENT_OPTIONS[1])), // default: 4 spaces
       keymap.of([indentWithTab]),
       limitFilter,
       overlengthHighlight,
