@@ -96,24 +96,26 @@ button:disabled {
 /* floating drawer-pull on the left edge for the file browser */
 #sidebar-tab {
   position: fixed;
-  left: 0;
+  left: 6px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;
-  height: 56px;
-  padding: 0;
+  height: 28px;
+  padding: 0 10px;
   border: 1px solid var(--border);
-  border-left: none;
-  border-radius: 0 8px 8px 0;
+  border-radius: 999px;
   background: var(--chrome);
   color: var(--muted);
-  font-size: 14px;
+  font-size: 0.78rem;
   line-height: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
   cursor: pointer;
   z-index: 10;
+}
+
+#sidebar-tab .tab-label {
+  font-weight: 600;
 }
 
 #sidebar-tab:hover {
@@ -249,11 +251,11 @@ button:disabled {
 
 /* open file browser: the reserved left column gets real width */
 #app.sidebar-open.layout-stack {
-  grid-template-columns: 210px 3fr 2fr 0fr;
+  grid-template-columns: 280px 3fr 2fr 0fr;
 }
 
 #app.sidebar-open.layout-side {
-  grid-template-columns: 210px 3fr 2fr 0fr;
+  grid-template-columns: 280px 3fr 2fr 0fr;
 }
 
 #app.sidebar-open #panel-left {
