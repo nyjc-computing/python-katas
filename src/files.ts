@@ -28,6 +28,17 @@ export function isAllowedFileName(name: string): boolean {
   return (ALLOWED_FILE_EXTS as readonly string[]).includes(extOf(name))
 }
 
+/** Starter content for newly created (not imported) files, by extension. */
+const TEMPLATES: Record<string, string> = {
+  py: 'def main():\n    ...\n\n\nif __name__ == "__main__":\n    main()\n',
+  csv: 'name,value\n',
+  json: '{\n  "key": "value"\n}\n',
+  md: '# Title\n\n',
+  html: '<!doctype html>\n<html>\n  <head>\n    <meta charset="utf-8" />\n    <title>page</title>\n  </head>\n  <body>\n\n  </body>\n</html>\n',
+  css: '/* styles */\n',
+  txt: '',
+}
+
 export class FileStore {
   private files: Record<string, string>
   private active: string
@@ -89,16 +100,37 @@ export class FileStore {
     this.markDirty()
   }
 
-  /** Returns an error message, or null on success. */
+  /** Returns an error message, or null on success. New files get a template. */
   create(name: string): string | null {
-    if (!isAllowedFileName(name)) {
-      return `unsupported file name — text files only: ${ALLOWED_FILE_EXTS.join(', ')}`
-    }
-    if (name in this.files) return 'a file with that name already exists'
-    if (Object.keys(this.files).length >= MAX_FILES) return `file limit reached (${MAX_FILES} files)`
-    if (this.totalChars() >= MAX_TOTAL_FILE_CHARS) return 'storage budget reached'
-    this.files[name] = ''
+    const error = this.validateNew(name, 0)
+    if (error) return error
+    this.files[name] = TEMPLATES[extOf(name)] ?? ''
     this.setActive(name)
+    return null
+  }
+
+  /** Import real-file content under a virtual name; all-or-nothing per file. */
+  importFile(name: string, content: string): string | null {
+    const error = this.validateNew(name, content.length)
+    if (error) return error
+    if (content.length > MAX_FILE_CHARS) {
+      return `${name} is too large (limit ${MAX_FILE_CHARS} characters)`
+    }
+    this.files[name] = content
+    this.setActive(name)
+    return null
+  }
+
+  /** Returns an error message, or null on success. */
+  rename(from: string, to: string): string | null {
+    if (from === to) return null
+    const error = this.validateNew(to, this.get(from).length, { ignore: from })
+    if (error) return error
+    this.files[to] = this.files[from]
+    delete this.files[from]
+    if (this.active === from) this.active = to
+    this.persist()
+    this.emitChange()
     return null
   }
 
@@ -128,10 +160,23 @@ export class FileStore {
     this.stateListeners.push(cb)
   }
 
-  private totalChars(): number {
+  private validateNew(name: string, contentChars: number, opts: { ignore?: string } = {}): string | null {
+    if (!isAllowedFileName(name)) {
+      return `unsupported file name — text files only: ${ALLOWED_FILE_EXTS.join(', ')}`
+    }
+    if (name in this.files && name !== opts.ignore) return 'a file with that name already exists'
+    if (name !== opts.ignore && Object.keys(this.files).length >= MAX_FILES) {
+      return `file limit reached (${MAX_FILES} files)`
+    }
+    if (contentChars > MAX_FILE_CHARS) {
+      return `${name} is too large (limit ${MAX_FILE_CHARS} characters)`
+    }
     let total = 0
-    for (const c of Object.values(this.files)) total += c.length
-    return total
+    for (const [n, c] of Object.entries(this.files)) {
+      if (n !== opts.ignore) total += c.length
+    }
+    if (total + contentChars > MAX_TOTAL_FILE_CHARS) return 'storage budget reached'
+    return null
   }
 
   private markDirty(): void {

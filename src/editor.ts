@@ -1,10 +1,6 @@
 import { basicSetup, EditorView } from 'codemirror'
 import { python } from '@codemirror/lang-python'
-import { json } from '@codemirror/lang-json'
-import { html } from '@codemirror/lang-html'
-import { css } from '@codemirror/lang-css'
-import { markdown } from '@codemirror/lang-markdown'
-import { indentUnit } from '@codemirror/language'
+import { indentUnit, type LanguageSupport } from '@codemirror/language'
 import { indentWithTab } from '@codemirror/commands'
 import { keymap } from '@codemirror/view'
 import { Decoration, ViewPlugin, ViewUpdate } from '@codemirror/view'
@@ -12,16 +8,19 @@ import { ChangeSpec, Compartment, EditorState, Prec, Transaction, Range } from '
 import { INDENT_OPTIONS, MAX_EDITOR_LINES, MAX_LINE_LEN } from './limits'
 
 // Language per file extension; anything not listed opens as plain text.
-const LANGUAGES: Record<string, () => ReturnType<typeof python>> = {
-  py: () => python(),
-  json: () => json(),
-  html: () => html(),
-  css: () => css(),
-  md: () => markdown(),
+// Only Python (the primary language) is bundled eagerly — the rest are
+// dynamic imports so they land in their own chunks and stay out of the main
+// bundle until a file of that type is opened.
+const LANG_LOADERS: Record<string, () => Promise<LanguageSupport>> = {
+  json: () => import('@codemirror/lang-json').then((m) => m.json()),
+  html: () => import('@codemirror/lang-html').then((m) => m.html()),
+  css: () => import('@codemirror/lang-css').then((m) => m.css()),
+  md: () => import('@codemirror/lang-markdown').then((m) => m.markdown()),
 }
 
 const languageComp = new Compartment()
 const indentComp = new Compartment()
+let languageRequest = 0
 
 function indentExtension(width: number) {
   return [
@@ -31,10 +30,27 @@ function indentExtension(width: number) {
   ]
 }
 
-/** Reconfigure the editor for a file extension ('py', 'csv', …). */
-export function setLanguage(view: EditorView, ext: string): void {
-  const make = LANGUAGES[ext]
-  view.dispatch({ effects: languageComp.reconfigure(make ? make() : []) })
+/**
+ * Reconfigure the editor for a file extension ('py', 'csv', …). Non-Python
+ * languages load lazily; the editor is plain text until the chunk arrives,
+ * and a stale load (rapid file switching) is discarded.
+ */
+export async function setLanguage(view: EditorView, ext: string): Promise<void> {
+  const token = ++languageRequest
+  if (ext === 'py') {
+    view.dispatch({ effects: languageComp.reconfigure(python()) })
+    return
+  }
+  const load = LANG_LOADERS[ext]
+  if (!load) {
+    view.dispatch({ effects: languageComp.reconfigure([]) })
+    return
+  }
+  view.dispatch({ effects: languageComp.reconfigure([]) })
+  const language = await load()
+  if (token === languageRequest) {
+    view.dispatch({ effects: languageComp.reconfigure(language) })
+  }
 }
 
 /** Set the indent width (2 or 4 — see INDENT_OPTIONS). Never re-indents code. */

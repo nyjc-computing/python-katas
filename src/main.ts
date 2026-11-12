@@ -2,6 +2,7 @@ import './style.css'
 import { createEditor, setIndentWidth, setLanguage } from './editor'
 import { Console } from './console'
 import { FileStore, extOf } from './files'
+import { makeZip } from './zip'
 import {
   FromWorker,
   STDIN_HEADER_INTS,
@@ -27,14 +28,19 @@ const btnRun = document.querySelector('#btn-run') as HTMLButtonElement
 const btnStop = document.querySelector('#btn-stop') as HTMLButtonElement
 const btnClear = document.querySelector('#btn-clear') as HTMLButtonElement
 const btnLayout = document.querySelector('#btn-layout') as HTMLButtonElement
-const btnFiles = document.querySelector('#btn-files') as HTMLButtonElement
+const sidebarTab = document.querySelector('#sidebar-tab') as HTMLButtonElement
+const sidebarTabChevron = document.querySelector('#sidebar-tab-chevron') as HTMLElement
 const indentSelect = document.querySelector('#indent-select') as HTMLSelectElement
 const activeFileName = document.querySelector('#active-file-name') as HTMLElement
 const saveStateEl = document.querySelector('#save-state') as HTMLElement
+const panelLeft = document.querySelector('#panel-left') as HTMLElement
 const fileList = document.querySelector('#file-list') as HTMLElement
 const newFileName = document.querySelector('#new-file-name') as HTMLInputElement
 const btnCreate = document.querySelector('#btn-create') as HTMLButtonElement
 const fileHint = document.querySelector('#file-hint') as HTMLElement
+const btnUpload = document.querySelector('#btn-upload') as HTMLButtonElement
+const uploadInput = document.querySelector('#upload-input') as HTMLInputElement
+const btnZip = document.querySelector('#btn-zip') as HTMLButtonElement
 
 // ── virtual files ────────────────────────────────────────────────────────────
 const fileStore = new FileStore()
@@ -103,7 +109,7 @@ const editor = createEditor(editorHost, fileStore.get(fileStore.activeName()), {
   },
 })
 
-setLanguage(editor, extOf(fileStore.activeName()))
+void setLanguage(editor, extOf(fileStore.activeName()))
 setIndentWidth(editor, savedIndent())
 
 fileStore.onSaveState((state) => {
@@ -236,12 +242,81 @@ btnClear.addEventListener('click', () => consolePane.clear())
 
 // ── virtual files UI ─────────────────────────────────────────────────────────
 
+const FILE_COLORS: Record<string, string> = {
+  py: '#3572a5',
+  csv: '#237a57',
+  json: '#cb8b31',
+  md: '#6f42c1',
+  html: '#e34c26',
+  css: '#2965f1',
+  txt: '#6b7280',
+}
+
+const ICONS = {
+  bin: '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M6.4 1.5h3.2l.6 1H12.5v1.6h-9V2.5h2.5l.4-1ZM3.2 5.1h9.6l-.6 9a1.2 1.2 0 0 1-1.2 1.1H5a1.2 1.2 0 0 1-1.2-1.1l-.6-9Z" fill="currentColor"/></svg>',
+  pencil:
+    '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M2 14h3l9-9-3-3-9 9v3Zm10.7-10.7 1-1a.7.7 0 0 0 0-1l-1-1a.7.7 0 0 0-1 0l-1 1 2 2Z" fill="currentColor"/></svg>',
+  download:
+    '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 11 3.5 6.5 5 5l2 2V1.5h2V7l2-2 1.5 1.5L8 11ZM3 12.5h10V14H3v-1.5Z" fill="currentColor"/></svg>',
+}
+
+let renameTarget: string | null = null
+
+function downloadBlob(name: string, blob: Blob): void {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = name
+  a.click()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+function triggerDownload(name: string, content: string): void {
+  downloadBlob(name, new Blob([content], { type: 'text/plain' }))
+}
+
 function renderFileList(): void {
   const active = fileStore.activeName()
   fileList.innerHTML = ''
   for (const name of fileStore.names()) {
     const row = document.createElement('li')
     row.className = 'file-row' + (name === active ? ' active' : '')
+
+    const badge = document.createElement('span')
+    badge.className = 'file-type'
+    badge.textContent = extOf(name)
+    badge.style.setProperty('--badge-color', FILE_COLORS[extOf(name)] ?? '#6b7280')
+    badge.title = `${extOf(name)} file`
+
+    if (renameTarget === name) {
+      const input = document.createElement('input')
+      input.className = 'rename-input'
+      input.value = name
+      input.spellcheck = false
+      const commit = () => {
+        const next = input.value.trim()
+        renameTarget = null
+        if (next && next !== name) {
+          const error = fileStore.rename(name, next)
+          if (error) showFileHint(error)
+        } else {
+          renderFileList()
+        }
+      }
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') input.blur()
+        if (e.key === 'Escape') {
+          renameTarget = null
+          renderFileList()
+        }
+      })
+      input.addEventListener('blur', commit)
+      row.append(input)
+      fileList.appendChild(row)
+      // focus after the node is in the document
+      queueMicrotask(() => input.focus())
+      continue
+    }
 
     const open = document.createElement('button')
     open.type = 'button'
@@ -250,17 +325,27 @@ function renderFileList(): void {
     open.title = `Open ${name}`
     open.addEventListener('click', () => fileStore.setActive(name))
 
-    const del = document.createElement('button')
-    del.type = 'button'
-    del.className = 'file-del'
-    del.textContent = '✕'
-    del.title = `Delete ${name}`
-    del.addEventListener('click', () => {
+    const mk = (cls: string, title: string, icon: string, onClick: () => void) => {
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = cls
+      b.title = title
+      b.innerHTML = icon
+      b.addEventListener('click', onClick)
+      return b
+    }
+
+    const dl = mk('file-act', `Download ${name}`, ICONS.download, () => triggerDownload(name, fileStore.get(name)))
+    const ren = mk('file-act', `Rename ${name}`, ICONS.pencil, () => {
+      renameTarget = name
+      renderFileList()
+    })
+    const del = mk('file-del', `Delete ${name}`, ICONS.bin, () => {
       if (!confirm(`Delete ${name}? This cannot be undone.`)) return
       fileStore.remove(name)
     })
 
-    row.append(open, del)
+    row.append(badge, open, dl, ren, del)
     fileList.appendChild(row)
   }
   activeFileName.textContent = active
@@ -271,7 +356,7 @@ function syncEditorToActive(): void {
   editor.dispatch({
     changes: { from: 0, to: editor.state.doc.length, insert: fileStore.get(fileStore.activeName()) },
   })
-  setLanguage(editor, extOf(fileStore.activeName()))
+  void setLanguage(editor, extOf(fileStore.activeName()))
   activeFileName.textContent = fileStore.activeName()
 }
 
@@ -308,6 +393,71 @@ newFileName.addEventListener('keydown', (e) => {
   }
 })
 
+// ── import: upload button, picker and drag-and-drop ──────────────────────────
+
+function looksBinary(text: string): boolean {
+  const sample = text.slice(0, 8192)
+  return sample.includes('\u0000')
+}
+
+async function importFiles(list: FileList | File[]): Promise<void> {
+  const files = [...list]
+  if (files.length === 0) return
+  let imported = 0
+  const skipped: string[] = []
+  for (const file of files) {
+    let text: string
+    try {
+      text = await file.text()
+    } catch {
+      skipped.push(`${file.name} (unreadable)`)
+      continue
+    }
+    if (looksBinary(text)) {
+      skipped.push(`${file.name} (binary)`)
+      continue
+    }
+    const error = fileStore.importFile(file.name, text)
+    if (error) {
+      skipped.push(`${file.name} (${error})`)
+      continue
+    }
+    imported++
+  }
+  if (skipped.length > 0) showFileHint(`skipped ${skipped.length}: ${skipped.join('; ')}`)
+  else fileHint.hidden = true
+  if (imported > 0) panelLeft.classList.remove('drag-over')
+}
+
+btnUpload.addEventListener('click', () => uploadInput.click())
+uploadInput.addEventListener('change', () => {
+  void importFiles(uploadInput.files ?? [])
+  uploadInput.value = '' // allow re-uploading the same file
+})
+
+// Drop targets: the sidebar imports; anywhere else is neutralised so the
+// browser never navigates away from a missed drop.
+for (const type of ['dragover', 'drop']) {
+  window.addEventListener(type, (e) => e.preventDefault())
+}
+panelLeft.addEventListener('dragover', (e) => {
+  e.preventDefault()
+  panelLeft.classList.add('drag-over')
+})
+panelLeft.addEventListener('dragleave', () => panelLeft.classList.remove('drag-over'))
+panelLeft.addEventListener('drop', (e) => {
+  e.preventDefault()
+  panelLeft.classList.remove('drag-over')
+  void importFiles(e.dataTransfer?.files ?? [])
+})
+
+// ── workspace export ─────────────────────────────────────────────────────────
+
+btnZip.addEventListener('click', () => {
+  const entries = fileStore.names().map((name) => ({ name, content: fileStore.get(name) }))
+  downloadBlob('kata-workspace.zip', makeZip(entries))
+})
+
 // ── indentation ──────────────────────────────────────────────────────────────
 
 function savedIndent(): number {
@@ -339,14 +489,15 @@ btnLayout.addEventListener('click', () => {
 
 function applySidebar(open: boolean): void {
   app.classList.toggle('sidebar-open', open)
-  btnFiles.setAttribute('aria-expanded', String(open))
-  btnFiles.classList.toggle('active-toggle', open)
+  sidebarTab.setAttribute('aria-expanded', String(open))
+  sidebarTab.title = open ? 'Hide the file browser' : 'Show the file browser'
+  sidebarTabChevron.textContent = open ? '\u2039' : '\u203a'
   localStorage.setItem('kata.sidebar', open ? 'open' : 'closed')
 }
 
 applySidebar(localStorage.getItem('kata.sidebar') !== 'closed')
 
-btnFiles.addEventListener('click', () => {
+sidebarTab.addEventListener('click', () => {
   applySidebar(!app.classList.contains('sidebar-open'))
 })
 
@@ -364,7 +515,8 @@ window.addEventListener('keydown', (e) => {
     fileStore.flush()
     return
   }
-  // Esc stops a running program.
+  // Esc stops a running program; while renaming it cancels the rename first
+  // (handled in the input's own keydown listener).
   if (e.key === 'Escape' && running) {
     e.preventDefault()
     stop()

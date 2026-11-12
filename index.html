@@ -20,18 +20,34 @@
         <option value="4" selected>4 spaces</option>
       </select>
       <button id="btn-layout" title="Toggle editor/output layout">Layout: stacked</button>
-      <button id="btn-files" title="Toggle the file browser" aria-expanded="false">Files</button>
     </header>
+
+    <!-- Floating drawer-pull on the left edge: opens/closes the file browser -->
+    <button id="sidebar-tab" title="Toggle the file browser" aria-expanded="true">
+      <span id="sidebar-tab-chevron" aria-hidden="true">&#8249;</span>
+    </button>
 
     <main id="app" class="layout-stack">
       <aside id="panel-left" class="panel-side">
-        <div class="side-head">FILES</div>
+        <div class="side-head">
+          FILES
+          <span class="side-actions">
+            <button id="btn-upload" class="side-action" title="Upload text files from this computer">
+              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 3 3.5 7.5 5 9l2-2v6h2V7l2 2 1.5-1.5L8 3Z" fill="currentColor"/></svg>
+            </button>
+            <button id="btn-zip" class="side-action" title="Download all files as a zip">
+              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1v2h1v1H8v1h1v1H8v1h1v1H7V2h1V1Zm3 8.5L8 12 5 9.5 6.5 8 8 9.5 9.5 8 11 9.5ZM3 12h10v2H3v-2Z" fill="currentColor"/></svg>
+            </button>
+          </span>
+        </div>
         <div id="new-file-row">
           <input id="new-file-name" placeholder="new file, e.g. data.csv" spellcheck="false" aria-label="New file name" />
           <button id="btn-create" title="Create file">+</button>
         </div>
         <div id="file-hint" hidden></div>
         <ul id="file-list"></ul>
+        <div class="side-foot">drop text files here</div>
+        <input id="upload-input" type="file" multiple accept=".py,.csv,.json,.md,.html,.css,.txt" hidden />
       </aside>
 
       <section id="editor-pane" class="pane">
