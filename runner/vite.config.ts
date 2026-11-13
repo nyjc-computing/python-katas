@@ -47,7 +47,7 @@ function servePyodideRaw(): Plugin {
 }
 
 export default defineConfig({
-  // GitHub Pages project sites serve under /python-kata/ — set PAGES_BASE in
+  // GitHub Pages project sites serve under /python-katas/ — set PAGES_BASE in
   // the deploy workflow; everything else (dev, preview, CF Pages) uses '/'.
   base: process.env.PAGES_BASE || '/',
   server: { headers: isolationHeaders },

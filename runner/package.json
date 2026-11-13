@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "sync": "node scripts/sync-katas.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "vendor:pyodide": "node scripts/vendor-pyodide.mjs"

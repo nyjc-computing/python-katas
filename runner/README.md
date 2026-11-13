@@ -1,14 +1,18 @@
 # kata-runner
 
 An in-browser Python practice environment: CodeMirror 6 editor + Pyodide
-(CPython on WebAssembly) in a web worker, built for the
-[python-katas](../python-katas) exercise set.
+(CPython on WebAssembly) in a web worker, purpose-built for the kata corpus
+in [this repo's root](../README.md) (`python-katas-by-feature.md`). The app
+lives in `runner/`; the parsed corpus it loads is committed at
+`../build/katas.json` — regenerate it with `npm run sync` after editing the
+markdown (see [MARKDOWN-FORMAT.md](../MARKDOWN-FORMAT.md)).
 
 ## Setup
 
 ```sh
 npm install
 npm run vendor:pyodide   # copies the Pyodide core dist into public/pyodide/
+npm run sync             # parses ../../python-katas-by-feature.md → ../build/katas.json
 npm run dev              # vite dev server (sends COOP/COEP headers)
 ```
 
@@ -56,18 +60,18 @@ cloning or bumping the `pyodide` version in package.json.
 ## Deployment
 
 - **GitHub Pages** (this repo): push to `main` and the
-  [deploy workflow](.github/workflows/deploy.yml) builds and publishes to
-  https://nyjc-computing.github.io/python-kata/. Project Pages serve under a
-  sub-path, so the workflow sets `PAGES_BASE=/python-kata` and the worker's
+  [deploy workflow](../.github/workflows/deploy.yml) builds and publishes to
+  https://nyjc-computing.github.io/python-katas/. Project Pages serve under a
+  sub-path, so the workflow sets `PAGES_BASE=/python-katas/` and the worker's
   runtime URLs follow. Pages cannot send COOP/COEP headers, so
   `public/coi-serviceworker.js` injects them client-side — the very first
   visit registers the worker and reloads once; after that the page is
   cross-origin isolated and `input()`/Stop work fully. Note GitHub only
   serves Pages for **private** repos on paid plans; on the free plan make
   the repo public first.
-- **Cloudflare Pages / Netlify**: `wrangler pages deploy dist` — the
+- **Cloudflare Pages / Netlify**: `wrangler pages deploy runner/dist` — the
   `public/_headers` file is honored natively, no shim involved.
-- **nginx**: serve `dist/` with
+- **nginx**: serve `runner/dist/` with
 
   ```nginx
   add_header Cross-Origin-Opener-Policy same-origin;
@@ -79,6 +83,7 @@ cloning or bumping the `pyodide` version in package.json.
 ```
 src/
   main.ts            toolbar, layout, persistence, worker message routing
+  katas.ts           typed seam over the committed kata corpus (../build/katas.json)
   editor.ts          CodeMirror 6 setup + hard-limit extensions (width, height)
   console.ts         terminal-style output pane (open-line model, input row)
   limits.ts          all bounded-performance constants (single source of truth)

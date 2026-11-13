@@ -23,19 +23,24 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run vendor:pyodide
-      # Project Pages serve under /python-kata/ — worker URLs and the
+          cache-dependency-path: runner/package-lock.json
+      # Project Pages serve under /python-katas/ — worker URLs and the
       # coi-serviceworker registration derive from the injected base.
-      - run: npm run build
+      - name: Build
+        working-directory: runner
         env:
-          PAGES_BASE: /python-kata/
+          PAGES_BASE: /python-katas/
+        run: |
+          npm ci
+          npm run vendor:pyodide
+          npm run sync
+          npm run build
       - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: runner/dist
 
   deploy:
     needs: build
