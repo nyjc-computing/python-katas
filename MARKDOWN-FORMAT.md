@@ -105,3 +105,36 @@ to be picked up.
 **Solutions never ship.** `build/katas.json` omits the solution entirely —
 it is executed for test derivation, then dropped. The JSON is what learners'
 browsers download; the markdown is the maintainer-facing document.
+
+## Solution style rules
+
+Solutions are the reference programs learners are measured against, so they
+carry style expectations beyond parseability. CI enforces the mechanical
+subset (`python3 scripts/check-solutions.py`, pycodestyle with default
+rules); the rest is reviewed by hand.
+
+- **PEP 8, enforced by CI.** snake_case functions/variables, PascalCase
+  classes, two blank lines between top-level definitions, spaces around
+  operators. No line over 79 characters.
+- **Branching best practice.** Loop exit belongs in the loop condition, not
+  a mid-body `break` — reading a sentinel (e.g. until a blank line) uses the
+  read-then-loop pattern (`line = input()` before `while line != '':`), and
+  search loops use a flag or an early `return` from a function. `break` is
+  acceptable only when there is genuinely no cleaner structure. Early
+  `return` beats `elif`/`else` after a return; `else: pass` branches are
+  never written.
+- **Modern Python 3 style.** Plain `class X:` bases (no `(object)`),
+  `super().__init__()`, no redundant `float()`/`list()`/`dict()` constructor
+  calls, no unused imports.
+- **No f-strings.** `%`-formatting is kept deliberately, matching the
+  corpus's vintage and the feature level of early katas.
+- **Solutions stay at the kata's feature level.** A rewrite shouldn't use a
+  construct the kata hasn't taught (e.g. no comprehensions in a basic-`for`
+  kata) — with the exception of the PEP 8 rules above, which apply
+  everywhere.
+- **Behavior must not change.** The sync derives the auto-check tests by
+  executing solutions, and the questions' verbatim sample outputs describe
+  the solutions' behavior — a solution edit that changes stdout or exit
+  status silently re-bases what learners are checked against. Verify with
+  `npm run sync` before committing: the derived-tests count and skip list
+  must be unchanged.

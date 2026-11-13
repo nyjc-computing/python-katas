@@ -84,6 +84,7 @@ Using the ** operator
 def square(num):
     return num ** 2
 
+
 print(square(2))
 print(square(3))
 ```
@@ -101,10 +102,11 @@ Define a function with two numbers as arguments. You can compute the sum in the 
 **Solution:**
 
 ```python
-def SumFunction(number1, number2):
+def sum_function(number1, number2):
     return number1+number2
 
-print(SumFunction(1,2))
+
+print(sum_function(1, 2))
 ```
 
 ### 3. Convert an integer to a string
@@ -120,10 +122,11 @@ Use str() to convert a number to string.
 **Solution:**
 
 ```python
-def printValue(n):
+def print_value(n):
     print(str(n))
 
-printValue(3)
+
+print_value(3)
 ```
 
 ### 4. Sum of two numbers given as strings
@@ -139,10 +142,11 @@ Use int() to convert a string to integer.
 **Solution:**
 
 ```python
-def printValue(s1,s2):
+def print_value(s1, s2):
     print(int(s1)+int(s2))
 
-printValue("3","4") #7
+
+print_value("3", "4")  # 7
 ```
 
 ### 5. Concatenate two strings
@@ -158,10 +162,11 @@ Use + to concatenate the strings
 **Solution:**
 
 ```python
-def printValue(s1,s2):
+def print_value(s1, s2):
     print(s1+s2)
 
-printValue("3","4") #34
+
+print_value("3", "4")
 ```
 
 ### 6. Print the longer of two strings
@@ -177,18 +182,19 @@ Use len() function to get the length of a string
 **Solution:**
 
 ```python
-def printValue(s1,s2):
+def print_value(s1, s2):
     len1 = len(s1)
     len2 = len(s2)
-    if len1>len2:
+    if len1 > len2:
         print(s1)
-    elif len2>len1:
+    elif len2 > len1:
         print(s2)
     else:
         print(s1)
         print(s2)
 
-printValue("one","three")
+
+print_value("one", "three")
 ```
 
 ### 7. Four-digit binary numbers divisible by 5 *(original Question 11)*
@@ -210,10 +216,10 @@ In case of input data being supplied to the question, it should be assumed to be
 
 ```python
 value = []
-items=[x for x in input().split(',')]
+items = [x for x in input().split(',')]
 for p in items:
     intp = int(p, 2)
-    if not intp%5:
+    if not intp % 5:
         value.append(p)
 
 print(','.join(value))
@@ -237,13 +243,14 @@ Use % operator to check if a number is even or odd.
 **Solution:**
 
 ```python
-def checkValue(n):
-    if n%2 == 0:
+def check_value(n):
+    if n % 2 == 0:
         print("It is an even number")
     else:
         print("It is an odd number")
 
-checkValue(7)
+
+check_value(7)
 ```
 
 ### 9. Accept only "yes", "YES" or "Yes"
@@ -259,8 +266,8 @@ Use if statement to judge condition.
 **Solution:**
 
 ```python
-s= input()
-if s=="yes" or s=="YES" or s=="Yes":
+s = input()
+if s == "yes" or s == "YES" or s == "Yes":
     print("Yes")
 else:
     print("No")
@@ -282,9 +289,9 @@ In case of input data being supplied to the question, it should be assumed to be
 ```python
 values = []
 for i in range(1000, 3001):
-    s = str(i)
-    if (int(s[0])%2==0) and (int(s[1])%2==0) and (int(s[2])%2==0) and (int(s[3])%2==0):
-        values.append(s)
+    digits = str(i)
+    if all(int(digit) % 2 == 0 for digit in digits):
+        values.append(digits)
 print(",".join(values))
 ```
 
@@ -308,12 +315,12 @@ Consider use range(#begin, #end) method
 **Solution:**
 
 ```python
-l=[]
+items = []
 for i in range(2000, 3201):
-    if (i%7==0) and (i%5!=0):
-        l.append(str(i))
+    if i % 7 == 0 and i % 5 != 0:
+        items.append(str(i))
 
-print(','.join(l))
+print(','.join(items))
 ```
 
 ### 12. Capitalise input lines until a blank line *(original Question 9)*
@@ -336,12 +343,10 @@ In case of input data being supplied to the question, it should be assumed to be
 
 ```python
 lines = []
-while True:
-    s = input()
-    if s:
-        lines.append(s.upper())
-    else:
-        break;
+line = input()
+while line != '':
+    lines.append(line.upper())
+    line = input()
 
 for sentence in lines:
     print(sentence)
@@ -371,21 +376,17 @@ In case of input data being supplied to the question, it should be assumed to be
 **Solution:**
 
 ```python
-netAmount = 0
-while True:
-    s = input()
-    if not s:
-        break
-    values = s.split(" ")
-    operation = values[0]
-    amount = int(values[1])
-    if operation=="D":
-        netAmount+=amount
-    elif operation=="W":
-        netAmount-=amount
-    else:
-        pass
-print(netAmount)
+net_amount = 0
+line = input()
+while line != '':
+    operation, amount = line.split(' ')
+    if operation == 'D':
+        net_amount += int(amount)
+    elif operation == 'W':
+        net_amount -= int(amount)
+    line = input()
+
+print(net_amount)
 ```
 
 ### 14. Sum the series 1/2 + 2/3 + … + n/(n+1)
@@ -412,11 +413,11 @@ Use float() to convert an integer to a float
 **Solution:**
 
 ```python
-n=int(input())
-sum=0.0
-for i in range(1,n+1):
-    sum += float(float(i)/(i+1))
-print(sum)
+n = int(input())
+total = 0.0
+for i in range(1, n + 1):
+    total += i / (i + 1)
+print(total)
 ```
 
 ### 15. Generate all subject–verb–object sentences
@@ -432,9 +433,9 @@ Use list[index] notation to get a element from a list.
 **Solution:**
 
 ```python
-subjects=["I", "You"]
-verbs=["Play", "Love"]
-objects=["Hockey","Football"]
+subjects = ["I", "You"]
+verbs = ["Play", "Love"]
+objects = ["Hockey", "Football"]
 for i in range(len(subjects)):
     for j in range(len(verbs)):
         for k in range(len(objects)):
@@ -456,17 +457,18 @@ Use for loop to iterate all possible solutions.
 **Solution:**
 
 ```python
-def solve(numheads,numlegs):
-    ns='No solutions!'
+def solve(numheads, numlegs):
+    ns = 'No solutions!'
     for i in range(numheads+1):
-        j=numheads-i
-        if 2*i+4*j==numlegs:
-            return i,j
-    return ns,ns
+        j = numheads-i
+        if 2*i+4*j == numlegs:
+            return i, j
+    return ns, ns
 
-numheads=35
-numlegs=94
-solutions=solve(numheads,numlegs)
+
+numheads = 35
+numlegs = 94
+solutions = solve(numheads, numlegs)
 print(solutions)
 ```
 
@@ -484,24 +486,27 @@ Use if/elif to deal with conditions.
 
 ```python
 import math
+
+
 def bin_search(li, element):
     bottom = 0
     top = len(li)-1
     index = -1
-    while top>=bottom and index==-1:
+    while top >= bottom and index == -1:
         mid = int(math.floor((top+bottom)/2.0))
-        if li[mid]==element:
+        if li[mid] == element:
             index = mid
-        elif li[mid]>element:
+        elif li[mid] > element:
             top = mid-1
         else:
             bottom = mid+1
 
     return index
 
-li=[2,5,7,9,11,17,222]
-print(bin_search(li,11))
-print(bin_search(li,12))
+
+li = [2, 5, 7, 9, 11, 17, 222]
+print(bin_search(li, 11))
+print(bin_search(li, 12))
 ```
 
 ## 4. Strings & character methods
@@ -528,12 +533,12 @@ In case of input data being supplied to the question, it should be assumed to be
 
 ```python
 s = input()
-d={"DIGITS":0, "LETTERS":0}
+d = {"DIGITS": 0, "LETTERS": 0}
 for c in s:
     if c.isdigit():
-        d["DIGITS"]+=1
+        d["DIGITS"] += 1
     elif c.isalpha():
-        d["LETTERS"]+=1
+        d["LETTERS"] += 1
     else:
         pass
 print("LETTERS", d["LETTERS"])
@@ -559,12 +564,12 @@ In case of input data being supplied to the question, it should be assumed to be
 
 ```python
 s = input()
-d={"UPPER CASE":0, "LOWER CASE":0}
+d = {"UPPER CASE": 0, "LOWER CASE": 0}
 for c in s:
     if c.isupper():
-        d["UPPER CASE"]+=1
+        d["UPPER CASE"] += 1
     elif c.islower():
-        d["LOWER CASE"]+=1
+        d["LOWER CASE"] += 1
     else:
         pass
 print("UPPER CASE", d["UPPER CASE"])
@@ -589,10 +594,10 @@ In case of input data being supplied to the question, it should be assumed to be
 
 ```python
 a = input()
-n1 = int( "%s" % a )
-n2 = int( "%s%s" % (a,a) )
-n3 = int( "%s%s%s" % (a,a,a) )
-n4 = int( "%s%s%s%s" % (a,a,a,a) )
+n1 = int("%s" % a)
+n2 = int("%s%s" % (a, a))
+n3 = int("%s%s%s" % (a, a, a))
+n4 = int("%s%s%s%s" % (a, a, a, a))
 print(n1+n2+n3+n4)
 ```
 
@@ -674,14 +679,14 @@ Use list.append() to add values into a list.
 **Solution:**
 
 ```python
-def printList():
-    li=list()
-    for i in range(1,21):
-        li.append(i**2)
+def print_list():
+    li = []
+    for i in range(1, 21):
+        li.append(i ** 2)
     print(li)
 
 
-printList()
+print_list()
 ```
 
 ### 25. First 5 elements of a list
@@ -700,14 +705,14 @@ Use [n1:n2] to slice a list
 **Solution:**
 
 ```python
-def printList():
-    li=list()
-    for i in range(1,21):
-        li.append(i**2)
+def print_list():
+    li = []
+    for i in range(1, 21):
+        li.append(i ** 2)
     print(li[:5])
 
 
-printList()
+print_list()
 ```
 
 ### 26. Last 5 elements of a list
@@ -726,14 +731,14 @@ Use [n1:n2] to slice a list
 **Solution:**
 
 ```python
-def printList():
-    li=list()
-    for i in range(1,21):
+def print_list():
+    li = list()
+    for i in range(1, 21):
         li.append(i**2)
     print(li[-5:])
 
 
-printList()
+print_list()
 ```
 
 ### 27. All elements except the first 5
@@ -752,14 +757,14 @@ Use [n1:n2] to slice a list
 **Solution:**
 
 ```python
-def printList():
-    li=list()
-    for i in range(1,21):
+def print_list():
+    li = list()
+    for i in range(1, 21):
         li.append(i**2)
     print(li[5:])
 
 
-printList()
+print_list()
 ```
 
 ### 28. Print a string in reverse
@@ -784,7 +789,7 @@ Use list[::-1] to iterate a list in a reverse order.
 **Solution:**
 
 ```python
-s=input()
+s = input()
 s = s[::-1]
 print(s)
 ```
@@ -811,7 +816,7 @@ Use list[::2] to iterate a list by step 2.
 **Solution:**
 
 ```python
-s=input()
+s = input()
 s = s[::2]
 print(s)
 ```
@@ -840,11 +845,11 @@ tuple() method can convert list to tuple
 **Solution:**
 
 ```python
-values=input()
-l=values.split(",")
-t=tuple(l)
-print(l)
-print(t)
+values = input()
+items = values.split(',')
+tuple_items = tuple(items)
+print(items)
+print(tuple_items)
 ```
 
 ### 31. Tuple of squares (1–20)
@@ -863,13 +868,14 @@ Use tuple() to get a tuple from a list.
 **Solution:**
 
 ```python
-def printTuple():
-    li=list()
-    for i in range(1,21):
+def print_tuple():
+    li = list()
+    for i in range(1, 21):
         li.append(i**2)
     print(tuple(li))
 
-printTuple()
+
+print_tuple()
 ```
 
 ### 32. Print the two halves of a tuple
@@ -885,11 +891,11 @@ Use [n1:n2] notation to get a slice from a tuple.
 **Solution:**
 
 ```python
-tp=(1,2,3,4,5,6,7,8,9,10)
-tp1=tp[:5]
-tp2=tp[5:]
-print(tp1)
-print(tp2)
+numbers = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+first_half = numbers[:5]
+second_half = numbers[5:]
+print(first_half)
+print(second_half)
 ```
 
 ### 33. Even values of a tuple as a new tuple
@@ -906,14 +912,14 @@ Use tuple() to generate a tuple from a list.
 **Solution:**
 
 ```python
-tp=(1,2,3,4,5,6,7,8,9,10)
-li=list()
-for i in range(len(tp)):
-    if tp[i]%2==0:
-        li.append(tp[i])
+numbers = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+values = []
+for i in range(len(numbers)):
+    if numbers[i] % 2 == 0:
+        values.append(numbers[i])
 
-tp2=tuple(li)
-print(tp2)
+evens = tuple(values)
+print(evens)
 ```
 
 ## 8. Dictionaries
@@ -939,12 +945,12 @@ Consider use dict()
 **Solution:**
 
 ```python
-n=int(input())
-d=dict()
-for i in range(1,n+1):
-    d[i]=i*i
+n = int(input())
+squares = {}
+for i in range(1, n + 1):
+    squares[i] = i * i
 
-print(d)
+print(squares)
 ```
 
 ### 35. Dictionary of squares, 1–3
@@ -961,15 +967,15 @@ Use ** operator to get power of a number.
 **Solution:**
 
 ```python
-def printDict():
-    d=dict()
-    d[1]=1
-    d[2]=2**2
-    d[3]=3**2
+def print_dict():
+    d = dict()
+    d[1] = 1
+    d[2] = 2**2
+    d[3] = 3**2
     print(d)
 
 
-printDict()
+print_dict()
 ```
 
 ### 36. Dictionary of squares, 1–20
@@ -987,14 +993,14 @@ Use range() for loops.
 **Solution:**
 
 ```python
-def printDict():
-    d=dict()
-    for i in range(1,21):
-        d[i]=i**2
+def print_dict():
+    d = dict()
+    for i in range(1, 21):
+        d[i] = i**2
     print(d)
 
 
-printDict()
+print_dict()
 ```
 
 ### 37. Dictionary of squares — print the values only
@@ -1013,15 +1019,15 @@ Use keys() to iterate keys in the dictionary. Also we can use item() to get key/
 **Solution:**
 
 ```python
-def printDict():
-    d=dict()
-    for i in range(1,21):
-        d[i]=i**2
-    for (k,v) in d.items():
+def print_dict():
+    d = dict()
+    for i in range(1, 21):
+        d[i] = i**2
+    for (k, v) in d.items():
         print(v)
 
 
-printDict()
+print_dict()
 ```
 
 ### 38. Dictionary of squares — print the keys only
@@ -1040,15 +1046,15 @@ Use keys() to iterate keys in the dictionary. Also we can use item() to get key/
 **Solution:**
 
 ```python
-def printDict():
-    d=dict()
-    for i in range(1,21):
-        d[i]=i**2
+def print_dict():
+    d = dict()
+    for i in range(1, 21):
+        d[i] = i**2
     for k in d.keys():
         print(k)
 
 
-printDict()
+print_dict()
 ```
 
 ### 39. Word frequency, sorted by key *(original Question 22)*
@@ -1081,10 +1087,10 @@ In case of input data being supplied to the question, it should be assumed to be
 freq = {}   # frequency of words in text
 line = input()
 for word in line.split():
-    freq[word] = freq.get(word,0)+1
+    freq[word] = freq.get(word, 0)+1
 
 for w in sorted(freq):
-    print("%s:%d" % (w,freq[w]))
+    print("%s:%d" % (w, freq[w]))
 ```
 
 ### 40. Count each character in a string
@@ -1117,9 +1123,9 @@ Use dict.get() method to lookup a key with default value.
 
 ```python
 dic = {}
-s=input()
+s = input()
 for s in s:
-    dic[s] = dic.get(s,0)+1
+    dic[s] = dic.get(s, 0)+1
 print('\n'.join(['%s,%s' % (k, v) for k, v in dic.items()]))
 ```
 
@@ -1164,10 +1170,10 @@ Use set() and "&=" to do set intersection operation.
 **Solution:**
 
 ```python
-set1=set([1,3,6,78,35,55])
-set2=set([12,24,35,24,88,120,155])
+set1 = set([1, 3, 6, 78, 35, 55])
+set2 = set([12, 24, 35, 24, 88, 120, 155])
 set1 &= set2
-li=list(set1)
+li = list(set1)
 print(li)
 ```
 
@@ -1184,18 +1190,19 @@ Use set() to store a number of values without duplicate.
 **Solution:**
 
 ```python
-def removeDuplicate( li ):
-    newli=[]
+def remove_duplicate(items):
+    unique = []
     seen = set()
-    for item in li:
+    for item in items:
         if item not in seen:
-            seen.add( item )
-            newli.append(item)
+            seen.add(item)
+            unique.append(item)
 
-    return newli
+    return unique
 
-li=[12,24,35,24,88,120,155,88,120,155]
-print(removeDuplicate(li))
+
+li = [12, 24, 35, 24, 88, 120, 155, 88, 120, 155]
+print(remove_duplicate(li))
 ```
 
 ---
@@ -1242,8 +1249,8 @@ Use list comprehension to delete a bunch of element from a list.
 **Solution:**
 
 ```python
-li = [5,6,77,45,22,12,24]
-li = [x for x in li if x%2!=0]
+li = [5, 6, 77, 45, 22, 12, 24]
+li = [x for x in li if x % 2 != 0]
 print(li)
 ```
 
@@ -1260,8 +1267,8 @@ Use list comprehension to delete a bunch of element from a list.
 **Solution:**
 
 ```python
-li = [12,24,35,70,88,120,155]
-li = [x for x in li if x%5!=0 and x%7!=0]
+li = [12, 24, 35, 70, 88, 120, 155]
+li = [x for x in li if x % 5 != 0 and x % 7 != 0]
 print(li)
 ```
 
@@ -1278,8 +1285,8 @@ Use list's remove method to delete a value.
 **Solution:**
 
 ```python
-li = [12,24,35,24,88,120,155]
-li = [x for x in li if x!=24]
+li = [12, 24, 35, 24, 88, 120, 155]
+li = [x for x in li if x != 24]
 print(li)
 ```
 
@@ -1297,8 +1304,8 @@ Use enumerate() to get (index, value) tuple.
 **Solution:**
 
 ```python
-li = [12,24,35,70,88,120,155]
-li = [x for (i,x) in enumerate(li) if i%2!=0]
+li = [12, 24, 35, 70, 88, 120, 155]
+li = [x for (i, x) in enumerate(li) if i % 2 != 0]
 print(li)
 ```
 
@@ -1316,8 +1323,8 @@ Use enumerate() to get (index, value) tuple.
 **Solution:**
 
 ```python
-li = [12,24,35,70,88,120,155]
-li = [x for (i,x) in enumerate(li) if i not in (0,4,5)]
+li = [12, 24, 35, 70, 88, 120, 155]
+li = [x for (i, x) in enumerate(li) if i not in (0, 4, 5)]
 print(li)
 ```
 
@@ -1341,14 +1348,14 @@ Note: In case of input data being supplied to the question, it should be assumed
 
 ```python
 input_str = input()
-dimensions=[int(x) for x in input_str.split(',')]
-rowNum=dimensions[0]
-colNum=dimensions[1]
-multilist = [[0 for col in range(colNum)] for row in range(rowNum)]
+dimensions = [int(x) for x in input_str.split(',')]
+row_num = dimensions[0]
+col_num = dimensions[1]
+multilist = [[0 for col in range(col_num)] for row in range(row_num)]
 
-for row in range(rowNum):
-    for col in range(colNum):
-        multilist[row][col]= row*col
+for row in range(row_num):
+    for col in range(col_num):
+        multilist[row][col] = row*col
 
 print(multilist)
 ```
@@ -1366,7 +1373,7 @@ Use list comprehension to make an array.
 **Solution:**
 
 ```python
-array = [[ [0 for col in range(8)] for col in range(5)] for row in range(3)]
+array = [[[0 for col in range(8)] for col in range(5)] for row in range(3)]
 print(array)
 ```
 
@@ -1389,9 +1396,9 @@ Use lambda to define anonymous functions.
 **Solution:**
 
 ```python
-li = [1,2,3,4,5,6,7,8,9,10]
-evenNumbers = filter(lambda x: x%2==0, li)
-print(list(evenNumbers))
+li = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+even_numbers = filter(lambda x: x % 2 == 0, li)
+print(list(even_numbers))
 ```
 
 ### 53. Square elements with `map()`
@@ -1408,9 +1415,9 @@ Use lambda to define anonymous functions.
 **Solution:**
 
 ```python
-li = [1,2,3,4,5,6,7,8,9,10]
-squaredNumbers = map(lambda x: x**2, li)
-print(list(squaredNumbers))
+li = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+squared_numbers = map(lambda x: x**2, li)
+print(list(squared_numbers))
 ```
 
 ### 54. Filter even numbers from a range
@@ -1427,8 +1434,8 @@ Use lambda to define anonymous functions.
 **Solution:**
 
 ```python
-evenNumbers = filter(lambda x: x%2==0, range(1,21))
-print(list(evenNumbers))
+even_numbers = filter(lambda x: x % 2 == 0, range(1, 21))
+print(list(even_numbers))
 ```
 
 ### 55. Map squares over a range
@@ -1445,8 +1452,8 @@ Use lambda to define anonymous functions.
 **Solution:**
 
 ```python
-squaredNumbers = map(lambda x: x**2, range(1,21))
-print(list(squaredNumbers))
+squared_numbers = map(lambda x: x**2, range(1, 21))
+print(list(squared_numbers))
 ```
 
 ### 56. Squares of the even numbers (`map` + `filter`)
@@ -1464,8 +1471,8 @@ Use lambda to define anonymous functions.
 **Solution:**
 
 ```python
-li = [1,2,3,4,5,6,7,8,9,10]
-print(list(map(lambda x: x**2, filter(lambda x: x%2==0, li))))
+li = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+print(list(map(lambda x: x**2, filter(lambda x: x % 2 == 0, li))))
 ```
 
 ### 57. All permutations of [1, 2, 3]
@@ -1482,7 +1489,7 @@ Use itertools.permutations() to get permutations of list.
 
 ```python
 import itertools
-print(list(itertools.permutations([1,2,3])))
+print(list(itertools.permutations([1, 2, 3])))
 ```
 
 ## 12. Sorting & sort keys
@@ -1507,7 +1514,7 @@ In case of input data being supplied to the question, it should be assumed to be
 **Solution:**
 
 ```python
-items=[x for x in input().split(',')]
+items = [x for x in input().split(',')]
 items.sort()
 print(','.join(items))
 ```
@@ -1538,16 +1545,15 @@ We use itemgetter to enable multiple sort keys.
 **Solution:**
 
 ```python
-from operator import itemgetter, attrgetter
+from operator import itemgetter
 
-l = []
-while True:
-    s = input()
-    if not s:
-        break
-    l.append(tuple(s.split(",")))
+records = []
+line = input()
+while line != '':
+    records.append(tuple(line.split(',')))
+    line = input()
 
-print(sorted(l, key=itemgetter(0,1,2)))
+print(sorted(records, key=itemgetter(0, 1, 2)))
 ```
 
 ## 13. Recursion
@@ -1578,7 +1584,8 @@ def fact(x):
         return 1
     return x * fact(x - 1)
 
-x=int(input())
+
+x = int(input())
 print(fact(x))
 ```
 
@@ -1612,12 +1619,13 @@ We can define recursive function in Python.
 
 ```python
 def f(n):
-    if n==0:
+    if n == 0:
         return 1
     else:
         return f(n-1)+100
 
-n=int(input())
+
+n = int(input())
 print(f(n))
 ```
 
@@ -1652,11 +1660,14 @@ We can define recursive function in Python.
 
 ```python
 def f(n):
-    if n == 0: return 0
-    elif n == 1: return 1
-    else: return f(n-1)+f(n-2)
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return f(n - 1) + f(n - 2)
 
-n=int(input())
+
+n = int(input())
 print(f(n))
 ```
 
@@ -1693,12 +1704,15 @@ In case of input data being supplied to the question, it should be assumed to be
 
 ```python
 def f(n):
-    if n == 0: return 0
-    elif n == 1: return 1
-    else: return f(n-1)+f(n-2)
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return f(n - 1) + f(n - 2)
 
-n=int(input())
-values = [str(f(x)) for x in range(0, n+1)]
+
+n = int(input())
+values = [str(f(x)) for x in range(n + 1)]
 print(",".join(values))
 ```
 
@@ -1720,15 +1734,15 @@ Consider use yield
 **Solution:**
 
 ```python
-def putNumbers(n):
+def put_numbers(n):
     i = 0
-    while i<n:
-        j=i
-        i=i+1
-        if j%7==0:
-            yield j
+    while i < n:
+        if i % 7 == 0:
+            yield i
+        i += 1
 
-for i in putNumbers(100):
+
+for i in put_numbers(100):
     print(i)
 ```
 
@@ -1756,17 +1770,17 @@ In case of input data being supplied to the question, it should be assumed to be
 **Solution:**
 
 ```python
-def EvenGenerator(n):
-    i=0
-    while i<=n:
-        if i%2==0:
+def even_generator(n):
+    i = 0
+    while i <= n:
+        if i % 2 == 0:
             yield i
-        i+=1
+        i += 1
 
 
-n=int(input())
+n = int(input())
 values = []
-for i in EvenGenerator(n):
+for i in even_generator(n):
     values.append(str(i))
 
 print(",".join(values))
@@ -1796,14 +1810,15 @@ In case of input data being supplied to the question, it should be assumed to be
 **Solution:**
 
 ```python
-def NumGenerator(n):
+def num_generator(n):
     for i in range(n+1):
-        if i%5==0 and i%7==0:
+        if i % 5 == 0 and i % 7 == 0:
             yield i
 
-n=int(input())
+
+n = int(input())
 values = []
-for i in NumGenerator(n):
+for i in num_generator(n):
     values.append(str(i))
 
 print(",".join(values))
@@ -1834,19 +1849,20 @@ Use __init__ method to construct some parameters
 **Solution:**
 
 ```python
-class InputOutString(object):
+class InputOutString:
     def __init__(self):
         self.s = ""
 
-    def getString(self):
+    def get_string(self):
         self.s = input()
 
-    def printString(self):
+    def print_string(self):
         print(self.s.upper())
 
-strObj = InputOutString()
-strObj.getString()
-strObj.printString()
+
+string_obj = InputOutString()
+string_obj.get_string()
+string_obj.print_string()
 ```
 
 ### 68. Class parameter vs instance parameter *(original Question 25)*
@@ -1867,9 +1883,10 @@ class Person:
     # Define the class parameter "name"
     name = "Person"
 
-    def __init__(self, name = None):
+    def __init__(self, name=None):
         # self.name is the instance parameter
         self.name = name
+
 
 jeffrey = Person("Jeffrey")
 print("%s name is %s" % (Person.name, jeffrey.name))
@@ -1892,15 +1909,16 @@ Use def methodName(self) to define a method.
 **Solution:**
 
 ```python
-class Circle(object):
+class Circle:
     def __init__(self, r):
         self.radius = r
 
     def area(self):
         return self.radius**2*3.14
 
-aCircle = Circle(2)
-print(aCircle.area())
+
+circle = Circle(2)
+print(circle.area())
 ```
 
 ### 70. Rectangle with an area method
@@ -1916,16 +1934,17 @@ Use def methodName(self) to define a method.
 **Solution:**
 
 ```python
-class Rectangle(object):
-    def __init__(self, l, w):
-        self.length = l
-        self.width  = w
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
 
     def area(self):
-        return self.length*self.width
+        return self.length * self.width
 
-aRectangle = Rectangle(2,10)
-print(aRectangle.area())
+
+rectangle = Rectangle(2, 10)
+print(rectangle.area())
 ```
 
 ## 16. Inheritance, polymorphism & static methods
@@ -1946,16 +1965,18 @@ Use class Subclass(ParentClass) to define a subclass.
 **Solution:**
 
 ```python
-class American(object):
+class American:
     pass
+
 
 class NewYorker(American):
     pass
 
-anAmerican = American()
-aNewYorker = NewYorker()
-print(anAmerican)
-print(aNewYorker)
+
+american = American()
+new_yorker = NewYorker()
+print(american)
+print(new_yorker)
 ```
 
 ### 72. Shape and Square: overriding `area()`
@@ -1971,23 +1992,25 @@ To override a method in super class, we can define a method with the same name i
 **Solution:**
 
 ```python
-class Shape(object):
+class Shape:
     def __init__(self):
         pass
 
     def area(self):
         return 0
 
+
 class Square(Shape):
-    def __init__(self, l):
-        Shape.__init__(self)
-        self.length = l
+    def __init__(self, length):
+        super().__init__()
+        self.length = length
 
     def area(self):
-        return self.length*self.length
+        return self.length ** 2
 
-aSquare= Square(3)
-print(aSquare.area())
+
+square = Square(3)
+print(square.area())
 ```
 
 ### 73. Person, Male, Female — polymorphic `getGender`
@@ -2003,22 +2026,25 @@ Use Subclass(Parentclass) to define a child class.
 **Solution:**
 
 ```python
-class Person(object):
-    def getGender( self ):
+class Person:
+    def get_gender(self):
         return "Unknown"
 
-class Male( Person ):
-    def getGender( self ):
+
+class Male(Person):
+    def get_gender(self):
         return "Male"
 
-class Female( Person ):
-    def getGender( self ):
+
+class Female(Person):
+    def get_gender(self):
         return "Female"
 
-aMale = Male()
-aFemale= Female()
-print(aMale.getGender())
-print(aFemale.getGender())
+
+male = Male()
+female = Female()
+print(male.get_gender())
+print(female.get_gender())
 ```
 
 ### 74. A class with a static method
@@ -2034,14 +2060,15 @@ Use @staticmethod decorator to define class static method.
 **Solution:**
 
 ```python
-class American(object):
+class American:
     @staticmethod
-    def printNationality():
+    def print_nationality():
         print("America")
 
-anAmerican = American()
-anAmerican.printNationality()
-American.printNationality()
+
+american = American()
+american.print_nationality()
+American.print_nationality()
 ```
 
 ## 17. Exceptions & assertions
@@ -2081,6 +2108,7 @@ Use try/except to catch exceptions.
 def throws():
     return 5/0
 
+
 try:
     throws()
 except ZeroDivisionError:
@@ -2114,6 +2142,7 @@ class MyError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
+
 error = MyError("something wrong")
 ```
 
@@ -2130,9 +2159,9 @@ Use "assert expression" to make assertion.
 **Solution:**
 
 ```python
-li = [2,4,6,8]
+li = [2, 4, 6, 8]
 for i in li:
-    assert i%2==0
+    assert i % 2 == 0
 ```
 
 ---
@@ -2168,10 +2197,10 @@ In case of input data being supplied to the question, it should be assumed to be
 ```python
 #!/usr/bin/env python
 import math
-c=50
-h=30
+c = 50
+h = 30
 value = []
-items=[x for x in input().split(',')]
+items = [x for x in input().split(',')]
 for d in items:
     value.append(str(int(round(math.sqrt(2*c*float(d)/h)))))
 
@@ -2206,26 +2235,22 @@ In case of input data being supplied to the question, it should be assumed to be
 
 ```python
 import math
-pos = [0,0]
-while True:
-    s = input()
-    if not s:
-        break
-    movement = s.split(" ")
-    direction = movement[0]
-    steps = int(movement[1])
-    if direction=="UP":
-        pos[0]+=steps
-    elif direction=="DOWN":
-        pos[0]-=steps
-    elif direction=="LEFT":
-        pos[1]-=steps
-    elif direction=="RIGHT":
-        pos[1]+=steps
-    else:
-        pass
 
-print(int(round(math.sqrt(pos[1]**2+pos[0]**2))))
+pos = [0, 0]
+line = input()
+while line != '':
+    direction, steps = line.split(' ')
+    if direction == 'UP':
+        pos[0] += int(steps)
+    elif direction == 'DOWN':
+        pos[0] -= int(steps)
+    elif direction == 'LEFT':
+        pos[1] -= int(steps)
+    elif direction == 'RIGHT':
+        pos[1] += int(steps)
+    line = input()
+
+print(int(round(math.sqrt(pos[1] ** 2 + pos[0] ** 2))))
 ```
 
 ## 19. `random`
@@ -2281,7 +2306,7 @@ Use random.choice() to a random element from a list.
 
 ```python
 import random
-print(random.choice([i for i in range(11) if i%2==0]))
+print(random.choice(range(0, 11, 2)))
 ```
 
 ### 84. Random number divisible by 5 and 7
@@ -2298,7 +2323,7 @@ Use random.choice() to a random element from a list.
 
 ```python
 import random
-print(random.choice([i for i in range(201) if i%5==0 and i%7==0]))
+print(random.choice([i for i in range(201) if i % 5 == 0 and i % 7 == 0]))
 ```
 
 ### 85. A list of 5 random numbers
@@ -2332,7 +2357,7 @@ Use random.sample() to generate a list of random values.
 
 ```python
 import random
-print(random.sample([i for i in range(100,201) if i%2==0], 5))
+print(random.sample([i for i in range(100, 201) if i % 2 == 0], 5))
 ```
 
 ### 87. 5 random multiples of 5 and 7 (1–1000)
@@ -2349,7 +2374,9 @@ Use random.sample() to generate a list of random values.
 
 ```python
 import random
-print(random.sample([i for i in range(1,1001) if i%5==0 and i%7==0], 5))
+
+multiples = [i for i in range(1, 1001) if i % 5 == 0 and i % 7 == 0]
+print(random.sample(multiples, 5))
 ```
 
 ### 88. Random integer between 7 and 15
@@ -2366,7 +2393,7 @@ Use random.randrange() to a random integer in a given range.
 
 ```python
 import random
-print(random.randrange(7,16))
+print(random.randrange(7, 16))
 ```
 
 ### 89. Shuffle a list
@@ -2383,7 +2410,7 @@ Use shuffle() function to shuffle a list.
 
 ```python
 from random import shuffle
-li = [3,6,7,8]
+li = [3, 6, 7, 8]
 shuffle(li)
 print(li)
 ```

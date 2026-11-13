@@ -28,6 +28,14 @@ jobs:
             echo "::error::build/katas.json is out of date with the markdown — cd runner && npm run sync, then commit the result (see MARKDOWN-FORMAT.md)"
             exit 1
           }
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: PEP 8 gate on solutions
+        working-directory: runner
+        run: |
+          pip install pycodestyle
+          python3 scripts/check-solutions.py
       - name: Typecheck + build the app
         working-directory: runner
         run: |
