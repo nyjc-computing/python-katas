@@ -53,6 +53,27 @@ cloning or bumping the `pyodide` version in package.json.
   Without isolation the app degrades: `input()` raises EOFError and Stop
   restarts the worker.
 
+## Deployment
+
+- **GitHub Pages** (this repo): push to `main` and the
+  [deploy workflow](.github/workflows/deploy.yml) builds and publishes to
+  https://nyjc-computing.github.io/python-kata/. Project Pages serve under a
+  sub-path, so the workflow sets `PAGES_BASE=/python-kata` and the worker's
+  runtime URLs follow. Pages cannot send COOP/COEP headers, so
+  `public/coi-serviceworker.js` injects them client-side — the very first
+  visit registers the worker and reloads once; after that the page is
+  cross-origin isolated and `input()`/Stop work fully. Note GitHub only
+  serves Pages for **private** repos on paid plans; on the free plan make
+  the repo public first.
+- **Cloudflare Pages / Netlify**: `wrangler pages deploy dist` — the
+  `public/_headers` file is honored natively, no shim involved.
+- **nginx**: serve `dist/` with
+
+  ```nginx
+  add_header Cross-Origin-Opener-Policy same-origin;
+  add_header Cross-Origin-Embedder-Policy require-corp;
+  ```
+
 ## Architecture
 
 ```

@@ -152,7 +152,9 @@ async function getPyodide(): Promise<PyodideInterface> {
     loadPromise = (async () => {
       // BASE_URL keeps this working when the site is deployed under a
       // sub-path (e.g. GitHub Pages project sites).
-      const base = import.meta.env.BASE_URL
+      const base = import.meta.env.BASE_URL.endsWith('/')
+        ? import.meta.env.BASE_URL
+        : import.meta.env.BASE_URL + '/'
       const url = `${base}pyodide/pyodide.mjs`
       try {
         const { loadPyodide } = await import(/* @vite-ignore */ url)

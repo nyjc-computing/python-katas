@@ -73,6 +73,11 @@
       <aside id="panel-right" class="panel-side" aria-hidden="true"></aside>
     </main>
 
+    <!-- On header-less hosts (GitHub Pages) this service worker injects
+         COOP/COEP and reloads once, so SharedArrayBuffer works. It is a
+         no-op where the server already sends the headers. -->
+    <script src="/coi-serviceworker.js"></script>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
