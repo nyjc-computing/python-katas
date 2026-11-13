@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230f172a'/%3E%3Ctext x='8' y='12' font-size='10' font-family='monospace' fill='%237dd3fc' text-anchor='middle'%3E%E2%96%B6%3C/text%3E%3C/svg%3E" />
+    <title>kata-runner</title>
+  </head>
+  <body>
+    <header id="toolbar">
+      <span id="brand">kata-runner</span>
+      <button id="btn-run" title="Run (Ctrl+Enter)">&#9654; Run</button>
+      <button id="btn-stop" title="Stop (Esc, or Ctrl+C in the console)" disabled>&#9632; Stop</button>
+      <button id="btn-clear" title="Clear the console">Clear output</button>
+      <span class="spacer"></span>
+      <span id="run-status" aria-live="polite"></span>
+      <label for="indent-select" id="indent-label" title="Indent width (spaces)">Indent</label>
+      <select id="indent-select" title="Indent width (spaces)">
+        <option value="2">2 spaces</option>
+        <option value="4" selected>4 spaces</option>
+      </select>
+      <button id="btn-layout" title="Toggle editor/output layout">Layout: stacked</button>
+    </header>
+
+    <!-- Floating drawer-pull on the left edge: opens/closes the file browser -->
+    <button id="sidebar-tab" title="Toggle the file browser" aria-expanded="true">
+      <span id="sidebar-tab-chevron" aria-hidden="true">&#8249;</span>
+      <span class="tab-label">Files</span>
+    </button>
+
+    <main id="app" class="layout-stack">
+      <aside id="panel-left" class="panel-side">
+        <div class="side-head">
+          FILES
+          <span class="side-actions">
+            <button id="btn-upload" class="side-action" title="Upload text files from this computer">
+              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 3 3.5 7.5 5 9l2-2v6h2V7l2 2 1.5-1.5L8 3Z" fill="currentColor"/></svg>
+            </button>
+            <button id="btn-zip" class="side-action" title="Download all files as a zip">
+              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1v2h1v1H8v1h1v1H8v1h1v1H7V2h1V1Zm3 8.5L8 12 5 9.5 6.5 8 8 9.5 9.5 8 11 9.5ZM3 12h10v2H3v-2Z" fill="currentColor"/></svg>
+            </button>
+          </span>
+        </div>
+        <div id="new-file-row">
+          <input id="new-file-name" placeholder="new file, e.g. data.csv" spellcheck="false" aria-label="New file name" />
+          <button id="btn-create" title="Create file">+</button>
+        </div>
+        <div id="file-hint" hidden></div>
+        <ul id="file-list"></ul>
+        <div class="side-foot">drop text files here</div>
+        <input id="upload-input" type="file" multiple accept=".py,.csv,.json,.md,.html,.css,.txt" hidden />
+      </aside>
+
+      <section id="editor-pane" class="pane">
+        <div class="pane-title">
+          <span id="active-file-name">main.py</span>
+          <span id="save-state" data-state="saved">&#10003; saved</span>
+        </div>
+        <div id="editor"></div>
+        <div id="editor-status">Ln 1, Col 1</div>
+      </section>
+
+      <section id="output-pane" class="pane">
+        <div class="pane-title">console</div>
+        <div id="console"></div>
+        <div id="console-input-row" hidden>
+          <span class="console-caret" aria-hidden="true">&#8250;</span>
+          <input id="console-input" autocomplete="off" spellcheck="false" aria-label="Program input" />
+        </div>
+      </section>
+
+      <!-- Reserved for the future debugger panel -->
+      <aside id="panel-right" class="panel-side" aria-hidden="true"></aside>
+    </main>
+
+    <!-- On header-less hosts (GitHub Pages) this service worker injects
+         COOP/COEP and reloads once, so SharedArrayBuffer works. It is a
+         no-op where the server already sends the headers. -->
+    <script src="/coi-serviceworker.js"></script>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,387 @@
+import { basicSetup, EditorView } from 'codemirror'
+import { python } from '@codemirror/lang-python'
+import { indentUnit, type LanguageSupport } from '@codemirror/language'
+import { indentWithTab } from '@codemirror/commands'
+import { keymap } from '@codemirror/view'
+import { Decoration, ViewPlugin, ViewUpdate } from '@codemirror/view'
+import { ChangeSpec, Compartment, EditorState, Prec, Transaction, Range } from '@codemirror/state'
+import { INDENT_OPTIONS, MAX_EDITOR_LINES, MAX_LINE_LEN } from './limits'
+
+// Language per file extension; anything not listed opens as plain text.
+// Only Python (the primary language) is bundled eagerly — the rest are
+// dynamic imports so they land in their own chunks and stay out of the main
+// bundle until a file of that type is opened.
+const LANG_LOADERS: Record<string, () => Promise<LanguageSupport>> = {
+  json: () => import('@codemirror/lang-json').then((m) => m.json()),
+  html: () => import('@codemirror/lang-html').then((m) => m.html()),
+  css: () => import('@codemirror/lang-css').then((m) => m.css()),
+  md: () => import('@codemirror/lang-markdown').then((m) => m.markdown()),
+}
+
+const languageComp = new Compartment()
+const indentComp = new Compartment()
+let languageRequest = 0
+
+function indentExtension(width: number) {
+  return [
+    indentUnit.of(' '.repeat(width)),
+    EditorState.tabSize.of(width),
+    indentGuidePlugin(width),
+  ]
+}
+
+/**
+ * Reconfigure the editor for a file extension ('py', 'csv', …). Non-Python
+ * languages load lazily; the editor is plain text until the chunk arrives,
+ * and a stale load (rapid file switching) is discarded.
+ */
+export async function setLanguage(view: EditorView, ext: string): Promise<void> {
+  const token = ++languageRequest
+  if (ext === 'py') {
+    view.dispatch({ effects: languageComp.reconfigure(python()) })
+    return
+  }
+  const load = LANG_LOADERS[ext]
+  if (!load) {
+    view.dispatch({ effects: languageComp.reconfigure([]) })
+    return
+  }
+  view.dispatch({ effects: languageComp.reconfigure([]) })
+  const language = await load()
+  if (token === languageRequest) {
+    view.dispatch({ effects: languageComp.reconfigure(language) })
+  }
+}
+
+/** Set the indent width (2 or 4 — see INDENT_OPTIONS). Never re-indents code. */
+export function setIndentWidth(view: EditorView, width: number): void {
+  view.dispatch({ effects: indentComp.reconfigure(indentExtension(width)) })
+}
+
+// ── indentation guides ───────────────────────────────────────────────────────
+// One vertical mark per indent level (skipping level 0, which hugs the
+// gutter). Only space-based indentation gets guides; tabs render via tabSize.
+
+const guideMark = Decoration.mark({ class: 'cm-indent-guide' })
+
+function buildIndentGuides(view: EditorView, size: number): DecorationSet2 {
+  const builder: Range<Decoration>[] = []
+  for (const { from, to } of view.visibleRanges) {
+    for (let pos = from; pos <= to; ) {
+      const line = view.state.doc.lineAt(pos)
+      const m = /^ +/.exec(line.text)
+      if (m) {
+        // One guide per indent level: mark the (g-1)*size..g*size whitespace
+        // run and draw its right border — lands exactly on column g*size and
+        // works even on lines made only of indentation.
+        const groups = Math.floor(m[0].length / size)
+        for (let g = 1; g <= groups; g++) {
+          const start = line.from + (g - 1) * size
+          builder.push(guideMark.range(start, start + size))
+        }
+      }
+      pos = line.to + 1
+    }
+  }
+  return Decoration.set(builder, true)
+}
+
+function indentGuidePlugin(size: number) {
+  return ViewPlugin.fromClass(
+    class {
+      decorations: DecorationSet2
+      constructor(view: EditorView) {
+        this.decorations = buildIndentGuides(view, size)
+      }
+      update(u: ViewUpdate) {
+        if (u.docChanged || u.viewportChanged) this.decorations = buildIndentGuides(u.view, size)
+      }
+    },
+    { decorations: (v) => v.decorations },
+  )
+}
+
+/**
+ * Hard-split one line so no piece exceeds MAX_LINE_LEN. Breaks at the last
+ * space within a small window before the limit when there is one, so split
+ * points land between words rather than mid-identifier.
+ */
+function hardSplitLine(line: string): string {
+  const parts: string[] = []
+  let rest = line
+  while (rest.length > MAX_LINE_LEN) {
+    const head = rest.slice(0, MAX_LINE_LEN)
+    const brk = head.lastIndexOf(' ')
+    const cut = brk > 0 && brk >= MAX_LINE_LEN - 30 ? brk : MAX_LINE_LEN
+    parts.push(rest.slice(0, cut))
+    rest = rest[cut] === ' ' ? rest.slice(cut + 1) : rest.slice(cut)
+  }
+  parts.push(rest)
+  return parts.join('\n')
+}
+
+function countNewlines(s: string): number {
+  let n = 0
+  for (let i = s.indexOf('\n'); i !== -1; i = s.indexOf('\n', i + 1)) n++
+  return n
+}
+
+/** Keep everything up to and including the n-th newline (n = 0: first line only). */
+function truncateAfterNewlines(s: string, n: number): string {
+  if (n <= 0) {
+    const i = s.indexOf('\n')
+    return i === -1 ? s : s.slice(0, i)
+  }
+  let i = -1
+  for (let k = 0; k < n; k++) {
+    i = s.indexOf('\n', i + 1)
+    if (i === -1) return s
+  }
+  return s.slice(0, i + 1)
+}
+
+/**
+ * Enforces both hard limits:
+ *  - line width (100): typing is blocked at the column, inserted/pasted
+ *    multi-line text is auto-split so every piece fits, and structural edits
+ *    that would join lines past the limit are rejected;
+ *  - document height (2000 lines): typing/pasting beyond the cap is
+ *    truncated — a paste keeps only the lines that fit.
+ */
+const limitFilter = EditorState.transactionFilter.of((tr: Transaction) => {
+  if (!tr.docChanged) return tr
+
+  // O(1) line count + O(lines) width scan, both bounded by MAX_EDITOR_LINES.
+  let overWide = false
+  for (let i = 1; i <= tr.state.doc.lines; i++) {
+    if (tr.state.doc.line(i).length > MAX_LINE_LEN) {
+      overWide = true
+      break
+    }
+  }
+  const tooTall = tr.state.doc.lines > MAX_EDITOR_LINES
+  if (!overWide && !tooTall) return tr
+
+  const fixes: ChangeSpec[] = []
+  let repairable = true
+  const startDoc = tr.startState.doc
+  const startLines = startDoc.lines
+
+  tr.changes.iterChanges((fromA, toA, _fromB, _toB, inserted) => {
+    if (!repairable) return
+    const text = inserted.length ? inserted.toString() : ''
+    if (!text) {
+      // a deletion caused the violation (joined an overlong line) → reject
+      repairable = false
+      return
+    }
+    const startLine = startDoc.lineAt(fromA)
+    const endLine = startDoc.lineAt(toA)
+    const prefix = startDoc.sliceString(startLine.from, fromA)
+    const suffix = startDoc.sliceString(toA, endLine.to)
+
+    if (!text.includes('\n')) {
+      // typing / single-line insert: block at the width limit, never wrap;
+      // this cannot change the document's line count.
+      const allowed = MAX_LINE_LEN - (prefix.length + suffix.length)
+      fixes.push({ from: fromA, to: toA, insert: text.slice(0, Math.max(0, allowed)) })
+      return
+    }
+
+    // Paste (multi-line insert): honour the height cap, then rebuild the
+    // whole joined region and hard-split it so every piece fits the width.
+    const removedNewlines = fromA < toA ? countNewlines(startDoc.sliceString(fromA, toA)) : 0
+    const allowedLines = Math.max(0, MAX_EDITOR_LINES - (startLines - removedNewlines))
+    let t = text
+    if (countNewlines(t) > allowedLines) t = truncateAfterNewlines(t, allowedLines)
+    if (!t.includes('\n')) {
+      // truncated down to a single line: width rule only, no lines added
+      const allowed = MAX_LINE_LEN - (prefix.length + suffix.length)
+      fixes.push({ from: fromA, to: toA, insert: t.slice(0, Math.max(0, allowed)) })
+      return
+    }
+    let rebuilt = (prefix + t + suffix)
+      .split('\n')
+      .map(hardSplitLine)
+      .join('\n')
+    if (countNewlines(rebuilt) > allowedLines) {
+      // width-splitting pushed past the height cap: keep the fitting head
+      rebuilt = truncateAfterNewlines(rebuilt, allowedLines)
+      fixes.push({ from: fromA, to: toA, insert: rebuilt.slice(prefix.length) })
+      return
+    }
+    fixes.push({ from: fromA, to: toA, insert: rebuilt.slice(prefix.length, rebuilt.length - suffix.length) })
+  })
+
+  if (!repairable || fixes.length === 0) return [] // reject the transaction
+  return fixes.map((f) => ({ changes: f }))
+})
+
+// Subtle highlight for anything that somehow ends up past column 100.
+const overlengthMark = Decoration.mark({ class: 'cm-overlength' })
+
+function buildOverlengthDecorations(view: EditorView): DecorationSet2 {
+  const builder: Range<Decoration>[] = []
+  for (const { from, to } of view.visibleRanges) {
+    for (let pos = from; pos <= to; ) {
+      const line = view.state.doc.lineAt(pos)
+      if (line.length > MAX_LINE_LEN) {
+        const start = Math.max(line.from + MAX_LINE_LEN, from)
+        const end = Math.min(line.to, to)
+        if (start < end) builder.push(overlengthMark.range(start, end))
+      }
+      pos = line.to + 1
+    }
+  }
+  return Decoration.set(builder, true)
+}
+
+type DecorationSet2 = ReturnType<typeof Decoration.set>
+
+const overlengthHighlight = ViewPlugin.fromClass(
+  class {
+    decorations: DecorationSet2
+    constructor(view: EditorView) {
+      this.decorations = buildOverlengthDecorations(view)
+    }
+    update(u: ViewUpdate) {
+      if (u.docChanged || u.viewportChanged) this.decorations = buildOverlengthDecorations(u.view)
+    }
+  },
+  { decorations: (v) => v.decorations },
+)
+
+export function createEditor(
+  parent: HTMLElement,
+  initialDoc: string,
+  handlers: {
+    onCodeChanged: (code: string) => void
+    onRun: () => void
+    onCursor: (pos: { line: number; col: number }) => void
+  },
+): EditorView {
+  const view = new EditorView({
+    parent,
+    doc: initialDoc,
+    extensions: [
+      // Runs before the default keymap so Ctrl+Enter never reaches the
+      // "insert line" binding.
+      Prec.high(
+        keymap.of([
+          {
+            key: 'Mod-Enter',
+            run: () => {
+              handlers.onRun()
+              return true
+            },
+          },
+        ]),
+      ),
+      basicSetup, // line numbers, history, bracket matching, default keymap — not toggleable here by design
+      languageComp.of(python()),
+      // deliberately no EditorView.lineWrapping: long lines scroll horizontally
+      indentComp.of(indentExtension(INDENT_OPTIONS[1])), // default: 4 spaces
+      keymap.of([indentWithTab]),
+      limitFilter,
+      overlengthHighlight,
+      EditorView.theme({
+        '&': { height: '100%', fontSize: '13px' },
+        '.cm-content': { fontFamily: 'ui-monospace, Menlo, Consolas, monospace' },
+      }),
+      EditorView.updateListener.of((u) => {
+        if (u.docChanged) handlers.onCodeChanged(u.state.doc.toString())
+        if (u.docChanged || u.selectionSet) {
+          const head = u.state.selection.main.head
+          const line = u.state.doc.lineAt(head)
+          handlers.onCursor({ line: line.number, col: head - line.from + 1 })
+        }
+      }),
+    ],
+  })
+  applyWidthLock(view)
+  // The host changes size on window resizes AND on layout toggles (stacked ↔
+  // side-by-side), which don't fire window resize events.
+  const widthObserver = new ResizeObserver(debounce(() => applyWidthLock(view), 100))
+  widthObserver.observe(view.dom.parentElement as Element)
+  return view
+}
+
+// ── width lock ───────────────────────────────────────────────────────────────
+// Lock the editor's text region to exactly 100 columns when the pane fits
+// them, dropping to 80 on a shrunk window; below that it stays fluid. The
+// cap is expressed in `ch` units of the content's own font (plus a small px
+// slack), so the visible region cannot exceed 100 columns no matter how the
+// font actually renders — px measurements have proven ~1% short on some
+// systems, which is exactly a "longer than 100 chars" editor.
+
+function measureCharWidth(contentEl: HTMLElement): number {
+  // Probe INSIDE .cm-content: it inherits the exact font context the text
+  // renders with (detached/body probes resolve differently on some systems).
+  const probe = document.createElement('span')
+  probe.style.position = 'absolute'
+  probe.style.visibility = 'hidden'
+  probe.style.whiteSpace = 'pre'
+  probe.textContent = '0'.repeat(100)
+  contentEl.appendChild(probe)
+  const width = probe.getBoundingClientRect().width / 100
+  probe.remove()
+  return width
+}
+
+function applyWidthLock(view: EditorView): void {
+  const host = view.dom.parentElement
+  const contentEl = view.dom.querySelector('.cm-content') as HTMLElement | null
+  if (!host || !contentEl || host.clientWidth === 0) return
+
+  const charWidth = measureCharWidth(contentEl)
+  if (charWidth <= 0) return
+  const gutters = view.dom.querySelector('.cm-gutters') as HTMLElement | null
+  const gutterWidth = gutters ? gutters.offsetWidth : 0
+  const available = host.clientWidth - gutterWidth
+  const slack = 2 // caret + sub-pixel rounding
+
+  let columns: number | null = null
+  for (const n of [100, 80]) {
+    if (available >= charWidth * n + slack) {
+      columns = n
+      break
+    }
+  }
+  if (columns === null) {
+    contentEl.style.maxWidth = ''
+    return
+  }
+
+  // `ch` is the "0" advance of the content font — exact by construction.
+  contentEl.style.maxWidth = `calc(${columns}ch + ${lockExtraPx(view, slack)}px)`
+
+  // The nominal font metrics can still differ a hair from real rendering;
+  // true up against the actual scroller so a doc that fits the chosen
+  // columns never horizontal-scrolls.
+  let longest = 0
+  for (const line of view.state.doc.iterLines()) longest = Math.max(longest, line.length)
+  const scroller = view.dom.querySelector('.cm-scroller')
+  if (scroller && longest <= columns) {
+    for (let i = 0; i < 3; i++) {
+      const over = scroller.scrollWidth - scroller.clientWidth
+      if (over <= 0) break
+      lockExtraState.set(view, (lockExtraState.get(view) ?? 0) + over + 1)
+      contentEl.style.maxWidth = `calc(${columns}ch + ${lockExtraPx(view, slack)}px)`
+    }
+  }
+}
+
+// per-view px correction accumulated on top of the ch-based cap
+const lockExtraState = new WeakMap<EditorView, number>()
+
+function lockExtraPx(view: EditorView, slack: number): number {
+  return slack + (lockExtraState.get(view) ?? 0)
+}
+
+function debounce(fn: () => void, ms: number): () => void {
+  let t: ReturnType<typeof setTimeout> | undefined
+  return () => {
+    clearTimeout(t)
+    t = setTimeout(fn, ms)
+  }
+}
