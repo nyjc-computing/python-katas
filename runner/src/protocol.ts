@@ -21,7 +21,7 @@ export interface Diagnostic {
 }
 
 export type ToWorker =
-  | { type: 'run'; code: string; files: Record<string, string> }
+  | { type: 'run'; code: string; files: Record<string, string>; prefeed?: string }
   | { type: 'analyze'; code: string; version: number }
   | { type: 'complete'; code: string; line: number; col: number; version: number }
   | { type: 'hover'; code: string; line: number; col: number; version: number }

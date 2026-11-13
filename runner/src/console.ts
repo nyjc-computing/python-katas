@@ -10,7 +10,7 @@ import { CONSOLE_TRIM_TO_CHARS, MAX_CONSOLE_CHARS, MAX_CONSOLE_NODES } from './l
  * CONSOLE_TRIM_TO_CHARS) with MAX_CONSOLE_NODES as a secondary guard, so a
  * runaway print loop can't grow the DOM without limit.
  */
-export type ConsoleStyle = '' | 'stderr' | 'status' | 'echo'
+export type ConsoleStyle = '' | 'stderr' | 'status' | 'echo' | 'success'
 
 export class Console {
   private readonly root: HTMLElement

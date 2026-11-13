@@ -4,12 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230f172a'/%3E%3Ctext x='8' y='12' font-size='10' font-family='monospace' fill='%237dd3fc' text-anchor='middle'%3E%E2%96%B6%3C/text%3E%3C/svg%3E" />
-    <title>kata-runner</title>
+    <title>Python Katas</title>
   </head>
   <body>
     <header id="toolbar">
-      <span id="brand">kata-runner</span>
+      <button id="btn-menu" class="hamburger" title="Browse katas" aria-label="Browse katas">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M1.5 3h13v1.6h-13V3Zm0 4.2h13v1.6h-13V7.2Zm0 4.2h13V13h-13v-1.6Z" fill="currentColor"/></svg>
+      </button>
+      <span id="brand">Python Katas</span>
       <button id="btn-run" title="Run (Ctrl+Enter)">&#9654; Run</button>
+      <button id="btn-verify" title="Select a kata to verify" disabled>&#10003; Verify</button>
       <button id="btn-stop" title="Stop (Esc, or Ctrl+C in the console)" disabled>&#9632; Stop</button>
       <button id="btn-clear" title="Clear the console">Clear output</button>
       <span class="spacer"></span>
@@ -31,8 +35,11 @@
     <main id="app" class="layout-stack">
       <aside id="panel-left" class="panel-side">
         <div class="side-head">
-          FILES
-          <span class="side-actions">
+          <span class="side-tabs">
+            <button id="tab-katas" class="side-tab" type="button">Katas</button>
+            <button id="tab-files" class="side-tab active" type="button">Files</button>
+          </span>
+          <span class="side-actions" id="file-actions">
             <button id="btn-upload" class="side-action" title="Upload text files from this computer">
               <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 3 3.5 7.5 5 9l2-2v6h2V7l2 2 1.5-1.5L8 3Z" fill="currentColor"/></svg>
             </button>
@@ -41,6 +48,12 @@
             </button>
           </span>
         </div>
+        <div id="kata-view" hidden>
+          <div id="kata-summary"></div>
+          <ul id="kata-list"></ul>
+          <div class="side-foot">pick a kata to work on it</div>
+        </div>
+        <div id="file-view">
         <div id="new-file-row">
           <input id="new-file-name" placeholder="new file, e.g. data.csv" spellcheck="false" aria-label="New file name" />
           <button id="btn-create" title="Create file">+</button>
@@ -49,6 +62,7 @@
         <ul id="file-list"></ul>
         <div class="side-foot">drop text files here</div>
         <input id="upload-input" type="file" multiple accept=".py,.csv,.json,.md,.html,.css,.txt" hidden />
+        </div>
       </aside>
 
       <section id="editor-pane" class="pane">

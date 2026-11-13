@@ -9,6 +9,7 @@
 // input()-reading and non-deterministic solutions get `tests: null`.
 
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -300,6 +301,14 @@ for (const kata of manifest.katas) {
   if (seenIds.has(kata.id)) fail(`kata ${kata.n}`, `duplicate id ${kata.id} — titles must be unique`)
   seenIds.add(kata.id)
 }
+
+// The digest covers exactly what ships (solutions stripped) — the app
+// snapshots the corpus on first visit and uses this hash to offer a refresh
+// when a later deployment changes it.
+manifest.digest = createHash('sha256')
+  .update(JSON.stringify(manifest, (key, value) => (key === 'solution' ? undefined : value)))
+  .digest('hex')
+  .slice(0, 16)
 
 mkdirSync(dirname(OUT_PATH), { recursive: true })
 // Solutions are read from the markdown, executed for test derivation, and

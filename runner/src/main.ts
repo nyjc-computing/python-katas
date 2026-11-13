@@ -4,6 +4,24 @@ import { Console } from './console'
 import { FileStore, extOf } from './files'
 import { makeZip } from './zip'
 import {
+  activeKataId,
+  bumpTries,
+  dismissCorpusUpdate,
+  getAttempt,
+  getKatas,
+  getParts,
+  getSections,
+  isVerified,
+  kataById,
+  loadCorpus,
+  markVerified,
+  refreshCorpus,
+  saveAttemptCode,
+  setActiveKata,
+  type CorpusUpdate,
+  type KataTest,
+} from './katas'
+import {
   FromWorker,
   STDIN_HEADER_INTS,
   STDIN_MAX_BYTES,
@@ -25,6 +43,7 @@ const editorStatus = document.querySelector('#editor-status') as HTMLElement
 const consoleHost = document.querySelector('#console') as HTMLElement
 const runStatus = document.querySelector('#run-status') as HTMLElement
 const btnRun = document.querySelector('#btn-run') as HTMLButtonElement
+const btnVerify = document.querySelector('#btn-verify') as HTMLButtonElement
 const btnStop = document.querySelector('#btn-stop') as HTMLButtonElement
 const btnClear = document.querySelector('#btn-clear') as HTMLButtonElement
 const btnLayout = document.querySelector('#btn-layout') as HTMLButtonElement
@@ -41,6 +60,15 @@ const fileHint = document.querySelector('#file-hint') as HTMLElement
 const btnUpload = document.querySelector('#btn-upload') as HTMLButtonElement
 const uploadInput = document.querySelector('#upload-input') as HTMLInputElement
 const btnZip = document.querySelector('#btn-zip') as HTMLButtonElement
+const btnMenu = document.querySelector('#btn-menu') as HTMLButtonElement
+const tabKatas = document.querySelector('#tab-katas') as HTMLButtonElement
+const tabFiles = document.querySelector('#tab-files') as HTMLButtonElement
+const fileActions = document.querySelector('#file-actions') as HTMLElement
+const fileView = document.querySelector('#file-view') as HTMLElement
+const kataView = document.querySelector('#kata-view') as HTMLElement
+const kataList = document.querySelector('#kata-list') as HTMLElement
+const kataSummary = document.querySelector('#kata-summary') as HTMLElement
+const sideTabLabel = sidebarTab.querySelector('.tab-label') as HTMLElement
 
 // ── virtual files ────────────────────────────────────────────────────────────
 const fileStore = new FileStore()
@@ -103,13 +131,50 @@ function drainPendingOutput(): void {
 
 setInterval(drainPendingOutput, OUTPUT_TICK_MS)
 
+// ── kata corpus ──────────────────────────────────────────────────────────────
+// The app runs against a localStorage snapshot of the corpus; a deployment
+// that ships new katas only offers the refresh (banner), never auto-updates.
+const loadedCorpus = loadCorpus()
+const storedKataId = activeKataId()
+const startingInKatas = localStorage.getItem('kata.sideMode') === 'katas'
+
+type DocRef = { kind: 'file'; name: string } | { kind: 'kata'; id: string }
+let currentDoc: DocRef =
+  startingInKatas && storedKataId && kataById(storedKataId)
+    ? { kind: 'kata', id: storedKataId }
+    : { kind: 'file', name: fileStore.activeName() }
+
+function currentDocTitle(): string {
+  if (currentDoc.kind === 'kata') {
+    const kata = kataById(currentDoc.id)
+    return kata ? `${kata.n}. ${kata.title}` : 'kata'
+  }
+  return currentDoc.name
+}
+
 // ── editor ───────────────────────────────────────────────────────────────────
 let analyzeTimer: ReturnType<typeof setTimeout> | undefined
+let attemptTimer: ReturnType<typeof setTimeout> | undefined
 let analyzeVersion = 0
 
-const editor = createEditor(editorHost, fileStore.get(fileStore.activeName()), {
+const initialDoc =
+  currentDoc.kind === 'kata' ? getAttempt(currentDoc.id).code : fileStore.get(fileStore.activeName())
+
+const editor = createEditor(editorHost, initialDoc, {
   onCodeChanged: (code) => {
-    fileStore.write(fileStore.activeName(), code)
+    if (currentDoc.kind === 'kata') {
+      saveStateEl.dataset.state = 'dirty'
+      saveStateEl.textContent = '● unsaved'
+      clearTimeout(attemptTimer)
+      attemptTimer = setTimeout(() => {
+        if (currentDoc.kind !== 'kata') return
+        saveAttemptCode(currentDoc.id, editor.state.doc.toString())
+        saveStateEl.dataset.state = 'saved'
+        saveStateEl.textContent = '✓ saved'
+      }, 800)
+    } else {
+      fileStore.write(fileStore.activeName(), code)
+    }
     clearTimeout(analyzeTimer)
     analyzeTimer = setTimeout(() => {
       analyzeVersion++
@@ -181,10 +246,13 @@ function spawnWorker(): void {
         // User code is about to execute: from here a Stop interrupt is safe.
         setPhase('running')
         break
-      case 'stdout':
-        pendingStdout.push(decoder.decode(new Uint8Array(msg.bytes), { stream: true }))
+      case 'stdout': {
+        const text = decoder.decode(new Uint8Array(msg.bytes), { stream: true })
+        pendingStdout.push(text)
+        if (verifying) verifying.got += text
         pendingChars += 1
         break
+      }
       case 'stderr':
         pendingStderr.push(decoder.decode(new Uint8Array(msg.bytes), { stream: true }))
         pendingChars += 1
@@ -197,13 +265,17 @@ function spawnWorker(): void {
         clearTimeout(stopWatchdog)
         drainPendingOutput()
         consolePane.endInput()
-        consolePane.write('\n', '')
-        if (msg.interrupted) {
-          consolePane.write('── stopped (KeyboardInterrupt) ──\n', 'status')
-        } else if (msg.exitCode === 0) {
-          consolePane.write('── program finished ──\n', 'status')
+        if (verifying) {
+          handleVerifyFinished(msg)
         } else {
-          consolePane.write(`── exited with code ${msg.exitCode} ──\n`, 'status')
+          consolePane.write('\n', '')
+          if (msg.interrupted) {
+            consolePane.write('── stopped (KeyboardInterrupt) ──\n', 'status')
+          } else if (msg.exitCode === 0) {
+            consolePane.write('── program finished ──\n', 'status')
+          } else {
+            consolePane.write(`── exited with code ${msg.exitCode} ──\n`, 'status')
+          }
         }
         setPhase(msg.restart ? 'loading' : 'idle')
         if (msg.restart) {
@@ -232,6 +304,7 @@ let stopWatchdog: ReturnType<typeof setTimeout> | undefined
 
 function run(): void {
   if (phase !== 'idle') return
+  if (currentDoc.kind === 'kata') bumpTries(currentDoc.id)
   // 'loading' until the worker reports run-started. When the interpreter is
   // already warm that gap is a millisecond; on a retry-after-load-failure it
   // spans the reload, and pyodide-ready → run-started drive the phases.
@@ -274,14 +347,84 @@ function stop(): void {
   }
 }
 
+function verifyAvailable(): boolean {
+  if (phase !== 'idle' || currentDoc.kind !== 'kata') return false
+  const kata = kataById(currentDoc.id)
+  return !!kata?.tests?.length
+}
+
 function setButtons(): void {
   btnRun.disabled = phase !== 'idle'
   btnStop.disabled = phase !== 'running'
+  btnVerify.disabled = !verifyAvailable()
+  btnVerify.title =
+    currentDoc.kind === 'kata'
+      ? kataById(currentDoc.id)?.tests?.length
+        ? `Verify “${currentDocTitle()}” against its tests`
+        : 'This kata has no auto-check tests — compare by eye'
+      : 'Select a kata first (hamburger menu)'
   runStatus.textContent =
     phase === 'running' ? 'running…' : phase === 'loading' ? 'loading Python…' : ''
 }
 
+// ── verify ───────────────────────────────────────────────────────────────────
+// Runs the active kata's tests: each test's stdin is pre-fed to the program
+// (the interactive input row never opens), stdout is captured, and compared
+// to the expected output after trailing-whitespace normalisation.
+
+let verifying: { tests: KataTest[]; index: number; got: string } | null = null
+
+const normalizeOutput = (s: string): string => s.replace(/[ \t]+$/gm, '').replace(/\n+$/, '')
+
+function startVerify(): void {
+  if (!verifyAvailable() || currentDoc.kind !== 'kata') return
+  const kata = kataById(currentDoc.id)!
+  bumpTries(kata.id)
+  verifying = { tests: kata.tests!, index: 0, got: '' }
+  consolePane.clear()
+  sendVerifyRun()
+}
+
+function sendVerifyRun(): void {
+  const state = verifying!
+  state.got = ''
+  setPhase('loading')
+  worker.postMessage({
+    type: 'run',
+    code: editor.state.doc.toString(),
+    files: fileStore.all(),
+    prefeed: state.tests[state.index].stdin,
+  } satisfies ToWorker)
+}
+
+function handleVerifyFinished(msg: Extract<FromWorker, { type: 'run-finished' }>): void {
+  const state = verifying!
+  const expected = state.tests[state.index].stdout
+  const pass = msg.exitCode === 0 && !msg.interrupted && normalizeOutput(state.got) === normalizeOutput(expected)
+  if (pass && state.index + 1 < state.tests.length) {
+    state.index++
+    sendVerifyRun()
+    return
+  }
+  verifying = null
+  if (pass) {
+    if (currentDoc.kind === 'kata') markVerified(currentDoc.id, true)
+    consolePane.write('✓ Verified — output matches.\n', 'success')
+    renderKataList()
+  } else if (msg.interrupted) {
+    consolePane.write('✗ Verify stopped before the program finished.\n', 'stderr')
+  } else {
+    consolePane.write('✗ Not yet — the output didn\'t match.\n', 'stderr')
+    consolePane.write('Expected:\n', 'status')
+    consolePane.write((normalizeOutput(expected) || '(no output)') + '\n')
+    consolePane.write('Your output:\n', 'status')
+    consolePane.write((normalizeOutput(state.got) || '(no output)') + '\n')
+  }
+  setButtons()
+}
+
 btnRun.addEventListener('click', run)
+btnVerify.addEventListener('click', startVerify)
 btnStop.addEventListener('click', stop)
 btnClear.addEventListener('click', () => consolePane.clear())
 
@@ -398,11 +541,22 @@ function renderFileList(): void {
 
 /** Swap the editor's content and language to the active file. */
 function syncEditorToActive(): void {
+  if (currentDoc.kind === 'kata') flushAttempt()
+  currentDoc = { kind: 'file', name: fileStore.activeName() }
   editor.dispatch({
     changes: { from: 0, to: editor.state.doc.length, insert: fileStore.get(fileStore.activeName()) },
   })
   void setLanguage(editor, extOf(fileStore.activeName()))
   activeFileName.textContent = fileStore.activeName()
+  setButtons()
+}
+
+function flushAttempt(): void {
+  if (currentDoc.kind !== 'kata') return
+  clearTimeout(attemptTimer)
+  saveAttemptCode(currentDoc.id, editor.state.doc.toString())
+  saveStateEl.dataset.state = 'saved'
+  saveStateEl.textContent = '✓ saved'
 }
 
 fileStore.onChange(() => {
@@ -410,7 +564,161 @@ fileStore.onChange(() => {
   syncEditorToActive()
 })
 renderFileList()
-activeFileName.textContent = fileStore.activeName()
+activeFileName.textContent = currentDocTitle()
+
+// ── kata browser ─────────────────────────────────────────────────────────────
+
+/** Swap the editor's content to a kata attempt. */
+function setDocContent(text: string): void {
+  editor.dispatch({
+    changes: { from: 0, to: editor.state.doc.length, insert: text },
+  })
+  void setLanguage(editor, 'py')
+  activeFileName.textContent = currentDocTitle()
+}
+
+function selectKata(id: string): void {
+  if (currentDoc.kind === 'kata' && currentDoc.id === id) return
+  if (currentDoc.kind === 'kata') flushAttempt()
+  else fileStore.flush()
+  setActiveKata(id)
+  currentDoc = { kind: 'kata', id }
+  setDocContent(getAttempt(id).code)
+  renderKataList()
+  setButtons()
+}
+
+function renderKataList(): void {
+  kataList.innerHTML = ''
+  let verified = 0
+  for (const part of getParts()) {
+    const partHeader = document.createElement('li')
+    partHeader.className = 'kata-part'
+    partHeader.textContent = `Part ${part.id} — ${part.title}`
+    kataList.appendChild(partHeader)
+    for (const sectionId of part.sections) {
+      const section = getSections().find((sec) => sec.id === sectionId)
+      if (!section) continue
+      const sectionHeader = document.createElement('li')
+      sectionHeader.className = 'kata-section'
+      sectionHeader.textContent = section.title
+      kataList.appendChild(sectionHeader)
+      for (const kata of getKatas().filter((k) => k.section === sectionId)) {
+        const verifiedKata = isVerified(kata.id)
+        if (verifiedKata) verified++
+        const row = document.createElement('li')
+        const btn = document.createElement('button')
+        btn.type = 'button'
+        btn.className = 'kata-row' + (currentDoc.kind === 'kata' && currentDoc.id === kata.id ? ' active' : '')
+        btn.title = kata.tests
+          ? `Open kata ${kata.n}`
+          : `Kata ${kata.n} — no auto-check tests (compare by eye)`
+        const num = document.createElement('span')
+        num.className = 'kata-num'
+        num.textContent = String(kata.n)
+        const title = document.createElement('span')
+        title.className = 'kata-title'
+        title.textContent = kata.title
+        const check = document.createElement('span')
+        check.className = 'kata-check' + (verifiedKata ? ' ok' : '')
+        check.textContent = '✓'
+        btn.append(num, title, check)
+        btn.addEventListener('click', () => selectKata(kata.id))
+        row.appendChild(btn)
+        kataList.appendChild(row)
+      }
+    }
+  }
+  kataSummary.textContent = `${getKatas().length} katas · ${verified} verified`
+}
+
+renderKataList()
+
+// ── corpus update banner ─────────────────────────────────────────────────────
+
+function showCorpusBanner(update: CorpusUpdate): void {
+  const banner = document.createElement('div')
+  banner.id = 'corpus-banner'
+  const bits = [
+    update.added > 0 ? `${update.added} added` : '',
+    update.removed > 0 ? `${update.removed} removed` : '',
+    update.updated > 0 ? `${update.updated} changed` : '',
+  ].filter(Boolean)
+  const text = document.createElement('span')
+  text.textContent = `The kata set has been updated (${bits.join(', ')}). Your progress is kept — refresh to see the new set.`
+  const actions = document.createElement('span')
+  actions.className = 'banner-actions'
+  const refresh = document.createElement('button')
+  refresh.className = 'primary'
+  refresh.textContent = 'Refresh'
+  refresh.addEventListener('click', () => {
+    const migrated = refreshCorpus()
+    banner.remove()
+    if (migrated && kataById(migrated)) {
+      // reopen the (possibly renumbered) active kata with its migrated code
+      fileStore.flush()
+      currentDoc = { kind: 'kata', id: migrated }
+      setDocContent(getAttempt(migrated).code)
+    } else if (currentDoc.kind === 'kata') {
+      const kata = kataById(currentDoc.id)
+      if (!kata) {
+        currentDoc = { kind: 'file', name: fileStore.activeName() }
+        syncEditorToActive()
+      } else {
+        setDocContent(getAttempt(currentDoc.id).code)
+      }
+    }
+    renderKataList()
+    setButtons()
+  })
+  const dismiss = document.createElement('button')
+  dismiss.textContent = 'Keep current'
+  dismiss.addEventListener('click', () => {
+    dismissCorpusUpdate()
+    banner.remove()
+  })
+  actions.append(refresh, dismiss)
+  banner.append(text, actions)
+  document.body.appendChild(banner)
+}
+
+if (loadedCorpus.update) showCorpusBanner(loadedCorpus.update)
+
+// ── sidebar tabs + hamburger ─────────────────────────────────────────────────
+
+type SideMode = 'files' | 'katas'
+let sideMode: SideMode = localStorage.getItem('kata.sideMode') === 'katas' ? 'katas' : 'files'
+
+function applySideMode(mode: SideMode): void {
+  localStorage.setItem('kata.sideMode', mode)
+  kataView.hidden = mode !== 'katas'
+  fileView.hidden = mode !== 'files'
+  fileActions.hidden = mode !== 'files'
+  tabKatas.classList.toggle('active', mode === 'katas')
+  tabFiles.classList.toggle('active', mode === 'files')
+  sideTabLabel.textContent = mode === 'katas' ? 'Katas' : 'Files'
+  if (mode === 'katas') {
+    const id = activeKataId()
+    if (id && kataById(id)) selectKata(id)
+  } else if (currentDoc.kind === 'kata') {
+    syncEditorToActive()
+  }
+}
+
+btnMenu.addEventListener('click', () => {
+  const open = app.classList.contains('sidebar-open')
+  if (!open) {
+    applySideMode('katas')
+    applySidebar(true)
+  } else if (sideMode !== 'katas') {
+    applySideMode('katas')
+  } else {
+    applySidebar(false)
+  }
+})
+
+tabKatas.addEventListener('click', () => applySideMode('katas'))
+tabFiles.addEventListener('click', () => applySideMode('files'))
 
 function showFileHint(message: string): void {
   fileHint.textContent = message
@@ -535,11 +843,13 @@ btnLayout.addEventListener('click', () => {
 function applySidebar(open: boolean): void {
   app.classList.toggle('sidebar-open', open)
   sidebarTab.setAttribute('aria-expanded', String(open))
-  sidebarTab.title = open ? 'Hide the file browser' : 'Show the file browser'
+  const browsing = sideMode === 'katas' ? 'kata browser' : 'file browser'
+  sidebarTab.title = open ? `Hide the ${browsing}` : `Show the ${browsing}`
   sidebarTabChevron.textContent = open ? '\u2039' : '\u203a'
   localStorage.setItem('kata.sidebar', open ? 'open' : 'closed')
 }
 
+applySideMode(sideMode)
 applySidebar(localStorage.getItem('kata.sidebar') !== 'closed')
 
 sidebarTab.addEventListener('click', () => {
@@ -554,10 +864,11 @@ window.addEventListener('keydown', (e) => {
     run()
     return
   }
-  // Ctrl+S flushes the debounced file save immediately.
+  // Ctrl+S flushes the debounced save (file or kata attempt) immediately.
   if ((e.ctrlKey || e.metaKey) && e.key === 's') {
     e.preventDefault()
-    fileStore.flush()
+    if (currentDoc.kind === 'kata') flushAttempt()
+    else fileStore.flush()
     return
   }
   // Esc stops a running program; while renaming it cancels the rename first

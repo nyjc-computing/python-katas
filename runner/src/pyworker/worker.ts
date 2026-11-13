@@ -30,6 +30,11 @@ let stdinCancelled = false
 // EOF (Ctrl+D) is sticky for the rest of the run, like a closed terminal:
 // after it, every stdin read returns EOF without prompting.
 let stdinEof = false
+// Verify runs carry their stdin up-front (prefeed): the queue answers reads
+// without ever opening the interactive input row, and EOF is immediate once
+// it runs dry. Interactive runs leave this off.
+let prefedLines: string[] = []
+let prefeedActive = false
 
 try {
   const interruptBuf = new SharedArrayBuffer(4)
@@ -101,6 +106,15 @@ const stderrWriter = makeStdioWriter('stderr')
 // (it distinguishes the marker from a real EOF via __kata_eof_pending).
 function readStdinLine(): string | null {
   if (stdinEof) return null
+  if (prefeedActive) {
+    const line = prefedLines.shift()
+    if (line !== undefined) return line + '\n'
+    stdinEof = true
+    // Real EOF for the sys.stdin wrapper (read()/iteration run past the
+    // autoEOF marker they just saw).
+    pyodide?.globals.set('__kata_eof_pending', true)
+    return null
+  }
   if (!stdinHeader || !stdinBytes) return null // not isolated → EOF
   stdoutWriter.flush() // deliver a pending prompt before the read blocks
   Atomics.store(stdinHeader, 0, STDIN_STATE.idle)
@@ -314,11 +328,15 @@ function syncVirtualFiles(py: PyodideInterface, files: Record<string, string>): 
   syncedFileNames = new Set(Object.keys(files))
 }
 
-async function run(code: string, files: Record<string, string>): Promise<void> {
+async function run(code: string, files: Record<string, string>, prefeed?: string): Promise<void> {
   if (busy) return
   busy = true
   stdinCancelled = false
   stdinEof = false
+  // A trailing empty split() artifact would feed one spurious blank line;
+  // drop it — EOF after the last real line is what verify means.
+  prefedLines = prefeed !== undefined ? prefeed.split('\n').filter((l, i, a) => i < a.length - 1 || l !== '') : []
+  prefeedActive = prefeed !== undefined
   if (interrupt) Atomics.store(interrupt, 0, 0)
   if (stdinHeader) Atomics.store(stdinHeader, 0, STDIN_STATE.idle)
 
@@ -404,7 +422,7 @@ ctx.onmessage = (event: MessageEvent<ToWorker>) => {
   const msg = event.data
   switch (msg.type) {
     case 'run':
-      void run(msg.code, msg.files)
+      void run(msg.code, msg.files, msg.prefeed)
       break
     case 'analyze':
       analyze(msg.code, msg.version)

@@ -22,6 +22,19 @@ cloning or bumping the `pyodide` version in package.json.
 
 ## Behaviours
 
+- **Kata browser** — the hamburger (left of the logo) opens the kata
+  selector, which covers the Files sidebar; the panel's Katas/Files tabs
+  switch what the editor is bound to. Picking a kata loads its saved attempt
+  into the editor; **Verify** runs it against the kata's `{stdin, stdout}`
+  tests (stdin is pre-fed, the interactive input row never opens) and marks
+  it with a green ✓ when the normalised output matches.
+- **Corpus snapshots** — the kata set is bundled at build time but the app
+  runs against a localStorage snapshot taken on first visit, so deployments
+  never move the corpus mid-practice. When a newer set ships, a banner shows
+  added/removed/changed counts and offers the refresh; accepting it migrates
+  attempt state (code, verified, tries) across renumbered ids by title
+  slug. Attempts record a `tries` counter per kata (per Run / per Verify) —
+  the seed for future telemetry.
 - **Layouts** — two, toggleable from the toolbar and persisted: stacked
   (editor above console) and side-by-side (editor left, console right). The
   page itself never scrolls; each pane scrolls independently. Collapsed
