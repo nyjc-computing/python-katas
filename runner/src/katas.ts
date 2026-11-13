@@ -20,8 +20,6 @@ export interface Kata {
   title: string
   /** Section id (`s07`), see {@link Section}. */
   section: string
-  /** Provenance from the heading suffix, e.g. "original Question 23". */
-  origin?: string
   /** What the kata practises, parsed from the **Features:** line. */
   features: string[]
   /** Verbatim question markdown; sample I/O stays inline prose. */

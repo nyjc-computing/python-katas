@@ -29,8 +29,7 @@ same commit.
 ## 1. Functions & type conversion     ← sections, numbered sequentially 1..20
 <intro prose, optional — ignored>
 
-### 1. Square of a number *(original Question 23)*
-                         └── optional italic provenance suffix
+### 1. Square of a number
 
 **Features:** `def`, `return`, `**` operator
 
@@ -47,8 +46,10 @@ same commit.
 ```
 
 Between katas and sections, `---` separators and intro prose are allowed and
-ignored. The preamble before the first `# Part` (title, contents, fidelity
-notes) is ignored.
+ignored. The preamble before the first `# Part` (title, contents) is ignored.
+Kata titles must NOT carry the old `*(original Question N)*` provenance
+suffix — original question numbering has been dropped from the corpus, and
+the parser rejects it.
 
 ## Rules the parser enforces
 
@@ -60,10 +61,13 @@ message:
 2. **Label order** — inside a kata, `**Features:**`, `**Question:**`,
    [`**Hints:**`], `**Solution:**` appear exactly once each, in that order.
    The labels are exact: `**Hint:**`, `**hints:**`, `**Hints**` without the
-   colon are all errors, not variants.
-3. **Exactly one solution block** — the `**Solution:**` section contains
-   exactly one fenced code block, tagged `python`. Code fences elsewhere in
-   a kata body are an error.
+   colon are all errors, not variants. `**Features:**` is an inline label —
+   its content sits on the same line; the other labels stand alone.
+3. **Code fences** — the `**Solution:**` section contains exactly one fenced
+   block, tagged `python`. `**Question:**` may additionally carry untagged
+   ``` blocks for sample input/output. Fences anywhere else (Hints,
+   Features, stray labels) are errors, and an unclosed fence fails the
+   kata.
 4. **Non-empty content** — features line, question, and the solution block
    must be non-empty.
 5. **Unique titles** — titles must be unique (they feed the stable slug ids;
@@ -76,9 +80,8 @@ message:
 | `id`       | derived  | `<nnn>-<slug>` from the heading number + title (e.g. `001-square-of-a-number`). **Stable identity** — used as the key for learner progress in the app. Display numbers may shift when katas are inserted; ids must not. |
 | `n`        | derived  | The `### N.` heading number, display order. |
 | `title`    | required | Heading text, minus any `*(…)*` suffix. Verbatim. |
-| `origin`   | optional | The italic `*(original Question M)*` heading suffix, verbatim. |
 | `features` | required | The `**Features:**` line, split on commas **outside backticks**; backticks stripped. Backticks are styling — `for` with `range()` parses as two features. |
-| `question` | required | Verbatim markdown between the Question and Hints/Solution labels. Sample I/O stays **inline prose**: the parser never interprets it, so reformatting it can't break anything — but don't move it out, it's what learners read. |
+| `question` | required | Markdown between the Question and Hints/Solution labels. Sample input/output is fenced (untagged ``` blocks); everything outside the fences is what learners read. |
 | `hints`    | optional | Split on blank lines into an array, revealed progressively in the app. |
 | `solution` | required | The python block, verbatim, runnable as a standalone program. **Stays in the markdown only** — the sync executes it to derive tests and never copies it into `build/katas.json`. |
 | `tests`    | derived  | See below. |
@@ -106,6 +109,25 @@ to be picked up.
 it is executed for test derivation, then dropped. The JSON is what learners'
 browsers download; the markdown is the maintainer-facing document.
 
+## Question and hint conventions
+
+- **Code expressions are backticked and PEP 8** — `` `dict.get()` ``,
+  `` `[1, 2, 3]` ``, `` `n > 0` ``. Expressions inside backticks follow PEP 8
+  spacing (`a + aa + aaa`, `dict[key] = value`, `(1, 2, 3, …)`).
+- **Functions and methods carry terminal parentheses** — write
+  `` `str.join()` `` not `str.join`; `range()`, `dict.items()`. Keywords,
+  statements and operators don't: `if`, `for`, `assert expression`, `%`.
+- **Sample input/output is fenced** — put each example input and its
+  expected output in its own untagged ``` block inside the question,
+  introduced by prose ("Suppose the following input is supplied…").
+- **f-strings or `.format()`, never `%`-formatting.**
+- **Banned constructs** (remove or rewrite the kata): `u"…"` literals,
+  `unicode()` conversion, `# -*- coding -*-` declarations, `sort()`/
+  `sorted()` as the skill under test (write sorting algorithms instead),
+  set-based mathematics, dict/generator comprehensions, list
+  comprehensions beyond 1-D, `map()`/`filter()`/`lambda`, the `operator`
+  module, generators and `yield`.
+
 ## Solution style rules
 
 Solutions are the reference programs learners are measured against, so they
@@ -126,8 +148,8 @@ rules); the rest is reviewed by hand.
 - **Modern Python 3 style.** Plain `class X:` bases (no `(object)`),
   `super().__init__()`, no redundant `float()`/`list()`/`dict()` constructor
   calls, no unused imports.
-- **No f-strings.** `%`-formatting is kept deliberately, matching the
-  corpus's vintage and the feature level of early katas.
+- **f-strings or `.format()`** — `%`-formatting is banned corpus-wide
+  (questions, hints and solutions).
 - **Solutions stay at the kata's feature level.** A rewrite shouldn't use a
   construct the kata hasn't taught (e.g. no comprehensions in a basic-`for`
   kata) — with the exception of the PEP 8 rules above, which apply

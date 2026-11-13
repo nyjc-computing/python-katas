@@ -30,7 +30,8 @@ const fail = (context, rule) => {
 
 const RE_PART = /^# Part ([A-Z]) — (.+)$/
 const RE_SECTION = /^## (\d+)\. (.+)$/
-const RE_KATA = /^### (\d+)\. (.+?)(?: \*\((.+)\)\*)?$/
+const RE_KATA = /^### (\d+)\. (.+)$/
+const RE_ORIGIN_SUFFIX = /\s\*\((?:original )?Question[^)]*\)\*$/i
 const LABELS = ['**Features:**', '**Question:**', '**Hints:**', '**Solution:**']
 const keyOf = label => label.replaceAll('*', '').replaceAll(':', '')
 
@@ -50,6 +51,7 @@ function parse(markdown) {
 
   const flushKata = () => {
     if (!kata) return
+    if (inFence) fail(`kata ${kata.n} (${kata.title})`, 'unclosed code fence')
     manifest.katas.push(buildKata(kata, body, seenLabels))
     kata = null
     currentLabel = null
@@ -89,7 +91,9 @@ function parse(markdown) {
         const n = Number(kataMatch[1])
         const expected = manifest.katas.length + 1
         if (n !== expected) fail(`kata ${n}`, `kata headings must be numbered sequentially; expected ${expected}`)
-        kata = { n, title: kataMatch[2].trim(), origin: kataMatch[3]?.trim(), section: section.id }
+        const title = kataMatch[2].trim()
+        if (RE_ORIGIN_SUFFIX.test(title)) fail(`kata ${n}`, 'original question numbering has been removed from kata titles')
+        kata = { n, title, section: section.id }
       }
       continue
     }
@@ -98,13 +102,21 @@ function parse(markdown) {
 
     const trimmed = line.trim()
 
-    // Fence content is raw — no heading/label/feature interpretation inside it.
+    // Fence content is raw — no heading/label/feature interpretation inside
+    // it. Questions may carry untagged ``` blocks for sample input/output;
+    // Solutions carry exactly one tagged ```python block.
     if (inFence || trimmed.startsWith('```')) {
       if (!trimmed.startsWith('```')) {
         body[currentKey].push(line)
         continue
       }
-      if (currentLabel !== '**Solution:**') fail(where, 'code fence outside the **Solution:** section')
+      if (currentLabel === '**Question:**') {
+        if (trimmed !== '```') fail(where, 'sample I/O fences in **Question:** must be untagged ``` blocks')
+        inFence = !inFence
+        body[currentKey].push('```')
+        continue
+      }
+      if (currentLabel !== '**Solution:**') fail(where, 'code fence outside the **Question:** and **Solution:** sections')
       if (!inFence && body.Solution.some(x => typeof x !== 'string')) fail(where, 'more than one code block in **Solution:**')
       inFence = !inFence
       body[currentKey].push({ fence: trimmed })
@@ -194,7 +206,6 @@ function buildKata(kata, body, seenLabels) {
     n: kata.n,
     title: kata.title,
     section: kata.section,
-    ...(kata.origin ? { origin: kata.origin } : {}),
     features: splitFeatures(featuresRaw),
     question,
     hints,
