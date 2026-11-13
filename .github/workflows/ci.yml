@@ -31,5 +31,6 @@ jobs:
       - name: Typecheck + build the app
         working-directory: runner
         run: |
+          npm ci
           npm run vendor:pyodide
           npm run build
