@@ -80,7 +80,7 @@ message:
 | `features` | required | The `**Features:**` line, split on commas **outside backticks**; backticks stripped. Backticks are styling — `for` with `range()` parses as two features. |
 | `question` | required | Verbatim markdown between the Question and Hints/Solution labels. Sample I/O stays **inline prose**: the parser never interprets it, so reformatting it can't break anything — but don't move it out, it's what learners read. |
 | `hints`    | optional | Split on blank lines into an array, revealed progressively in the app. |
-| `solution` | required | The python block, verbatim, runnable as a standalone program. |
+| `solution` | required | The python block, verbatim, runnable as a standalone program. **Stays in the markdown only** — the sync executes it to derive tests and never copies it into `build/katas.json`. |
 | `tests`    | derived  | See below. |
 
 ## Auto-derived tests
@@ -101,3 +101,7 @@ The sync prints which katas were skipped and why. To make an input-reading
 kata auto-checkable, the markdown format itself would need to grow a
 machine-readable stdin field — don't encode stdin in the prose and expect it
 to be picked up.
+
+**Solutions never ship.** `build/katas.json` omits the solution entirely —
+it is executed for test derivation, then dropped. The JSON is what learners'
+browsers download; the markdown is the maintainer-facing document.

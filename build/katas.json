@@ -192,7 +192,6 @@
         "Using the ** operator"
       ],
       "starter": null,
-      "solution": "def square(num):\n    return num ** 2\n\nprint(square(2))\nprint(square(3))",
       "tests": [
         {
           "stdin": "",
@@ -215,7 +214,6 @@
         "Define a function with two numbers as arguments. You can compute the sum in the function and return the value."
       ],
       "starter": null,
-      "solution": "def SumFunction(number1, number2):\n    return number1+number2\n\nprint(SumFunction(1,2))",
       "tests": [
         {
           "stdin": "",
@@ -236,7 +234,6 @@
         "Use str() to convert a number to string."
       ],
       "starter": null,
-      "solution": "def printValue(n):\n    print(str(n))\n\nprintValue(3)",
       "tests": [
         {
           "stdin": "",
@@ -258,7 +255,6 @@
         "Use int() to convert a string to integer."
       ],
       "starter": null,
-      "solution": "def printValue(s1,s2):\n    print(int(s1)+int(s2))\n\nprintValue(\"3\",\"4\") #7",
       "tests": [
         {
           "stdin": "",
@@ -279,7 +275,6 @@
         "Use + to concatenate the strings"
       ],
       "starter": null,
-      "solution": "def printValue(s1,s2):\n    print(s1+s2)\n\nprintValue(\"3\",\"4\") #34",
       "tests": [
         {
           "stdin": "",
@@ -301,7 +296,6 @@
         "Use len() function to get the length of a string"
       ],
       "starter": null,
-      "solution": "def printValue(s1,s2):\n    len1 = len(s1)\n    len2 = len(s2)\n    if len1>len2:\n        print(s1)\n    elif len2>len1:\n        print(s2)\n    else:\n        print(s1)\n        print(s2)\n\nprintValue(\"one\",\"three\")",
       "tests": [
         {
           "stdin": "",
@@ -327,7 +321,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "value = []\nitems=[x for x in input().split(',')]\nfor p in items:\n    intp = int(p, 2)\n    if not intp%5:\n        value.append(p)\n\nprint(','.join(value))",
       "tests": null
     },
     {
@@ -344,7 +337,6 @@
         "Use % operator to check if a number is even or odd."
       ],
       "starter": null,
-      "solution": "def checkValue(n):\n    if n%2 == 0:\n        print(\"It is an even number\")\n    else:\n        print(\"It is an odd number\")\n\ncheckValue(7)",
       "tests": [
         {
           "stdin": "",
@@ -367,7 +359,6 @@
         "Use if statement to judge condition."
       ],
       "starter": null,
-      "solution": "s= input()\nif s==\"yes\" or s==\"YES\" or s==\"Yes\":\n    print(\"Yes\")\nelse:\n    print(\"No\")",
       "tests": null
     },
     {
@@ -388,7 +379,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "values = []\nfor i in range(1000, 3001):\n    s = str(i)\n    if (int(s[0])%2==0) and (int(s[1])%2==0) and (int(s[2])%2==0) and (int(s[3])%2==0):\n        values.append(s)\nprint(\",\".join(values))",
       "tests": [
         {
           "stdin": "",
@@ -414,7 +404,6 @@
         "Consider use range(#begin, #end) method"
       ],
       "starter": null,
-      "solution": "l=[]\nfor i in range(2000, 3201):\n    if (i%7==0) and (i%5!=0):\n        l.append(str(i))\n\nprint(','.join(l))",
       "tests": [
         {
           "stdin": "",
@@ -439,7 +428,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "lines = []\nwhile True:\n    s = input()\n    if s:\n        lines.append(s.upper())\n    else:\n        break;\n\nfor sentence in lines:\n    print(sentence)",
       "tests": null
     },
     {
@@ -459,7 +447,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "netAmount = 0\nwhile True:\n    s = input()\n    if not s:\n        break\n    values = s.split(\" \")\n    operation = values[0]\n    amount = int(values[1])\n    if operation==\"D\":\n        netAmount+=amount\n    elif operation==\"W\":\n        netAmount-=amount\n    else:\n        pass\nprint(netAmount)",
       "tests": null
     },
     {
@@ -477,7 +464,6 @@
         "Use float() to convert an integer to a float"
       ],
       "starter": null,
-      "solution": "n=int(input())\nsum=0.0\nfor i in range(1,n+1):\n    sum += float(float(i)/(i+1))\nprint(sum)",
       "tests": null
     },
     {
@@ -495,7 +481,6 @@
         "Use list[index] notation to get a element from a list."
       ],
       "starter": null,
-      "solution": "subjects=[\"I\", \"You\"]\nverbs=[\"Play\", \"Love\"]\nobjects=[\"Hockey\",\"Football\"]\nfor i in range(len(subjects)):\n    for j in range(len(verbs)):\n        for k in range(len(objects)):\n            sentence = \"%s %s %s.\" % (subjects[i], verbs[j], objects[k])\n            print(sentence)",
       "tests": [
         {
           "stdin": "",
@@ -518,7 +503,6 @@
         "Use for loop to iterate all possible solutions."
       ],
       "starter": null,
-      "solution": "def solve(numheads,numlegs):\n    ns='No solutions!'\n    for i in range(numheads+1):\n        j=numheads-i\n        if 2*i+4*j==numlegs:\n            return i,j\n    return ns,ns\n\nnumheads=35\nnumlegs=94\nsolutions=solve(numheads,numlegs)\nprint(solutions)",
       "tests": [
         {
           "stdin": "",
@@ -542,7 +526,6 @@
         "Use if/elif to deal with conditions."
       ],
       "starter": null,
-      "solution": "import math\ndef bin_search(li, element):\n    bottom = 0\n    top = len(li)-1\n    index = -1\n    while top>=bottom and index==-1:\n        mid = int(math.floor((top+bottom)/2.0))\n        if li[mid]==element:\n            index = mid\n        elif li[mid]>element:\n            top = mid-1\n        else:\n            bottom = mid+1\n\n    return index\n\nli=[2,5,7,9,11,17,222]\nprint(bin_search(li,11))\nprint(bin_search(li,12))",
       "tests": [
         {
           "stdin": "",
@@ -567,7 +550,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "s = input()\nd={\"DIGITS\":0, \"LETTERS\":0}\nfor c in s:\n    if c.isdigit():\n        d[\"DIGITS\"]+=1\n    elif c.isalpha():\n        d[\"LETTERS\"]+=1\n    else:\n        pass\nprint(\"LETTERS\", d[\"LETTERS\"])\nprint(\"DIGITS\", d[\"DIGITS\"])",
       "tests": null
     },
     {
@@ -586,7 +568,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "s = input()\nd={\"UPPER CASE\":0, \"LOWER CASE\":0}\nfor c in s:\n    if c.isupper():\n        d[\"UPPER CASE\"]+=1\n    elif c.islower():\n        d[\"LOWER CASE\"]+=1\n    else:\n        pass\nprint(\"UPPER CASE\", d[\"UPPER CASE\"])\nprint(\"LOWER CASE\", d[\"LOWER CASE\"])",
       "tests": null
     },
     {
@@ -604,7 +585,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "a = input()\nn1 = int( \"%s\" % a )\nn2 = int( \"%s%s\" % (a,a) )\nn3 = int( \"%s%s%s\" % (a,a,a) )\nn4 = int( \"%s%s%s%s\" % (a,a,a,a) )\nprint(n1+n2+n3+n4)",
       "tests": null
     },
     {
@@ -620,7 +600,6 @@
         "Use u'strings' format to define unicode string."
       ],
       "starter": null,
-      "solution": "unicode_string = \"hello world!\"\nprint(unicode_string)",
       "tests": [
         {
           "stdin": "",
@@ -642,7 +621,6 @@
         "Use unicode() function to convert."
       ],
       "starter": null,
-      "solution": "s = input()\nu = s.encode(\"utf-8\")\nprint(u)",
       "tests": null
     },
     {
@@ -656,7 +634,6 @@
       "question": "Write a special comment to indicate a Python source code file is in unicode.",
       "hints": [],
       "starter": null,
-      "solution": "# -*- coding: utf-8 -*-\n# Optional in Python 3: source files default to UTF-8.",
       "tests": null
     },
     {
@@ -675,7 +652,6 @@
         "Use ** operator to get power of a number.\nUse range() for loops.\nUse list.append() to add values into a list."
       ],
       "starter": null,
-      "solution": "def printList():\n    li=list()\n    for i in range(1,21):\n        li.append(i**2)\n    print(li)\n\n\nprintList()",
       "tests": [
         {
           "stdin": "",
@@ -696,7 +672,6 @@
         "Use ** operator to get power of a number.\nUse range() for loops.\nUse list.append() to add values into a list.\nUse [n1:n2] to slice a list"
       ],
       "starter": null,
-      "solution": "def printList():\n    li=list()\n    for i in range(1,21):\n        li.append(i**2)\n    print(li[:5])\n\n\nprintList()",
       "tests": [
         {
           "stdin": "",
@@ -717,7 +692,6 @@
         "Use ** operator to get power of a number.\nUse range() for loops.\nUse list.append() to add values into a list.\nUse [n1:n2] to slice a list"
       ],
       "starter": null,
-      "solution": "def printList():\n    li=list()\n    for i in range(1,21):\n        li.append(i**2)\n    print(li[-5:])\n\n\nprintList()",
       "tests": [
         {
           "stdin": "",
@@ -738,7 +712,6 @@
         "Use ** operator to get power of a number.\nUse range() for loops.\nUse list.append() to add values into a list.\nUse [n1:n2] to slice a list"
       ],
       "starter": null,
-      "solution": "def printList():\n    li=list()\n    for i in range(1,21):\n        li.append(i**2)\n    print(li[5:])\n\n\nprintList()",
       "tests": [
         {
           "stdin": "",
@@ -759,7 +732,6 @@
         "Use list[::-1] to iterate a list in a reverse order."
       ],
       "starter": null,
-      "solution": "s=input()\ns = s[::-1]\nprint(s)",
       "tests": null
     },
     {
@@ -775,7 +747,6 @@
         "Use list[::2] to iterate a list by step 2."
       ],
       "starter": null,
-      "solution": "s=input()\ns = s[::2]\nprint(s)",
       "tests": null
     },
     {
@@ -793,7 +764,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input.\ntuple() method can convert list to tuple"
       ],
       "starter": null,
-      "solution": "values=input()\nl=values.split(\",\")\nt=tuple(l)\nprint(l)\nprint(t)",
       "tests": null
     },
     {
@@ -810,7 +780,6 @@
         "Use ** operator to get power of a number.\nUse range() for loops.\nUse list.append() to add values into a list.\nUse tuple() to get a tuple from a list."
       ],
       "starter": null,
-      "solution": "def printTuple():\n    li=list()\n    for i in range(1,21):\n        li.append(i**2)\n    print(tuple(li))\n\nprintTuple()",
       "tests": [
         {
           "stdin": "",
@@ -832,7 +801,6 @@
         "Use [n1:n2] notation to get a slice from a tuple."
       ],
       "starter": null,
-      "solution": "tp=(1,2,3,4,5,6,7,8,9,10)\ntp1=tp[:5]\ntp2=tp[5:]\nprint(tp1)\nprint(tp2)",
       "tests": [
         {
           "stdin": "",
@@ -854,7 +822,6 @@
         "Use \"for\" to iterate the tuple\nUse tuple() to generate a tuple from a list."
       ],
       "starter": null,
-      "solution": "tp=(1,2,3,4,5,6,7,8,9,10)\nli=list()\nfor i in range(len(tp)):\n    if tp[i]%2==0:\n        li.append(tp[i])\n\ntp2=tuple(li)\nprint(tp2)",
       "tests": [
         {
           "stdin": "",
@@ -879,7 +846,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input.\nConsider use dict()"
       ],
       "starter": null,
-      "solution": "n=int(input())\nd=dict()\nfor i in range(1,n+1):\n    d[i]=i*i\n\nprint(d)",
       "tests": null
     },
     {
@@ -897,7 +863,6 @@
         "Use dict[key]=value pattern to put entry into a dictionary.\nUse ** operator to get power of a number."
       ],
       "starter": null,
-      "solution": "def printDict():\n    d=dict()\n    d[1]=1\n    d[2]=2**2\n    d[3]=3**2\n    print(d)\n\n\nprintDict()",
       "tests": [
         {
           "stdin": "",
@@ -920,7 +885,6 @@
         "Use dict[key]=value pattern to put entry into a dictionary.\nUse ** operator to get power of a number.\nUse range() for loops."
       ],
       "starter": null,
-      "solution": "def printDict():\n    d=dict()\n    for i in range(1,21):\n        d[i]=i**2\n    print(d)\n\n\nprintDict()",
       "tests": [
         {
           "stdin": "",
@@ -942,7 +906,6 @@
         "Use dict[key]=value pattern to put entry into a dictionary.\nUse ** operator to get power of a number.\nUse range() for loops.\nUse keys() to iterate keys in the dictionary. Also we can use item() to get key/value pairs."
       ],
       "starter": null,
-      "solution": "def printDict():\n    d=dict()\n    for i in range(1,21):\n        d[i]=i**2\n    for (k,v) in d.items():\n        print(v)\n\n\nprintDict()",
       "tests": [
         {
           "stdin": "",
@@ -963,7 +926,6 @@
         "Use dict[key]=value pattern to put entry into a dictionary.\nUse ** operator to get power of a number.\nUse range() for loops.\nUse keys() to iterate keys in the dictionary. Also we can use item() to get key/value pairs."
       ],
       "starter": null,
-      "solution": "def printDict():\n    d=dict()\n    for i in range(1,21):\n        d[i]=i**2\n    for k in d.keys():\n        print(k)\n\n\nprintDict()",
       "tests": [
         {
           "stdin": "",
@@ -988,7 +950,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "freq = {}   # frequency of words in text\nline = input()\nfor word in line.split():\n    freq[word] = freq.get(word,0)+1\n\nfor w in sorted(freq):\n    print(\"%s:%d\" % (w,freq[w]))",
       "tests": null
     },
     {
@@ -1007,7 +968,6 @@
         "Use dict to store key/value pairs.\nUse dict.get() method to lookup a key with default value."
       ],
       "starter": null,
-      "solution": "dic = {}\ns=input()\nfor s in s:\n    dic[s] = dic.get(s,0)+1\nprint('\\n'.join(['%s,%s' % (k, v) for k, v in dic.items()]))",
       "tests": null
     },
     {
@@ -1027,7 +987,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input.\nWe use set container to remove duplicated data automatically and then use sorted() to sort the data."
       ],
       "starter": null,
-      "solution": "s = input()\nwords = [word for word in s.split(\" \")]\nprint(\" \".join(sorted(list(set(words)))))",
       "tests": null
     },
     {
@@ -1044,7 +1003,6 @@
         "Use set() and \"&=\" to do set intersection operation."
       ],
       "starter": null,
-      "solution": "set1=set([1,3,6,78,35,55])\nset2=set([12,24,35,24,88,120,155])\nset1 &= set2\nli=list(set1)\nprint(li)",
       "tests": [
         {
           "stdin": "",
@@ -1067,7 +1025,6 @@
         "Use set() to store a number of values without duplicate."
       ],
       "starter": null,
-      "solution": "def removeDuplicate( li ):\n    newli=[]\n    seen = set()\n    for item in li:\n        if item not in seen:\n            seen.add( item )\n            newli.append(item)\n\n    return newli\n\nli=[12,24,35,24,88,120,155,88,120,155]\nprint(removeDuplicate(li))",
       "tests": [
         {
           "stdin": "",
@@ -1091,7 +1048,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "values = input()\nnumbers = [str(int(x)**2) for x in values.split(\",\") if int(x) % 2 != 0]\nprint(\",\".join(numbers))",
       "tests": null
     },
     {
@@ -1107,7 +1063,6 @@
         "Use list comprehension to delete a bunch of element from a list."
       ],
       "starter": null,
-      "solution": "li = [5,6,77,45,22,12,24]\nli = [x for x in li if x%2!=0]\nprint(li)",
       "tests": [
         {
           "stdin": "",
@@ -1128,7 +1083,6 @@
         "Use list comprehension to delete a bunch of element from a list."
       ],
       "starter": null,
-      "solution": "li = [12,24,35,70,88,120,155]\nli = [x for x in li if x%5!=0 and x%7!=0]\nprint(li)",
       "tests": [
         {
           "stdin": "",
@@ -1149,7 +1103,6 @@
         "Use list's remove method to delete a value."
       ],
       "starter": null,
-      "solution": "li = [12,24,35,24,88,120,155]\nli = [x for x in li if x!=24]\nprint(li)",
       "tests": [
         {
           "stdin": "",
@@ -1171,7 +1124,6 @@
         "Use list comprehension to delete a bunch of element from a list.\nUse enumerate() to get (index, value) tuple."
       ],
       "starter": null,
-      "solution": "li = [12,24,35,70,88,120,155]\nli = [x for (i,x) in enumerate(li) if i%2!=0]\nprint(li)",
       "tests": [
         {
           "stdin": "",
@@ -1193,7 +1145,6 @@
         "Use list comprehension to delete a bunch of element from a list.\nUse enumerate() to get (index, value) tuple."
       ],
       "starter": null,
-      "solution": "li = [12,24,35,70,88,120,155]\nli = [x for (i,x) in enumerate(li) if i not in (0,4,5)]\nprint(li)",
       "tests": [
         {
           "stdin": "",
@@ -1217,7 +1168,6 @@
         "Note: In case of input data being supplied to the question, it should be assumed to be a console input in a comma-separated form."
       ],
       "starter": null,
-      "solution": "input_str = input()\ndimensions=[int(x) for x in input_str.split(',')]\nrowNum=dimensions[0]\ncolNum=dimensions[1]\nmultilist = [[0 for col in range(colNum)] for row in range(rowNum)]\n\nfor row in range(rowNum):\n    for col in range(colNum):\n        multilist[row][col]= row*col\n\nprint(multilist)",
       "tests": null
     },
     {
@@ -1233,7 +1183,6 @@
         "Use list comprehension to make an array."
       ],
       "starter": null,
-      "solution": "array = [[ [0 for col in range(8)] for col in range(5)] for row in range(3)]\nprint(array)",
       "tests": [
         {
           "stdin": "",
@@ -1255,7 +1204,6 @@
         "Use filter() to filter some elements in a list.\nUse lambda to define anonymous functions."
       ],
       "starter": null,
-      "solution": "li = [1,2,3,4,5,6,7,8,9,10]\nevenNumbers = filter(lambda x: x%2==0, li)\nprint(list(evenNumbers))",
       "tests": [
         {
           "stdin": "",
@@ -1277,7 +1225,6 @@
         "Use map() to generate a list.\nUse lambda to define anonymous functions."
       ],
       "starter": null,
-      "solution": "li = [1,2,3,4,5,6,7,8,9,10]\nsquaredNumbers = map(lambda x: x**2, li)\nprint(list(squaredNumbers))",
       "tests": [
         {
           "stdin": "",
@@ -1300,7 +1247,6 @@
         "Use filter() to filter elements of a list.\nUse lambda to define anonymous functions."
       ],
       "starter": null,
-      "solution": "evenNumbers = filter(lambda x: x%2==0, range(1,21))\nprint(list(evenNumbers))",
       "tests": [
         {
           "stdin": "",
@@ -1323,7 +1269,6 @@
         "Use map() to generate a list.\nUse lambda to define anonymous functions."
       ],
       "starter": null,
-      "solution": "squaredNumbers = map(lambda x: x**2, range(1,21))\nprint(list(squaredNumbers))",
       "tests": [
         {
           "stdin": "",
@@ -1345,7 +1290,6 @@
         "Use map() to generate a list.\nUse filter() to filter elements of a list.\nUse lambda to define anonymous functions."
       ],
       "starter": null,
-      "solution": "li = [1,2,3,4,5,6,7,8,9,10]\nprint(list(map(lambda x: x**2, filter(lambda x: x%2==0, li))))",
       "tests": [
         {
           "stdin": "",
@@ -1367,7 +1311,6 @@
         "Use itertools.permutations() to get permutations of list."
       ],
       "starter": null,
-      "solution": "import itertools\nprint(list(itertools.permutations([1,2,3])))",
       "tests": [
         {
           "stdin": "",
@@ -1391,7 +1334,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "items=[x for x in input().split(',')]\nitems.sort()\nprint(','.join(items))",
       "tests": null
     },
     {
@@ -1411,7 +1353,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input.\nWe use itemgetter to enable multiple sort keys."
       ],
       "starter": null,
-      "solution": "from operator import itemgetter, attrgetter\n\nl = []\nwhile True:\n    s = input()\n    if not s:\n        break\n    l.append(tuple(s.split(\",\")))\n\nprint(sorted(l, key=itemgetter(0,1,2)))",
       "tests": null
     },
     {
@@ -1429,7 +1370,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "def fact(x):\n    if x == 0:\n        return 1\n    return x * fact(x - 1)\n\nx=int(input())\nprint(fact(x))",
       "tests": null
     },
     {
@@ -1446,7 +1386,6 @@
         "We can define recursive function in Python."
       ],
       "starter": null,
-      "solution": "def f(n):\n    if n==0:\n        return 1\n    else:\n        return f(n-1)+100\n\nn=int(input())\nprint(f(n))",
       "tests": null
     },
     {
@@ -1462,7 +1401,6 @@
         "We can define recursive function in Python."
       ],
       "starter": null,
-      "solution": "def f(n):\n    if n == 0: return 0\n    elif n == 1: return 1\n    else: return f(n-1)+f(n-2)\n\nn=int(input())\nprint(f(n))",
       "tests": null
     },
     {
@@ -1481,7 +1419,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "def f(n):\n    if n == 0: return 0\n    elif n == 1: return 1\n    else: return f(n-1)+f(n-2)\n\nn=int(input())\nvalues = [str(f(x)) for x in range(0, n+1)]\nprint(\",\".join(values))",
       "tests": null
     },
     {
@@ -1499,7 +1436,6 @@
         "Consider use yield"
       ],
       "starter": null,
-      "solution": "def putNumbers(n):\n    i = 0\n    while i<n:\n        j=i\n        i=i+1\n        if j%7==0:\n            yield j\n\nfor i in putNumbers(100):\n    print(i)",
       "tests": [
         {
           "stdin": "",
@@ -1522,7 +1458,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "def EvenGenerator(n):\n    i=0\n    while i<=n:\n        if i%2==0:\n            yield i\n        i+=1\n\n\nn=int(input())\nvalues = []\nfor i in EvenGenerator(n):\n    values.append(str(i))\n\nprint(\",\".join(values))",
       "tests": null
     },
     {
@@ -1541,7 +1476,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "def NumGenerator(n):\n    for i in range(n+1):\n        if i%5==0 and i%7==0:\n            yield i\n\nn=int(input())\nvalues = []\nfor i in NumGenerator(n):\n    values.append(str(i))\n\nprint(\",\".join(values))",
       "tests": null
     },
     {
@@ -1562,7 +1496,6 @@
         "Use __init__ method to construct some parameters"
       ],
       "starter": null,
-      "solution": "class InputOutString(object):\n    def __init__(self):\n        self.s = \"\"\n\n    def getString(self):\n        self.s = input()\n\n    def printString(self):\n        print(self.s.upper())\n\nstrObj = InputOutString()\nstrObj.getString()\nstrObj.printString()",
       "tests": null
     },
     {
@@ -1581,7 +1514,6 @@
         "Define a instance parameter, need add it in __init__ method\nYou can init a object with construct parameter or set the value later"
       ],
       "starter": null,
-      "solution": "class Person:\n    # Define the class parameter \"name\"\n    name = \"Person\"\n\n    def __init__(self, name = None):\n        # self.name is the instance parameter\n        self.name = name\n\njeffrey = Person(\"Jeffrey\")\nprint(\"%s name is %s\" % (Person.name, jeffrey.name))\n\nnico = Person()\nnico.name = \"Nico\"\nprint(\"%s name is %s\" % (Person.name, nico.name))",
       "tests": [
         {
           "stdin": "",
@@ -1604,7 +1536,6 @@
         "Use def methodName(self) to define a method."
       ],
       "starter": null,
-      "solution": "class Circle(object):\n    def __init__(self, r):\n        self.radius = r\n\n    def area(self):\n        return self.radius**2*3.14\n\naCircle = Circle(2)\nprint(aCircle.area())",
       "tests": [
         {
           "stdin": "",
@@ -1627,7 +1558,6 @@
         "Use def methodName(self) to define a method."
       ],
       "starter": null,
-      "solution": "class Rectangle(object):\n    def __init__(self, l, w):\n        self.length = l\n        self.width  = w\n\n    def area(self):\n        return self.length*self.width\n\naRectangle = Rectangle(2,10)\nprint(aRectangle.area())",
       "tests": [
         {
           "stdin": "",
@@ -1649,7 +1579,6 @@
         "Use class Subclass(ParentClass) to define a subclass."
       ],
       "starter": null,
-      "solution": "class American(object):\n    pass\n\nclass NewYorker(American):\n    pass\n\nanAmerican = American()\naNewYorker = NewYorker()\nprint(anAmerican)\nprint(aNewYorker)",
       "tests": null
     },
     {
@@ -1667,7 +1596,6 @@
         "To override a method in super class, we can define a method with the same name in the super class."
       ],
       "starter": null,
-      "solution": "class Shape(object):\n    def __init__(self):\n        pass\n\n    def area(self):\n        return 0\n\nclass Square(Shape):\n    def __init__(self, l):\n        Shape.__init__(self)\n        self.length = l\n\n    def area(self):\n        return self.length*self.length\n\naSquare= Square(3)\nprint(aSquare.area())",
       "tests": [
         {
           "stdin": "",
@@ -1690,7 +1618,6 @@
         "Use Subclass(Parentclass) to define a child class."
       ],
       "starter": null,
-      "solution": "class Person(object):\n    def getGender( self ):\n        return \"Unknown\"\n\nclass Male( Person ):\n    def getGender( self ):\n        return \"Male\"\n\nclass Female( Person ):\n    def getGender( self ):\n        return \"Female\"\n\naMale = Male()\naFemale= Female()\nprint(aMale.getGender())\nprint(aFemale.getGender())",
       "tests": [
         {
           "stdin": "",
@@ -1711,7 +1638,6 @@
         "Use @staticmethod decorator to define class static method."
       ],
       "starter": null,
-      "solution": "class American(object):\n    @staticmethod\n    def printNationality():\n        print(\"America\")\n\nanAmerican = American()\nanAmerican.printNationality()\nAmerican.printNationality()",
       "tests": [
         {
           "stdin": "",
@@ -1732,7 +1658,6 @@
         "Use raise() to raise an exception."
       ],
       "starter": null,
-      "solution": "raise RuntimeError('something wrong')",
       "tests": null
     },
     {
@@ -1750,7 +1675,6 @@
         "Use try/except to catch exceptions."
       ],
       "starter": null,
-      "solution": "def throws():\n    return 5/0\n\ntry:\n    throws()\nexcept ZeroDivisionError:\n    print(\"division by zero!\")\nexcept Exception as err:\n    print('Caught an exception')\nfinally:\n    print('In finally block for cleanup')",
       "tests": [
         {
           "stdin": "",
@@ -1772,7 +1696,6 @@
         "To define a custom exception, we need to define a class inherited from Exception."
       ],
       "starter": null,
-      "solution": "class MyError(Exception):\n    \"\"\"My own exception class\n\n    Attributes:\n        msg  -- explanation of the error\n    \"\"\"\n\n    def __init__(self, msg):\n        self.msg = msg\n\nerror = MyError(\"something wrong\")",
       "tests": null
     },
     {
@@ -1788,7 +1711,6 @@
         "Use \"assert expression\" to make assertion."
       ],
       "starter": null,
-      "solution": "li = [2,4,6,8]\nfor i in li:\n    assert i%2==0",
       "tests": null
     },
     {
@@ -1809,7 +1731,6 @@
         "If the output received is in decimal form, it should be rounded off to its nearest value (for example, if the output received is 26.0, it should be printed as 26)\nIn case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "#!/usr/bin/env python\nimport math\nc=50\nh=30\nvalue = []\nitems=[x for x in input().split(',')]\nfor d in items:\n    value.append(str(int(round(math.sqrt(2*c*float(d)/h)))))\n\nprint(','.join(value))",
       "tests": null
     },
     {
@@ -1830,7 +1751,6 @@
         "In case of input data being supplied to the question, it should be assumed to be a console input."
       ],
       "starter": null,
-      "solution": "import math\npos = [0,0]\nwhile True:\n    s = input()\n    if not s:\n        break\n    movement = s.split(\" \")\n    direction = movement[0]\n    steps = int(movement[1])\n    if direction==\"UP\":\n        pos[0]+=steps\n    elif direction==\"DOWN\":\n        pos[0]-=steps\n    elif direction==\"LEFT\":\n        pos[1]-=steps\n    elif direction==\"RIGHT\":\n        pos[1]+=steps\n    else:\n        pass\n\nprint(int(round(math.sqrt(pos[1]**2+pos[0]**2))))",
       "tests": null
     },
     {
@@ -1846,7 +1766,6 @@
         "Use random.random() to generate a random float in [0,1]."
       ],
       "starter": null,
-      "solution": "import random\nprint(random.uniform(10, 100))",
       "tests": null
     },
     {
@@ -1862,7 +1781,6 @@
         "Use random.random() to generate a random float in [0,1]."
       ],
       "starter": null,
-      "solution": "import random\nprint(random.uniform(5, 95))",
       "tests": null
     },
     {
@@ -1879,7 +1797,6 @@
         "Use random.choice() to a random element from a list."
       ],
       "starter": null,
-      "solution": "import random\nprint(random.choice([i for i in range(11) if i%2==0]))",
       "tests": null
     },
     {
@@ -1896,7 +1813,6 @@
         "Use random.choice() to a random element from a list."
       ],
       "starter": null,
-      "solution": "import random\nprint(random.choice([i for i in range(201) if i%5==0 and i%7==0]))",
       "tests": null
     },
     {
@@ -1912,7 +1828,6 @@
         "Use random.sample() to generate a list of random values."
       ],
       "starter": null,
-      "solution": "import random\nprint(random.sample(range(100), 5))",
       "tests": null
     },
     {
@@ -1929,7 +1844,6 @@
         "Use random.sample() to generate a list of random values."
       ],
       "starter": null,
-      "solution": "import random\nprint(random.sample([i for i in range(100,201) if i%2==0], 5))",
       "tests": null
     },
     {
@@ -1946,7 +1860,6 @@
         "Use random.sample() to generate a list of random values."
       ],
       "starter": null,
-      "solution": "import random\nprint(random.sample([i for i in range(1,1001) if i%5==0 and i%7==0], 5))",
       "tests": null
     },
     {
@@ -1962,7 +1875,6 @@
         "Use random.randrange() to a random integer in a given range."
       ],
       "starter": null,
-      "solution": "import random\nprint(random.randrange(7,16))",
       "tests": null
     },
     {
@@ -1979,7 +1891,6 @@
         "Use shuffle() function to shuffle a list."
       ],
       "starter": null,
-      "solution": "from random import shuffle\nli = [3,6,7,8]\nshuffle(li)\nprint(li)",
       "tests": null
     },
     {
@@ -1996,7 +1907,6 @@
         "Use timeit() function to measure the running time."
       ],
       "starter": null,
-      "solution": "from timeit import Timer\nt = Timer(\"for i in range(100):1+1\")\nprint(t.timeit())",
       "tests": null
     }
   ]

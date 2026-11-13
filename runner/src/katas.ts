@@ -30,10 +30,9 @@ export interface Kata {
   hints: string[]
   /** Optional editor prefill; null until authored per kata. */
   starter: string | null
-  /** Reference solution, Python 3. */
-  solution: string
   /** stdin/stdout pairs for auto-checking; null when not derivable
-   * (input()-reading, random/timeit, no-output katas). */
+   * (input()-reading, random/timeit, no-output katas). Reference solutions
+   * are NOT shipped — they live only in the markdown. */
   tests: KataTest[] | null
 }
 

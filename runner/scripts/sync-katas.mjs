@@ -291,7 +291,9 @@ for (const kata of manifest.katas) {
 }
 
 mkdirSync(dirname(OUT_PATH), { recursive: true })
-writeFileSync(OUT_PATH, JSON.stringify(manifest, null, 2) + '\n')
+// Solutions are read from the markdown, executed for test derivation, and
+// never shipped: build/katas.json is student-facing.
+writeFileSync(OUT_PATH, JSON.stringify(manifest, (key, value) => (key === 'solution' ? undefined : value), 2) + '\n')
 
 console.log(`${manifest.katas.length} katas in ${manifest.parts.length} parts / ${manifest.sections.length} sections`)
 console.log(`tests derived for ${derived} katas, ${skipped.length} skipped:`)
