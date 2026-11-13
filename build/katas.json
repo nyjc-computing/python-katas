@@ -26,26 +26,25 @@
       "title": "Functional & idiomatic Python",
       "sections": [
         "s08",
-        "s09",
-        "s10"
+        "s09"
       ]
     },
     {
       "id": "D",
       "title": "OOP, errors & introspection",
       "sections": [
+        "s10",
         "s11",
-        "s12",
-        "s13"
+        "s12"
       ]
     },
     {
       "id": "E",
       "title": "Standard library",
       "sections": [
+        "s13",
         "s14",
-        "s15",
-        "s16"
+        "s15"
       ]
     }
   ],
@@ -101,48 +100,42 @@
     {
       "id": "s09",
       "n": 9,
-      "title": "`itertools`",
+      "title": "Recursion",
       "part": "C"
     },
     {
       "id": "s10",
       "n": 10,
-      "title": "Recursion",
-      "part": "C"
+      "title": "Classes & objects",
+      "part": "D"
     },
     {
       "id": "s11",
       "n": 11,
-      "title": "Classes & objects",
+      "title": "Inheritance, polymorphism & static methods",
       "part": "D"
     },
     {
       "id": "s12",
       "n": 12,
-      "title": "Inheritance, polymorphism & static methods",
+      "title": "Exceptions & assertions",
       "part": "D"
     },
     {
       "id": "s13",
       "n": 13,
-      "title": "Exceptions & assertions",
-      "part": "D"
+      "title": "`math`",
+      "part": "E"
     },
     {
       "id": "s14",
       "n": 14,
-      "title": "`math`",
+      "title": "`random`",
       "part": "E"
     },
     {
       "id": "s15",
       "n": 15,
-      "title": "`random`",
-      "part": "E"
-    },
-    {
-      "id": "s16",
-      "n": 16,
       "title": "`timeit`",
       "part": "E"
     }
@@ -1022,31 +1015,10 @@
       "tests": null
     },
     {
-      "id": "045-all-permutations-of-1-2-3",
+      "id": "045-factorial",
       "n": 45,
-      "title": "All permutations of [1, 2, 3]",
-      "section": "s09",
-      "features": [
-        "itertools.permutations()",
-        "list() conversion"
-      ],
-      "question": "Please write a program which prints all permutations of `[1, 2, 3]`.",
-      "hints": [
-        "Use `itertools.permutations()` to get permutations of list."
-      ],
-      "starter": null,
-      "tests": [
-        {
-          "stdin": "",
-          "stdout": "[(1, 2, 3), (1, 3, 2), (2, 1, 3), (2, 3, 1), (3, 1, 2), (3, 2, 1)]\n"
-        }
-      ]
-    },
-    {
-      "id": "046-factorial",
-      "n": 46,
       "title": "Factorial",
-      "section": "s10",
+      "section": "s09",
       "features": [
         "recursive def",
         "base case"
@@ -1059,10 +1031,10 @@
       "tests": null
     },
     {
-      "id": "047-f-n-f-n-1-100",
-      "n": 47,
+      "id": "046-f-n-f-n-1-100",
+      "n": 46,
       "title": "f(n) = f(n−1) + 100",
-      "section": "s10",
+      "section": "s09",
       "features": [
         "recursion",
         "if/else base case"
@@ -1075,10 +1047,10 @@
       "tests": null
     },
     {
-      "id": "048-fibonacci-number-f-n",
-      "n": 48,
+      "id": "047-fibonacci-number-f-n",
+      "n": 47,
       "title": "Fibonacci number f(n)",
-      "section": "s10",
+      "section": "s09",
       "features": [
         "recursion with two base cases"
       ],
@@ -1090,10 +1062,10 @@
       "tests": null
     },
     {
-      "id": "049-fibonacci-sequence-as-a-comma-separated-string",
-      "n": 49,
+      "id": "048-fibonacci-sequence-as-a-comma-separated-string",
+      "n": 48,
       "title": "Fibonacci sequence as a comma-separated string",
-      "section": "s10",
+      "section": "s09",
       "features": [
         "recursion + list comprehension",
         "str()",
@@ -1108,10 +1080,10 @@
       "tests": null
     },
     {
-      "id": "050-a-string-handling-class",
-      "n": 50,
+      "id": "049-a-string-handling-class",
+      "n": 49,
       "title": "A string-handling class",
-      "section": "s11",
+      "section": "s10",
       "features": [
         "class",
         "__init__",
@@ -1127,10 +1099,10 @@
       "tests": null
     },
     {
-      "id": "051-class-parameter-vs-instance-parameter",
-      "n": 51,
+      "id": "050-class-parameter-vs-instance-parameter",
+      "n": 50,
       "title": "Class parameter vs instance parameter",
-      "section": "s11",
+      "section": "s10",
       "features": [
         "class attributes",
         "instance attributes",
@@ -1149,10 +1121,10 @@
       ]
     },
     {
-      "id": "052-circle-with-an-area-method",
-      "n": 52,
+      "id": "051-circle-with-an-area-method",
+      "n": 51,
       "title": "Circle with an area method",
-      "section": "s11",
+      "section": "s10",
       "features": [
         "class",
         "__init__ with parameters",
@@ -1171,10 +1143,10 @@
       ]
     },
     {
-      "id": "053-rectangle-with-an-area-method",
-      "n": 53,
+      "id": "052-rectangle-with-an-area-method",
+      "n": 52,
       "title": "Rectangle with an area method",
-      "section": "s11",
+      "section": "s10",
       "features": [
         "class",
         "__init__ with parameters",
@@ -1193,10 +1165,10 @@
       ]
     },
     {
-      "id": "054-american-and-its-subclass-newyorker",
-      "n": 54,
+      "id": "053-american-and-its-subclass-newyorker",
+      "n": 53,
       "title": "American and its subclass NewYorker",
-      "section": "s12",
+      "section": "s11",
       "features": [
         "class Subclass(Parent)",
         "instantiation"
@@ -1209,10 +1181,10 @@
       "tests": null
     },
     {
-      "id": "055-shape-and-square-overriding-area",
-      "n": 55,
+      "id": "054-shape-and-square-overriding-area",
+      "n": 54,
       "title": "Shape and Square: overriding `area()`",
-      "section": "s12",
+      "section": "s11",
       "features": [
         "inheritance",
         "method overriding",
@@ -1231,10 +1203,10 @@
       ]
     },
     {
-      "id": "056-person-male-female-polymorphic-getgender",
-      "n": 56,
+      "id": "055-person-male-female-polymorphic-getgender",
+      "n": 55,
       "title": "Person, Male, Female — polymorphic `getGender`",
-      "section": "s12",
+      "section": "s11",
       "features": [
         "inheritance",
         "method overriding",
@@ -1253,10 +1225,10 @@
       ]
     },
     {
-      "id": "057-a-class-with-a-static-method",
-      "n": 57,
+      "id": "056-a-class-with-a-static-method",
+      "n": 56,
       "title": "A class with a static method",
-      "section": "s12",
+      "section": "s11",
       "features": [
         "@staticmethod decorator"
       ],
@@ -1273,10 +1245,10 @@
       ]
     },
     {
-      "id": "058-raise-a-runtimeerror",
-      "n": 58,
+      "id": "057-raise-a-runtimeerror",
+      "n": 57,
       "title": "Raise a RuntimeError",
-      "section": "s13",
+      "section": "s12",
       "features": [
         "raise"
       ],
@@ -1288,10 +1260,10 @@
       "tests": null
     },
     {
-      "id": "059-catch-a-division-by-zero",
-      "n": 59,
+      "id": "058-catch-a-division-by-zero",
+      "n": 58,
       "title": "Catch a division by zero",
-      "section": "s13",
+      "section": "s12",
       "features": [
         "try/except/finally",
         "ZeroDivisionError",
@@ -1310,10 +1282,10 @@
       ]
     },
     {
-      "id": "060-a-custom-exception-class",
-      "n": 60,
+      "id": "059-a-custom-exception-class",
+      "n": 59,
       "title": "A custom exception class",
-      "section": "s13",
+      "section": "s12",
       "features": [
         "inheriting from Exception",
         "docstrings"
@@ -1326,10 +1298,10 @@
       "tests": null
     },
     {
-      "id": "061-assert-every-number-is-even",
-      "n": 61,
+      "id": "060-assert-every-number-is-even",
+      "n": 60,
       "title": "Assert every number is even",
-      "section": "s13",
+      "section": "s12",
       "features": [
         "assert statement"
       ],
@@ -1341,10 +1313,10 @@
       "tests": null
     },
     {
-      "id": "062-evaluate-q-2cd-h",
-      "n": 62,
+      "id": "061-evaluate-q-2cd-h",
+      "n": 61,
       "title": "Evaluate Q = √(2CD/H)",
-      "section": "s14",
+      "section": "s13",
       "features": [
         "math.sqrt()",
         "round()",
@@ -1361,10 +1333,10 @@
       "tests": null
     },
     {
-      "id": "063-robots-distance-from-the-origin",
-      "n": 63,
+      "id": "062-robots-distance-from-the-origin",
+      "n": 62,
       "title": "Robot's distance from the origin",
-      "section": "s14",
+      "section": "s13",
       "features": [
         "math.sqrt()",
         "round()",
@@ -1380,10 +1352,10 @@
       "tests": null
     },
     {
-      "id": "064-a-random-float-scaled",
-      "n": 64,
+      "id": "063-a-random-float-scaled",
+      "n": 63,
       "title": "A random float (scaled)",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.random()"
       ],
@@ -1395,10 +1367,10 @@
       "tests": null
     },
     {
-      "id": "065-a-random-float-between-5-and-95",
-      "n": 65,
+      "id": "064-a-random-float-between-5-and-95",
+      "n": 64,
       "title": "A random float between 5 and 95",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.random()"
       ],
@@ -1410,10 +1382,10 @@
       "tests": null
     },
     {
-      "id": "066-random-even-number-between-0-and-10",
-      "n": 66,
+      "id": "065-random-even-number-between-0-and-10",
+      "n": 65,
       "title": "Random even number between 0 and 10",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.choice()",
         "list comprehension"
@@ -1426,10 +1398,10 @@
       "tests": null
     },
     {
-      "id": "067-random-number-divisible-by-5-and-7",
-      "n": 67,
+      "id": "066-random-number-divisible-by-5-and-7",
+      "n": 66,
       "title": "Random number divisible by 5 and 7",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.choice()",
         "list comprehension with compound filter"
@@ -1442,10 +1414,10 @@
       "tests": null
     },
     {
-      "id": "068-a-list-of-5-random-numbers",
-      "n": 68,
+      "id": "067-a-list-of-5-random-numbers",
+      "n": 67,
       "title": "A list of 5 random numbers",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.sample()"
       ],
@@ -1457,10 +1429,10 @@
       "tests": null
     },
     {
-      "id": "069-5-random-even-numbers-100-200",
-      "n": 69,
+      "id": "068-5-random-even-numbers-100-200",
+      "n": 68,
       "title": "5 random even numbers (100–200)",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.sample()",
         "list comprehension"
@@ -1473,10 +1445,10 @@
       "tests": null
     },
     {
-      "id": "070-5-random-multiples-of-5-and-7-1-1000",
-      "n": 70,
+      "id": "069-5-random-multiples-of-5-and-7-1-1000",
+      "n": 69,
       "title": "5 random multiples of 5 and 7 (1–1000)",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.sample()",
         "list comprehension with compound filter"
@@ -1489,10 +1461,10 @@
       "tests": null
     },
     {
-      "id": "071-random-integer-between-7-and-15",
-      "n": 71,
+      "id": "070-random-integer-between-7-and-15",
+      "n": 70,
       "title": "Random integer between 7 and 15",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.randrange()"
       ],
@@ -1504,10 +1476,10 @@
       "tests": null
     },
     {
-      "id": "072-shuffle-a-list",
-      "n": 72,
+      "id": "071-shuffle-a-list",
+      "n": 71,
       "title": "Shuffle a list",
-      "section": "s15",
+      "section": "s14",
       "features": [
         "random.shuffle()",
         "from … import"
@@ -1520,10 +1492,10 @@
       "tests": null
     },
     {
-      "id": "073-measure-execution-time",
-      "n": 73,
+      "id": "072-measure-execution-time",
+      "n": 72,
       "title": "Measure execution time",
-      "section": "s16",
+      "section": "s15",
       "features": [
         "timeit.Timer",
         "Timer.timeit()"

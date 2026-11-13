@@ -123,8 +123,8 @@ browsers download; the markdown is the maintainer-facing document.
 - **f-strings or `.format()`, never `%`-formatting.**
 - **Banned constructs** (remove or rewrite the kata): `u"…"` literals,
   `unicode()` conversion, `# -*- coding -*-` declarations, `sort()`/
-  `sorted()` as the skill under test (write sorting algorithms instead),
-  set-based mathematics, dict/generator comprehensions, list
+  `sorted()` and `itertools` as the skill under test (write the algorithm
+  instead), set-based mathematics, dict/generator comprehensions, list
   comprehensions beyond 1-D, `map()`/`filter()`/`lambda`, the `operator`
   module, generators and `yield`.
 

@@ -1,6 +1,6 @@
 # Python katas
 
-A practice corpus of 73 katas, sorted by the **Python features they use or
+A practice corpus of 72 katas, sorted by the **Python features they use or
 require**, ordered roughly from basic to advanced and grouped into five
 parts. Each kata carries a **Features:** line listing exactly what it
 practises, and sits under its primary feature.
@@ -24,16 +24,15 @@ observable behavior (the auto-check tests are derived from them).
   7. Dictionaries — katas 32–37
 - **Part C — Functional & idiomatic Python**
   8. List comprehensions — katas 38–44
-  9. `itertools` — kata 45
-  10. Recursion — katas 46–49
+  9. Recursion — katas 45–48
 - **Part D — OOP, errors & introspection**
-  11. Classes & objects — katas 50–53
-  12. Inheritance, polymorphism & static methods — katas 54–57
-  13. Exceptions & assertions — katas 58–61
+  10. Classes & objects — katas 49–52
+  11. Inheritance, polymorphism & static methods — katas 53–56
+  12. Exceptions & assertions — katas 57–60
 - **Part E — Standard library**
-  14. `math` — katas 62–63
-  15. `random` — katas 64–72
-  16. `timeit` — kata 73
+  13. `math` — katas 61–62
+  14. `random` — katas 63–71
+  15. `timeit` — kata 72
 
 ---
 
@@ -43,7 +42,6 @@ observable behavior (the auto-check tests are derived from them).
 
 Defining functions with `def`/`return`, parameters and calls; explicit type
 conversion with `int()`, `str()`, `len()`; base-`int()` parsing.
-
 ### 1. Square of a number
 
 **Features:** `def`, `return`, `**` operator
@@ -215,7 +213,6 @@ print(','.join(value))
 
 The `%` and `**` operators, equality tests, boolean `and`/`or`, and
 `if`/`elif`/`else` branching.
-
 ### 8. Even or odd
 
 **Features:** `%` operator, `if`/`else`
@@ -284,7 +281,6 @@ print(",".join(values))
 ## 3. Loops & iteration
 
 `for` loops with `range()`, `while` loops with sentinel conditions, nested loops, and accumulator patterns.
-
 ### 11. Divisible by 7 but not a multiple of 5
 
 **Features:** `range()`, `for` loop, `%` with `and`, `list.append`, `str.join`
@@ -521,7 +517,6 @@ print(bin_search(li, 12))
 
 Character classification (`isdigit()`, `isalpha()`, `isupper()`,
 `islower()`), case conversion, and `%`-style string formatting.
-
 ### 18. Count letters and digits in a sentence
 
 **Features:** `str.isdigit()`, `str.isalpha()`, dict counter, `for` over a string
@@ -639,9 +634,7 @@ print(n1 + n2 + n3 + n4)
 
 ## 5. Lists & slicing
 
-Unicode string literals, explicit encoding conversion, and source-file
-encoding declarations.
-
+Building lists with `append()`, filtering and de-duplicating them, then slicing with positive and negative indexes, `[n:m]` ranges, `[::-1]` reversal and `[::2]` steps.
 ### 21. Build a list of squares (1–20)
 
 **Features:** `list()`, `list.append()`, `range()`, `**` operator
@@ -831,8 +824,8 @@ print(values)
 
 ## 6. Tuples
 
-Building lists with `append()`, filtering and de-duplicating them, then slicing with positive and negative indexes, `[n:m]` ranges, `[::-1]` reversal and `[::2]` steps.
-
+Creating tuples from lists with `tuple()`, slicing tuples, and iterating over
+them.
 ### 28. Comma-separated numbers → list and tuple
 
 **Features:** `str.split()`, `tuple()` conversion
@@ -939,9 +932,8 @@ print(evens)
 
 ## 7. Dictionaries
 
-Creating tuples from lists with `tuple()`, slicing tuples, and iterating over
-them.
-
+Building dictionaries, `dict.get()` with defaults, and iterating with
+`keys()` / `items()`.
 ### 32. Dictionary of squares {i: i²}
 
 **Features:** `dict()`, dictionary assignment, `range()`, `for` loop
@@ -1129,7 +1121,6 @@ for char, count in counts.items():
 ## 8. List comprehensions
 
 Basic comprehensions, comprehensions with `if` filters, and comprehensions over `enumerate()` — one-dimensional only.
-
 ### 38. "Square" each odd number in a list
 
 **Features:** list comprehension with `if` filter, `str.split()`, `str.join()`
@@ -1293,33 +1284,11 @@ for i in range(x):
 print(matrix)
 ```
 
-## 9. `itertools`
+## 9. Recursion
 
-Permutations of a sequence with `itertools.permutations()`.
-
-### 45. All permutations of [1, 2, 3]
-
-**Features:** `itertools.permutations()`, `list()` conversion
-
-**Question:**
-Please write a program which prints all permutations of `[1, 2, 3]`.
-
-**Hints:**
-Use `itertools.permutations()` to get permutations of list.
-
-**Solution:**
-
-```python
-import itertools
-print(list(itertools.permutations([1, 2, 3])))
-```
-
-## 10. Recursion
-
-Basic comprehensions, comprehensions with `if` filters, comprehensions over
-`enumerate()`, and nested 2-D/3-D comprehensions.
-
-### 46. Factorial
+Self-calling functions with base cases — factorial, linear recurrence,
+Fibonacci — and combining recursion with a comprehension.
+### 45. Factorial
 
 **Features:** recursive `def`, base case
 
@@ -1355,7 +1324,7 @@ x = int(input())
 print(fact(x))
 ```
 
-### 47. f(n) = f(n−1) + 100
+### 46. f(n) = f(n−1) + 100
 
 **Features:** recursion, `if`/`else` base case
 
@@ -1399,7 +1368,7 @@ n = int(input())
 print(f(n))
 ```
 
-### 48. Fibonacci number f(n)
+### 47. Fibonacci number f(n)
 
 **Features:** recursion with two base cases
 
@@ -1445,7 +1414,7 @@ n = int(input())
 print(f(n))
 ```
 
-### 49. Fibonacci sequence as a comma-separated string
+### 48. Fibonacci sequence as a comma-separated string
 
 **Features:** recursion + list comprehension, `str()`, `str.join()`
 
@@ -1498,12 +1467,11 @@ print(",".join(values))
 
 # Part D — OOP, errors & introspection
 
-## 11. Classes & objects
+## 10. Classes & objects
 
-The classic functional trio — anonymous `lambda` functions passed to
-`map()` and `filter()` — plus `itertools.permutations()`.
-
-### 50. A string-handling class
+Defining classes, `__init__` constructors, instance methods, and the
+class-attribute vs instance-attribute distinction.
+### 49. A string-handling class
 
 **Features:** `class`, `__init__`, instance methods, instance attributes, `str.upper()`
 
@@ -1535,7 +1503,7 @@ string_obj.get_string()
 string_obj.print_string()
 ```
 
-### 51. Class parameter vs instance parameter
+### 50. Class parameter vs instance parameter
 
 **Features:** class attributes, instance attributes, `__init__` defaults
 
@@ -1566,7 +1534,7 @@ nico.name = "Nico"
 print(f"{Person.name} name is {nico.name}")
 ```
 
-### 52. Circle with an area method
+### 51. Circle with an area method
 
 **Features:** `class`, `__init__` with parameters, instance methods
 
@@ -1591,7 +1559,7 @@ circle = Circle(2)
 print(circle.area())
 ```
 
-### 53. Rectangle with an area method
+### 52. Rectangle with an area method
 
 **Features:** `class`, `__init__` with parameters, instance methods
 
@@ -1617,12 +1585,11 @@ rectangle = Rectangle(2, 10)
 print(rectangle.area())
 ```
 
-## 12. Inheritance, polymorphism & static methods
+## 11. Inheritance, polymorphism & static methods
 
-In-place `list.sort()`, `sorted()`, and multi-key sorting with
-`operator.itemgetter`.
-
-### 54. American and its subclass NewYorker
+Subclassing, method overriding, polymorphic dispatch, and the
+`@staticmethod` decorator.
+### 53. American and its subclass NewYorker
 
 **Features:** `class Subclass(Parent)`, instantiation
 
@@ -1649,7 +1616,7 @@ print(american)
 print(new_yorker)
 ```
 
-### 55. Shape and Square: overriding `area()`
+### 54. Shape and Square: overriding `area()`
 
 **Features:** inheritance, method overriding, calling the parent `__init__`
 
@@ -1683,7 +1650,7 @@ square = Square(3)
 print(square.area())
 ```
 
-### 56. Person, Male, Female — polymorphic `getGender`
+### 55. Person, Male, Female — polymorphic `getGender`
 
 **Features:** inheritance, method overriding, polymorphism
 
@@ -1717,7 +1684,7 @@ print(male.get_gender())
 print(female.get_gender())
 ```
 
-### 57. A class with a static method
+### 56. A class with a static method
 
 **Features:** `@staticmethod` decorator
 
@@ -1741,12 +1708,11 @@ american.print_nationality()
 American.print_nationality()
 ```
 
-## 13. Exceptions & assertions
+## 12. Exceptions & assertions
 
-Self-calling functions with base cases — factorial, linear recurrence,
-Fibonacci — and combining recursion with a comprehension.
-
-### 58. Raise a RuntimeError
+Raising exceptions, catching them with `try`/`except`/`finally`, defining
+custom exception classes, and `assert` statements.
+### 57. Raise a RuntimeError
 
 **Features:** `raise`
 
@@ -1762,7 +1728,7 @@ Use the `raise` statement to raise an exception.
 raise RuntimeError('something wrong')
 ```
 
-### 59. Catch a division by zero
+### 58. Catch a division by zero
 
 **Features:** `try`/`except`/`finally`, `ZeroDivisionError`, generic `Exception` handler
 
@@ -1789,7 +1755,7 @@ finally:
     print('In finally block for cleanup')
 ```
 
-### 60. A custom exception class
+### 59. A custom exception class
 
 **Features:** inheriting from `Exception`, docstrings
 
@@ -1816,7 +1782,7 @@ class MyError(Exception):
 error = MyError("something wrong")
 ```
 
-### 61. Assert every number is even
+### 60. Assert every number is even
 
 **Features:** `assert` statement
 
@@ -1838,12 +1804,10 @@ for i in li:
 
 # Part E — Standard library
 
-## 14. `math`
+## 13. `math`
 
-Generator functions that produce values lazily with `yield`, consumed by
-`for` loops.
-
-### 62. Evaluate Q = √(2CD/H)
+Square roots, rounding and distance computations with the `math` module.
+### 61. Evaluate Q = √(2CD/H)
 
 **Features:** `math.sqrt()`, `round()`, `float()`, `int()`, `str.split()`, `str.join()`
 
@@ -1890,7 +1854,7 @@ for d in items:
 print(','.join(value))
 ```
 
-### 63. Robot's distance from the origin
+### 62. Robot's distance from the origin
 
 **Features:** `math.sqrt()`, `round()`, `while` loop with sentinel condition, `str.split()`, `if`/`elif` dispatch
 
@@ -1948,12 +1912,11 @@ while line != '':
 print(int(round(math.sqrt(pos[1] ** 2 + pos[0] ** 2))))
 ```
 
-## 15. `random`
+## 14. `random`
 
-Defining classes, `__init__` constructors, instance methods, and the
-class-attribute vs instance-attribute distinction.
-
-### 64. A random float (scaled)
+`random()`, `choice()`, `sample()`, `randrange()` and `shuffle()` — often
+combined with list comprehensions to constrain the candidate pool.
+### 63. A random float (scaled)
 
 **Features:** `random.random()`
 
@@ -1970,7 +1933,7 @@ import random
 print(random.uniform(10, 100))
 ```
 
-### 65. A random float between 5 and 95
+### 64. A random float between 5 and 95
 
 **Features:** `random.random()`
 
@@ -1987,7 +1950,7 @@ import random
 print(random.uniform(5, 95))
 ```
 
-### 66. Random even number between 0 and 10
+### 65. Random even number between 0 and 10
 
 **Features:** `random.choice()`, list comprehension
 
@@ -2004,7 +1967,7 @@ import random
 print(random.choice([i for i in range(0, 11) if i % 2 == 0]))
 ```
 
-### 67. Random number divisible by 5 and 7
+### 66. Random number divisible by 5 and 7
 
 **Features:** `random.choice()`, list comprehension with compound filter
 
@@ -2021,7 +1984,7 @@ import random
 print(random.choice([i for i in range(0, 1001) if i % 5 == 0 and i % 7 == 0]))
 ```
 
-### 68. A list of 5 random numbers
+### 67. A list of 5 random numbers
 
 **Features:** `random.sample()`
 
@@ -2038,7 +2001,7 @@ import random
 print(random.sample(range(100, 201), 5))
 ```
 
-### 69. 5 random even numbers (100–200)
+### 68. 5 random even numbers (100–200)
 
 **Features:** `random.sample()`, list comprehension
 
@@ -2055,7 +2018,7 @@ import random
 print(random.sample([i for i in range(100, 201) if i % 2 == 0], 5))
 ```
 
-### 70. 5 random multiples of 5 and 7 (1–1000)
+### 69. 5 random multiples of 5 and 7 (1–1000)
 
 **Features:** `random.sample()`, list comprehension with compound filter
 
@@ -2074,7 +2037,7 @@ multiples = [i for i in range(1, 1001) if i % 5 == 0 and i % 7 == 0]
 print(random.sample(multiples, 5))
 ```
 
-### 71. Random integer between 7 and 15
+### 70. Random integer between 7 and 15
 
 **Features:** `random.randrange()`
 
@@ -2091,7 +2054,7 @@ import random
 print(random.randrange(7, 16))
 ```
 
-### 72. Shuffle a list
+### 71. Shuffle a list
 
 **Features:** `random.shuffle()`, `from … import`
 
@@ -2110,12 +2073,10 @@ shuffle(li)
 print(li)
 ```
 
-## 16. `timeit`
+## 15. `timeit`
 
-Subclassing, method overriding, polymorphic dispatch, and the
-`@staticmethod` decorator.
-
-### 73. Measure execution time
+Timing snippet execution with the `timeit` module.
+### 72. Measure execution time
 
 **Features:** `timeit.Timer`, `Timer.timeit()`
 
