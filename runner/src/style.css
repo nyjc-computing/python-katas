@@ -298,6 +298,13 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 0.3rem 0.75rem;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--border);
 }
 
 .pane-title > span:first-child {
@@ -320,14 +327,6 @@ button:disabled {
 .console-title button:hover {
   color: var(--text);
   border-color: var(--accent);
-}
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  padding: 0.3rem 0.75rem;
-  background: var(--chrome);
-  border-bottom: 1px solid var(--border);
 }
 
 /* ── editor ──────────────────────────────────────────────── */

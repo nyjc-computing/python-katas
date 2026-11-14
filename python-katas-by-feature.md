@@ -47,11 +47,10 @@ conversion with `int()`, `str()`, `len()`; base-`int()` parsing.
 **Features:** `def`, `return`, `**` operator
 
 **Question:**
-Write a method which can calculate square value of number
+Define a function that returns the square of a number. Test it by printing the squares of 2 and 3.
 
 **Hints:**
-Using the `**` operator
-
+Use the `**` operator.
 **Solution:**
 
 ```python
@@ -68,16 +67,15 @@ print(square(3))
 **Features:** `def`, parameters, `return`
 
 **Question:**
-Define a function which can compute the sum of two numbers.
+Define a function that returns the sum of two numbers. Test it by printing the sum of 1 and 2.
 
 **Hints:**
-Define a function with two numbers as arguments. You can compute the sum in the function and return the value.
-
+Define a function that takes two numbers as arguments and returns their sum.
 **Solution:**
 
 ```python
 def sum_function(number1, number2):
-    return number1+number2
+    return number1 + number2
 
 
 print(sum_function(1, 2))
@@ -88,11 +86,10 @@ print(sum_function(1, 2))
 **Features:** `str()` conversion
 
 **Question:**
-Define a function that can convert a integer into a string and print it in console.
+Define a function that converts an integer to a string and prints it to the console. Test it with the integer 3.
 
 **Hints:**
-Use `str()` to convert a number to string.
-
+Use `str()` to convert a number to a string.
 **Solution:**
 
 ```python
@@ -108,19 +105,18 @@ print_value(3)
 **Features:** `int()` conversion, parameters
 
 **Question:**
-Define a function that can receive two integral numbers in string form and compute their sum and then print it in console.
+Define a function that takes two integers in string form, computes their sum, and prints it to the console. Test it with the strings `"3"` and `"4"`.
 
 **Hints:**
-Use `int()` to convert a string to integer.
-
+Use `int()` to convert a string to an integer.
 **Solution:**
 
 ```python
 def print_value(s1, s2):
-    print(int(s1)+int(s2))
+    print(int(s1) + int(s2))
 
 
-print_value("3", "4")  # 7
+print_value("3", "4")
 ```
 
 ### 5. Concatenate two strings
@@ -128,16 +124,15 @@ print_value("3", "4")  # 7
 **Features:** string concatenation with `+`
 
 **Question:**
-Define a function that can accept two strings as input and concatenate them and then print it in console.
+Define a function that takes two strings, concatenates them, and prints the result to the console. Test it with the strings `"3"` and `"4"`.
 
 **Hints:**
-Use `+` to concatenate the strings.
-
+Use `+` to concatenate strings.
 **Solution:**
 
 ```python
 def print_value(s1, s2):
-    print(s1+s2)
+    print(s1 + s2)
 
 
 print_value("3", "4")
@@ -148,11 +143,10 @@ print_value("3", "4")
 **Features:** `len()`, `if`/`elif`/`else`
 
 **Question:**
-Define a function that can accept two strings as input and print the string with maximum length in console. If two strings have the same length, then the function should print all strings line by line.
+Define a function that takes two strings and prints the longer one to the console. If both strings have the same length, the function should print each string on its own line. Test it with the strings `"one"` and `"three"`.
 
 **Hints:**
-Use the `len()` function to get the length of a string.
-
+Use `len()` to get the length of a string.
 **Solution:**
 
 ```python
@@ -173,29 +167,25 @@ print_value("one", "three")
 
 ### 7. Four-digit binary numbers divisible by 5
 
-**Features:** `int(x, 2)` base conversion, `for` loops, `not`, `list.append`, `str.join`
+**Features:** `int(x, 2)` base conversion, `for` loops, `not`, `list.append()`, `str.join()`
 
 **Question:**
-Write a program which accepts a sequence of comma separated 4 digit binary numbers as its input and then check whether they are divisible by 5 or not. The numbers that are divisible by 5 are to be printed in a comma separated sequence.
+Write a program that accepts a sequence of comma-separated 4-digit binary numbers as input and checks whether each one is divisible by 5. The numbers that are divisible by 5 should be printed as a comma-separated sequence.
 
-Example:
-If the following input is given to the program:
+For example, given the input:
 
 ```
 0100,0011,1010,1001
 ```
 
-Then the output should be:
+the program should print:
 
 ```
 1010
 ```
 
-Notes: Assume the data is input by console.
-
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -218,11 +208,10 @@ The `%` and `**` operators, equality tests, boolean `and`/`or`, and
 **Features:** `%` operator, `if`/`else`
 
 **Question:**
-Define a function that can accept an integer number as input and print the "It is an even number" if the number is even, otherwise print "It is an odd number".
+Define a function that takes an integer and prints "It is an even number" if the number is even, or "It is an odd number" otherwise. Test it with the number 7.
 
 **Hints:**
-Use the `%` operator to check if a number is even or odd.
-
+Use the `%` operator to check whether a number is even or odd.
 **Solution:**
 
 ```python
@@ -241,11 +230,10 @@ check_value(7)
 **Features:** string equality, boolean `or`, `if`/`else`
 
 **Question:**
-Write a program which accepts a string as input to print "Yes" if the string is "yes" or "YES" or "Yes", otherwise print "No".
+Write a program that accepts a string as input and prints "Yes" if the string is "yes", "YES" or "Yes"; otherwise, it prints "No".
 
 **Hints:**
-Use `if` statement to judge condition.
-
+Use an `if` statement to test the condition.
 **Solution:**
 
 ```python
@@ -258,15 +246,13 @@ else:
 
 ### 10. Numbers whose digits are all even
 
-**Features:** `str()` indexing, `%` operator, chained `and` conditions, `list.append`, `str.join`
+**Features:** `str()` conversion, `all()`, `%` operator, `list.append()`, `str.join()`
 
 **Question:**
-Write a program, which will find all such numbers between 1000 and 3000 (both included) such that each digit of the number is an even number.
-The numbers obtained should be printed in a comma-separated sequence on a single line.
+Write a program that finds every number between 1000 and 3000 (both included) in which each digit is even. The numbers should be printed as a comma-separated sequence on a single line.
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Convert each number to a string to examine its digits.
 **Solution:**
 
 ```python
@@ -283,16 +269,13 @@ print(",".join(values))
 `for` loops with `range()`, `while` loops with sentinel conditions, nested loops, and accumulator patterns.
 ### 11. Divisible by 7 but not a multiple of 5
 
-**Features:** `range()`, `for` loop, `%` with `and`, `list.append`, `str.join`
+**Features:** `range()`, `for` loop, `%` with `and`, `list.append()`, `str.join()`
 
 **Question:**
-Write a program which will find all such numbers which are divisible by 7 but are not a multiple of 5,
-between 2000 and 3200 (both included).
-The numbers obtained should be printed in a comma-separated sequence on a single line.
+Write a program that finds every number between 2000 and 3200 (both included) that is divisible by 7 but is not a multiple of 5. The numbers should be printed as a comma-separated sequence on a single line.
 
 **Hints:**
-Consider using the `range(begin, end)` method.
-
+Use `range(begin, end)` to generate the numbers to check.
 **Solution:**
 
 ```python
@@ -306,19 +289,19 @@ print(','.join(items))
 
 ### 12. Capitalise input lines until a blank line
 
-**Features:** `while True`, `break`, `str.upper()`, `list.append`
+**Features:** `while` loop with a sentinel condition, `str.upper()`, `list.append()`
 
 **Question:**
-Write a program that accepts sequence of lines as input and prints the lines after making all characters in the sentence capitalized.
+Write a program that accepts a sequence of lines as input and prints each line with all of its characters capitalised. Input ends at the first blank line.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 Hello world
 Practice makes perfect
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 HELLO WORLD
@@ -326,8 +309,7 @@ PRACTICE MAKES PERFECT
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -343,19 +325,19 @@ for sentence in lines:
 
 ### 13. Net bank balance from a transaction log
 
-**Features:** `while True`/`break`, `str.split()`, `if`/`elif`, accumulator
+**Features:** `while` loop with a sentinel condition, `str.split()`, `if`/`elif`, accumulator
 
 **Question:**
-Write a program that computes the net amount of a bank account based on a transaction log from console input. The transaction log format is shown as following:
+Write a program that computes the net balance of a bank account from a transaction log supplied through the console. Each log line has the form:
 
 ```
 D 100
 W 200
 ```
 
-`D` means deposit while `W` means withdrawal.
+`D` means deposit and `W` means withdrawal. Input ends at the first blank line.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 D 300
@@ -364,15 +346,14 @@ W 200
 D 100
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 500
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -394,26 +375,22 @@ print(net_amount)
 **Features:** `for` with `range()`, float accumulator, `float()` conversion
 
 **Question:**
-Write a program to compute `1/2 + 2/3 + 3/4 + … + n/(n+1)` with a given n input by console (`n > 0`).
+Write a program that computes `1/2 + 2/3 + 3/4 + … + n/(n+1)` for a given `n` (`n > 0`) supplied through the console.
 
-Example:
-If the following n is given as input to the program:
+For example, given the input:
 
 ```
 5
 ```
 
-Then, the output of the program should be:
+the program should print:
 
 ```
 3.55
 ```
 
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
 **Hints:**
 Use `float()` to convert an integer to a float.
-
 **Solution:**
 
 ```python
@@ -429,11 +406,10 @@ print(total)
 **Features:** nested `for` loops, list indexing, f-strings
 
 **Question:**
-Please write a program to generate all sentences where subject is in `["I", "You"]` and verb is in `["Play", "Love"]` and the object is in `["Hockey", "Football"]`.
+Write a program that generates all the sentences whose subject is in `["I", "You"]`, whose verb is in `["Play", "Love"]`, and whose object is in `["Hockey", "Football"]`. Print one sentence per line, ending with a full stop — for example, `I Play Hockey.`
 
 **Hints:**
 Use `list[index]` notation to get an element from a list.
-
 **Solution:**
 
 ```python
@@ -452,20 +428,18 @@ for i in range(len(subjects)):
 **Features:** `for` loop brute force, function returning a tuple, tuple unpacking
 
 **Question:**
-Write a program to solve a classic ancient Chinese puzzle:
-We count 35 heads and 94 legs among the chickens and rabbits in a farm. How many rabbits and how many chickens do we have?
+Write a program that solves a classic ancient Chinese puzzle: a farm has chickens and rabbits, and between them there are 35 heads and 94 legs. How many chickens and how many rabbits are there? Print the answer as a `(chickens, rabbits)` tuple.
 
 **Hints:**
-Use a `for` loop to iterate all possible solutions.
-
+Use a `for` loop to try every possible combination.
 **Solution:**
 
 ```python
 def solve(numheads, numlegs):
     ns = 'No solutions!'
-    for i in range(numheads+1):
-        j = numheads-i
-        if 2*i+4*j == numlegs:
+    for i in range(numheads + 1):
+        j = numheads - i
+        if 2 * i + 4 * j == numlegs:
             return i, j
     return ns, ns
 
@@ -478,14 +452,13 @@ print(solutions)
 
 ### 17. Binary search in a sorted list
 
-**Features:** `while` loop, `if`/`elif`/`else`, index arithmetic, `math.floor`
+**Features:** `while` loop, `if`/`elif`/`else`, index arithmetic, `math.floor()`
 
 **Question:**
-Please write a binary search function which searches an item in a sorted list. The function should return the index of element to be searched in the list.
+Write a binary search function that searches for an item in a sorted list and returns its index, or `-1` if it is not present. Test it by searching the list `[2, 5, 7, 9, 11, 17, 222]` for 11 and then for 12.
 
 **Hints:**
-Use `if`/`elif` to deal with conditions.
-
+Use `if`/`elif` to decide which half of the list to search next.
 **Solution:**
 
 ```python
@@ -494,16 +467,16 @@ import math
 
 def bin_search(li, element):
     bottom = 0
-    top = len(li)-1
+    top = len(li) - 1
     index = -1
     while top >= bottom and index == -1:
-        mid = int(math.floor((top+bottom)/2.0))
+        mid = int(math.floor((top + bottom) / 2.0))
         if li[mid] == element:
             index = mid
         elif li[mid] > element:
-            top = mid-1
+            top = mid - 1
         else:
-            bottom = mid+1
+            bottom = mid + 1
 
     return index
 
@@ -522,15 +495,15 @@ Character classification (`isdigit()`, `isalpha()`, `isupper()`,
 **Features:** `str.isdigit()`, `str.isalpha()`, dict counter, `for` over a string
 
 **Question:**
-Write a program that accepts a sentence and calculate the number of letters and digits.
+Write a program that accepts a sentence and counts the number of letters and digits in it.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 hello world! 123
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 LETTERS 10
@@ -538,8 +511,7 @@ DIGITS 3
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -561,15 +533,15 @@ print("DIGITS", d["DIGITS"])
 **Features:** `str.isupper()`, `str.islower()`, dict counter
 
 **Question:**
-Write a program that accepts a sentence and calculate the number of upper case letters and lower case letters.
+Write a program that accepts a sentence and counts the number of upper-case letters and lower-case letters in it.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 Hello world!
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 UPPER CASE 1
@@ -577,8 +549,7 @@ LOWER CASE 9
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -600,23 +571,22 @@ print("LOWER CASE", d["LOWER CASE"])
 **Features:** string concatenation, `int()` conversion
 
 **Question:**
-Write a program that computes the value of `a + aa + aaa + aaaa` with a given digit as the value of `a`.
+Write a program that computes the value of `a + aa + aaa + aaaa`, where `a` is a single digit supplied through the console.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 9
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 11106
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -637,16 +607,15 @@ print(n1 + n2 + n3 + n4)
 Building lists with `append()`, filtering and de-duplicating them, then slicing with positive and negative indexes, `[n:m]` ranges, `[::-1]` reversal and `[::2]` steps.
 ### 21. Build a list of squares (1–20)
 
-**Features:** `list()`, `list.append()`, `range()`, `**` operator
+**Features:** `list.append()`, `range()`, `**` operator
 
 **Question:**
-Define a function which can generate and print a list where the values are square of numbers between 1 and 20 (both included).
+Define a function that generates and prints a list of the squares of the numbers between 1 and 20 (both included).
 
 **Hints:**
-Use `**` operator to get power of a number.
-Use `range()` for loops.
-Use `list.append()` to add values into a list.
-
+Use the `**` operator to raise a number to a power.
+Use `range()` in a `for` loop.
+Use `list.append()` to add values to a list.
 **Solution:**
 
 ```python
@@ -665,14 +634,13 @@ print_list()
 **Features:** slicing `[:5]`
 
 **Question:**
-Define a function which can generate a list where the values are square of numbers between 1 and 20 (both included). Then the function needs to print the first 5 elements in the list.
+Define a function that generates a list of the squares of the numbers between 1 and 20 (both included), then prints the first 5 elements of the list.
 
 **Hints:**
-Use `**` operator to get power of a number.
-Use `range()` for loops.
-Use `list.append()` to add values into a list.
+Use the `**` operator to raise a number to a power.
+Use `range()` in a `for` loop.
+Use `list.append()` to add values to a list.
 Use `[n1:n2]` to slice a list.
-
 **Solution:**
 
 ```python
@@ -691,14 +659,13 @@ print_list()
 **Features:** negative slicing `[-5:]`
 
 **Question:**
-Define a function which can generate a list where the values are square of numbers between 1 and 20 (both included). Then the function needs to print the last 5 elements in the list.
+Define a function that generates a list of the squares of the numbers between 1 and 20 (both included), then prints the last 5 elements of the list.
 
 **Hints:**
-Use `**` operator to get power of a number.
-Use `range()` for loops.
-Use `list.append()` to add values into a list.
+Use the `**` operator to raise a number to a power.
+Use `range()` in a `for` loop.
+Use `list.append()` to add values to a list.
 Use `[n1:n2]` to slice a list.
-
 **Solution:**
 
 ```python
@@ -717,14 +684,13 @@ print_list()
 **Features:** slicing `[5:]`
 
 **Question:**
-Define a function which can generate a list where the values are square of numbers between 1 and 20 (both included). Then the function needs to print all values except the first 5 elements in the list.
+Define a function that generates a list of the squares of the numbers between 1 and 20 (both included), then prints every element except the first 5.
 
 **Hints:**
-Use `**` operator to get power of a number.
-Use `range()` for loops.
-Use `list.append()` to add values into a list.
+Use the `**` operator to raise a number to a power.
+Use `range()` in a `for` loop.
+Use `list.append()` to add values to a list.
 Use `[n1:n2]` to slice a list.
-
 **Solution:**
 
 ```python
@@ -740,27 +706,25 @@ print_list()
 
 ### 25. Print a string in reverse
 
-**Features:** `str` indexing, `while` loop with sentinel condition, slicing with `[::-1]`
+**Features:** `str` from `input()`, slicing with `[::-1]`
 
 **Question:**
-Please write a program which accepts a string from console and print it in reverse order.
+Write a program that accepts a string from the console and prints it in reverse order.
 
-Example:
-If the following string is given as input to the program:
+For example, given the input:
 
 ```
 rise to vote sir
 ```
 
-Then, the output of the program should be:
+the program should print:
 
 ```
 ris etov ot esir
 ```
 
 **Hints:**
-Use `list[::-1]` to iterate a list in reverse order.
-
+Use slicing with `[::-1]` to reverse a string.
 **Solution:**
 
 ```python
@@ -774,24 +738,22 @@ print(s)
 **Features:** slice with step `[::2]`
 
 **Question:**
-Please write a program which accepts a string from console and print the characters that have even indexes.
+Write a program that accepts a string from the console and prints the characters at the even indexes.
 
-Example:
-If the following string is given as input to the program:
+For example, given the input:
 
 ```
 H1e2l3l4o5w6o7r8l9d
 ```
 
-Then, the output of the program should be:
+the program should print:
 
 ```
 Helloworld
 ```
 
 **Hints:**
-Use `list[::2]` to iterate a list by step 2.
-
+Use slicing with `[::2]` to take every second character.
 **Solution:**
 
 ```python
@@ -805,11 +767,10 @@ print(s)
 **Features:** membership test `not in`, `list.append()`
 
 **Question:**
-With a given list `[12, 24, 35, 24, 88, 120, 155, 88, 120, 155]`, write a program to print this list after removing all duplicate values with original order reserved.
+Given the list `[12, 24, 35, 24, 88, 120, 155, 88, 120, 155]`, write a program that prints the list with all duplicate values removed, preserving the original order.
 
 **Hints:**
 Use `in` to test whether a value is already in the result list.
-
 **Solution:**
 
 ```python
@@ -831,15 +792,15 @@ them.
 **Features:** `str.split()`, `tuple()` conversion
 
 **Question:**
-Write a program which accepts a sequence of comma-separated numbers from console and generate a list and a tuple which contains every number.
+Write a program that accepts a sequence of comma-separated numbers from the console and generates a list and a tuple containing every number.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 34,67,55,33,12,98
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 ['34', '67', '55', '33', '12', '98']
@@ -847,9 +808,8 @@ Then, the output should be:
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-The `tuple()` method can convert a list to a tuple.
-
+Assume the input is supplied through the console.
+Use `tuple()` to convert a list to a tuple.
 **Solution:**
 
 ```python
@@ -865,14 +825,13 @@ print(tuple_items)
 **Features:** `list.append()`, `tuple()` conversion
 
 **Question:**
-Define a function which can generate and print a tuple where the value are square of numbers between 1 and 20 (both included).
+Define a function that generates and prints a tuple of the squares of the numbers between 1 and 20 (both included).
 
 **Hints:**
-Use `**` operator to get power of a number.
-Use `range()` for loops.
-Use `list.append()` to add values into a list.
-Use `tuple()` to get a tuple from a list.
-
+Use the `**` operator to raise a number to a power.
+Use `range()` in a `for` loop.
+Use `list.append()` to add values to a list.
+Use `tuple()` to convert a list to a tuple.
 **Solution:**
 
 ```python
@@ -891,11 +850,10 @@ print_tuple()
 **Features:** tuple slicing `[:n]`, `[n:]`
 
 **Question:**
-With a given tuple `(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)`, write a program to print the first half values in one line and the last half values in one line.
+Given the tuple `(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)`, write a program that prints the first half of its values on one line and the second half on the next.
 
 **Hints:**
-Use `[n1:n2]` notation to get a slice from a tuple.
-
+Use `[n1:n2]` notation to take a slice of a tuple.
 **Solution:**
 
 ```python
@@ -911,12 +869,11 @@ print(second_half)
 **Features:** `for` over a tuple, `tuple()` conversion
 
 **Question:**
-Write a program to generate and print another tuple whose values are even numbers in the given tuple `(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)`.
+Write a program that generates and prints a new tuple containing the even numbers of the tuple `(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)`.
 
 **Hints:**
-Use `for` to iterate the tuple.
-Use `tuple()` to generate a tuple from a list.
-
+Use a `for` loop to iterate over the tuple.
+Use `tuple()` to convert a list to a tuple.
 **Solution:**
 
 ```python
@@ -939,24 +896,23 @@ Building dictionaries, `dict.get()` with defaults, and iterating with
 **Features:** `dict()`, dictionary assignment, `range()`, `for` loop
 
 **Question:**
-With a given integral number n, write a program to generate a dictionary that contains `(i, i * i)` such that is an integral number between 1 and n (both included), and then the program should print the dictionary.
+Given an integer `n`, write a program that generates a dictionary containing the pairs `(i, i * i)` for every integer `i` between 1 and `n` (both included), then prints the dictionary.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 8
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 {1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64}
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-Consider using `dict()`.
-
+Assume the input is supplied through the console.
+Use `dict()` or `{}` to create an empty dictionary.
 **Solution:**
 
 ```python
@@ -973,12 +929,11 @@ print(squares)
 **Features:** `dict()`, `dict[key] = value`, `**` operator
 
 **Question:**
-Define a function which can print a dictionary where the keys are numbers between 1 and 3 (both included) and the values are square of keys.
+Define a function that prints a dictionary whose keys are the numbers between 1 and 3 (both included) and whose values are the squares of those keys.
 
 **Hints:**
-Use the `dict[key] = value` pattern to put entry into a dictionary.
-Use the `**` operator to get power of a number.
-
+Use the `dict[key] = value` pattern to add an entry to a dictionary.
+Use the `**` operator to raise a number to a power.
 **Solution:**
 
 ```python
@@ -998,13 +953,12 @@ print_dict()
 **Features:** `dict()`, `range()`, `for` loop
 
 **Question:**
-Define a function which can print a dictionary where the keys are numbers between 1 and 20 (both included) and the values are square of keys.
+Define a function that prints a dictionary whose keys are the numbers between 1 and 20 (both included) and whose values are the squares of those keys.
 
 **Hints:**
-Use the `dict[key] = value` pattern to put entry into a dictionary.
-Use the `**` operator to get power of a number.
-Use `range()` for loops.
-
+Use the `dict[key] = value` pattern to add an entry to a dictionary.
+Use the `**` operator to raise a number to a power.
+Use `range()` in a `for` loop.
 **Solution:**
 
 ```python
@@ -1023,14 +977,13 @@ print_dict()
 **Features:** `dict.items()`, tuple unpacking
 
 **Question:**
-Define a function which can generate a dictionary where the keys are numbers between 1 and 20 (both included) and the values are square of keys. The function should just print the values only.
+Define a function that generates a dictionary whose keys are the numbers between 1 and 20 (both included) and whose values are the squares of those keys, then prints only the values, one per line.
 
 **Hints:**
-Use the `dict[key] = value` pattern to put entry into a dictionary.
-Use the `**` operator to get power of a number.
-Use `range()` for loops.
-Use `keys()` to iterate keys in the dictionary. Also we can use `items()` to get key/value pairs.
-
+Use the `dict[key] = value` pattern to add an entry to a dictionary.
+Use the `**` operator to raise a number to a power.
+Use `range()` in a `for` loop.
+Use `dict.keys()` to iterate over the keys, or `dict.items()` to iterate over key/value pairs.
 **Solution:**
 
 ```python
@@ -1050,14 +1003,13 @@ print_dict()
 **Features:** `dict.keys()`
 
 **Question:**
-Define a function which can generate a dictionary where the keys are numbers between 1 and 20 (both included) and the values are square of keys. The function should just print the keys only.
+Define a function that generates a dictionary whose keys are the numbers between 1 and 20 (both included) and whose values are the squares of those keys, then prints only the keys, one per line.
 
 **Hints:**
-Use the `dict[key] = value` pattern to put entry into a dictionary.
-Use the `**` operator to get power of a number.
-Use `range()` for loops.
-Use `keys()` to iterate keys in the dictionary. Also we can use `items()` to get key/value pairs.
-
+Use the `dict[key] = value` pattern to add an entry to a dictionary.
+Use the `**` operator to raise a number to a power.
+Use `range()` in a `for` loop.
+Use `dict.keys()` to iterate over the keys, or `dict.items()` to iterate over key/value pairs.
 **Solution:**
 
 ```python
@@ -1077,16 +1029,15 @@ print_dict()
 **Features:** `dict.get(key, default)`, `dict.items()`, f-strings
 
 **Question:**
-Please write a program which count and print the numbers of each character in a string input by console.
+Write a program that counts how many times each character appears in a string supplied through the console, and prints one `character,count` pair per line in first-appearance order.
 
-Example:
-If the following string is given as input to the program:
+For example, given the input:
 
 ```
 abcdefgabc
 ```
 
-Then, the output of the program should be:
+the program should print:
 
 ```
 a,2
@@ -1100,8 +1051,7 @@ g,1
 
 **Hints:**
 Use a `dict` to store key/value pairs.
-Use the `dict.get()` method to look up a key with default value.
-
+Use `dict.get()` to look up a key with a default value.
 **Solution:**
 
 ```python
@@ -1126,23 +1076,22 @@ Basic comprehensions, comprehensions with `if` filters, and comprehensions over 
 **Features:** list comprehension with `if` filter, `str.split()`, `str.join()`
 
 **Question:**
-Use a list comprehension to square each odd number in a list. The list is input by a sequence of comma-separated numbers.
+Use a list comprehension to square each odd number in a list. The list is supplied as a sequence of comma-separated numbers.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 1,2,3,4,5,6,7,8,9
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 1,9,25,49,81
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -1156,11 +1105,10 @@ print(",".join(numbers))
 **Features:** list comprehension with `if` filter
 
 **Question:**
-Please write a program to print the list after removing even numbers in `[5, 6, 77, 45, 22, 12, 24]`.
+Write a program that prints the list `[5, 6, 77, 45, 22, 12, 24]` with the even numbers removed.
 
 **Hints:**
-Use a list comprehension to remove elements from a list.
-
+Use a list comprehension to filter the list.
 **Solution:**
 
 ```python
@@ -1174,11 +1122,10 @@ print(li)
 **Features:** list comprehension with compound `if` filter
 
 **Question:**
-By using list comprehension, please write a program to print the list after removing numbers which are divisible by 5 and 7 in `[12, 24, 35, 70, 88, 120, 155]`.
+Use a list comprehension to print the list `[12, 24, 35, 70, 88, 120, 155]` with the numbers divisible by both 5 and 7 removed.
 
 **Hints:**
-Use a list comprehension to remove elements from a list.
-
+Use a list comprehension to filter the list.
 **Solution:**
 
 ```python
@@ -1192,11 +1139,10 @@ print(li)
 **Features:** list comprehension with equality filter
 
 **Question:**
-By using list comprehension, please write a program to print the list after removing the value 24 in [12,24,35,24,88,120,155].
+Use a list comprehension to print the list `[12, 24, 35, 24, 88, 120, 155]` with every occurrence of the value 24 removed.
 
 **Hints:**
-Use the list's `remove()` method to delete a value.
-
+Use a list comprehension to keep the values that are not equal to 24.
 **Solution:**
 
 ```python
@@ -1210,12 +1156,11 @@ print(li)
 **Features:** `enumerate()` in a comprehension, tuple unpacking `(i, x)`
 
 **Question:**
-By using list comprehension, please write a program to print the list after removing the 0th, 2nd, 4th, 6th numbers in `[12, 24, 35, 70, 88, 120, 155]`.
+Use a list comprehension to print the list `[12, 24, 35, 70, 88, 120, 155]` with the elements at indexes 0, 2, 4 and 6 removed.
 
 **Hints:**
-Use a list comprehension to remove elements from a list.
+Use a list comprehension to filter the list.
 Use `enumerate()` to get `(index, value)` tuples.
-
 **Solution:**
 
 ```python
@@ -1229,12 +1174,11 @@ print(li)
 **Features:** `enumerate()` in a comprehension, `not in` membership test against a tuple
 
 **Question:**
-By using list comprehension, please write a program to print the list after removing the 0th, 4th, 5th numbers in `[12, 24, 35, 70, 88, 120, 155]`.
+Use a list comprehension to print the list `[12, 24, 35, 70, 88, 120, 155]` with the elements at indexes 0, 4 and 5 removed.
 
 **Hints:**
-Use a list comprehension to remove elements from a list.
+Use a list comprehension to filter the list.
 Use `enumerate()` to get `(index, value)` tuples.
-
 **Solution:**
 
 ```python
@@ -1248,26 +1192,22 @@ print(li)
 **Features:** nested `for` loops, 2-D lists, `int()` conversion
 
 **Question:**
-Write a program which takes 2 digits, X,Y as input and generates a 2-dimensional array. The element value in the i-th row and j-th column of the array should be `i * j`.
+Write a program that takes two numbers, `X` and `Y`, as comma-separated input and generates a 2-dimensional array in which the element in row `i` and column `j` is `i * j`, where `i = 0, 1, …, X-1` and `j = 0, 1, …, Y-1`.
 
-Note: `i = 0, 1, …, X-1`; `j = 0, 1, …, Y-1`.
-
-Example
-Suppose the following inputs are given to the program:
+For example, given the input:
 
 ```
 3,5
 ```
 
-Then, the output of the program should be:
+the program should print:
 
 ```
 [[0, 0, 0, 0, 0], [0, 1, 2, 3, 4], [0, 2, 4, 6, 8]]
 ```
 
 **Hints:**
-Note: In case of input data being supplied to the question, it should be assumed to be a console input in a comma-separated form.
-
+Assume the input is supplied through the console as two comma-separated numbers.
 **Solution:**
 
 ```python
@@ -1293,24 +1233,22 @@ Fibonacci — and combining recursion with a comprehension.
 **Features:** recursive `def`, base case
 
 **Question:**
-Write a program which can compute the factorial of a given number.
-The results should be printed in a comma-separated sequence on a single line.
+Write a program that computes the factorial of a number supplied through the console.
 
-Suppose the following input is supplied to the program:
+For example, given the input:
 
 ```
 8
 ```
 
-Then, the output should be:
+the program should print:
 
 ```
 40320
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -1329,31 +1267,24 @@ print(fact(x))
 **Features:** recursion, `if`/`else` base case
 
 **Question:**
-Write a program to compute:
+Write a program that computes `f(n)` for a given `n` (`n > 0`) supplied through the console, where:
 
-`f(n) = f(n-1) + 100` when `n > 0`
-and `f(0) = 1`
+`f(n) = f(n-1) + 100` when `n > 0`, and `f(0) = 1`.
 
-with a given n input by console (`n > 0`).
-
-Example:
-If the following n is given as input to the program:
+For example, given the input:
 
 ```
 5
 ```
 
-Then, the output of the program should be:
+the program should print:
 
 ```
 501
 ```
 
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
 **Hints:**
-We can define recursive function in Python.
-
+Define a recursive function — one that calls itself — and give it a base case that stops the recursion.
 **Solution:**
 
 ```python
@@ -1361,7 +1292,7 @@ def f(n):
     if n == 0:
         return 1
     else:
-        return f(n-1)+100
+        return f(n - 1) + 100
 
 
 n = int(input())
@@ -1373,32 +1304,28 @@ print(f(n))
 **Features:** recursion with two base cases
 
 **Question:**
-The Fibonacci Sequence is computed based on the following formula:
+The Fibonacci sequence is defined by:
 
 `f(n) = 0` if `n = 0`
 `f(n) = 1` if `n = 1`
 `f(n) = f(n-1) + f(n-2)` if `n > 1`
 
-Please write a program to compute the value of f(n) with a given n input by console.
+Write a program that computes `f(n)` for a given `n` supplied through the console.
 
-Example:
-If the following n is given as input to the program:
+For example, given the input:
 
 ```
 7
 ```
 
-Then, the output of the program should be:
+the program should print:
 
 ```
 13
 ```
 
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
 **Hints:**
-We can define recursive function in Python.
-
+Define a recursive function — one that calls itself — and give it base cases for `n = 0` and `n = 1`.
 **Solution:**
 
 ```python
@@ -1419,34 +1346,32 @@ print(f(n))
 **Features:** recursion + list comprehension, `str()`, `str.join()`
 
 **Question:**
-The Fibonacci Sequence is computed based on the following formula:
+The Fibonacci sequence is defined by:
 
 `f(n) = 0` if `n = 0`
 `f(n) = 1` if `n = 1`
 `f(n) = f(n-1) + f(n-2)` if `n > 1`
 
-Please write a program using list comprehension to print the Fibonacci Sequence in comma separated form with a given n input by console.
+Using a list comprehension, write a program that prints the Fibonacci sequence from `f(0)` up to `f(n)` in comma-separated form, for a given `n` supplied through the console.
 
-Example:
-If the following n is given as input to the program:
+For example, given the input:
 
 ```
 7
 ```
 
-Then, the output of the program should be:
+the program should print:
 
 ```
 0,1,1,2,3,5,8,13
 ```
 
 **Hints:**
-We can define recursive function in Python.
-Use a list comprehension to generate a list from an existing list.
+Define a recursive function — one that calls itself — and give it base cases for `n = 0` and `n = 1`.
+Use a list comprehension to build the list of values.
 Use `str.join()` to join a list of strings.
 
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -1473,17 +1398,18 @@ Defining classes, `__init__` constructors, instance methods, and the
 class-attribute vs instance-attribute distinction.
 ### 49. A string-handling class
 
-**Features:** `class`, `__init__`, instance methods, instance attributes, `str.upper()`
+**Features:** `class`, `__init__()`, instance methods, instance attributes, `str.upper()`
 
 **Question:**
-Define a class which has at least two methods:
-`get_string()`: to get a string from console input
-`print_string()`: to print the string in upper case.
-Also please include simple test function to test the class methods.
+Define a class that has at least two methods:
+
+`get_string()`, which reads a string from console input, and
+`print_string()`, which prints the string in upper case.
+
+Include a short test that calls both methods.
 
 **Hints:**
-Use the `__init__()` method to construct some parameters.
-
+Use the `__init__()` method to initialise the object's attributes.
 **Solution:**
 
 ```python
@@ -1503,17 +1429,24 @@ string_obj.get_string()
 string_obj.print_string()
 ```
 
-### 50. Class parameter vs instance parameter
+### 50. Class attribute vs instance attribute
 
-**Features:** class attributes, instance attributes, `__init__` defaults
+**Features:** class attributes, instance attributes, `__init__()` defaults
 
 **Question:**
-Define a class which has a class parameter and an instance parameter with the same name.
+Define a class named `Person` with a class attribute `name` set to `"Person"` and an instance attribute `name` set through the constructor.
+
+Create one instance whose name is `"Jeffrey"`, passed through the constructor, and a second instance whose name is set to `"Nico"` after construction. For each instance, print a line of the form:
+
+```
+Person name is Jeffrey
+```
+
+so the first line shows the class attribute and the second shows the instance attribute.
 
 **Hints:**
-Define an instance parameter by adding it in the `__init__()` method.
-You can initialise an object with constructor parameters or set the value later.
-
+Set an instance attribute inside the `__init__()` method.
+An attribute can be passed to the constructor or assigned later.
 **Solution:**
 
 ```python
@@ -1536,14 +1469,13 @@ print(f"{Person.name} name is {nico.name}")
 
 ### 51. Circle with an area method
 
-**Features:** `class`, `__init__` with parameters, instance methods
+**Features:** `class`, `__init__()` with parameters, instance methods
 
 **Question:**
-Define a class named `Circle` which can be constructed by a radius. The `Circle` class has a method which can compute the area.
+Define a class named `Circle` that is constructed from a radius and has a method that computes the area, using 3.14 for π. Test it by printing the area of a circle of radius 2.
 
 **Hints:**
 Use `def method_name(self)` to define a method.
-
 **Solution:**
 
 ```python
@@ -1552,7 +1484,7 @@ class Circle:
         self.radius = r
 
     def area(self):
-        return self.radius**2*3.14
+        return self.radius**2 * 3.14
 
 
 circle = Circle(2)
@@ -1561,14 +1493,13 @@ print(circle.area())
 
 ### 52. Rectangle with an area method
 
-**Features:** `class`, `__init__` with parameters, instance methods
+**Features:** `class`, `__init__()` with parameters, instance methods
 
 **Question:**
-Define a class named `Rectangle` which can be constructed by a length and width. The `Rectangle` class has a method which can compute the area.
+Define a class named `Rectangle` that is constructed from a length and a width and has a method that computes the area. Test it by printing the area of a 2 × 10 rectangle.
 
 **Hints:**
 Use `def method_name(self)` to define a method.
-
 **Solution:**
 
 ```python
@@ -1594,11 +1525,10 @@ Subclassing, method overriding, polymorphic dispatch, and the
 **Features:** `class Subclass(Parent)`, instantiation
 
 **Question:**
-Define a class named `American` and its subclass `NewYorker`.
+Define a class named `American` and a subclass of it named `NewYorker`.
 
 **Hints:**
 Use `class Subclass(ParentClass)` to define a subclass.
-
 **Solution:**
 
 ```python
@@ -1618,14 +1548,13 @@ print(new_yorker)
 
 ### 54. Shape and Square: overriding `area()`
 
-**Features:** inheritance, method overriding, calling the parent `__init__`
+**Features:** inheritance, method overriding, `super().__init__()`
 
 **Question:**
-Define a class named `Shape` and its subclass `Square`. The `Square` class has an `__init__()` function which takes a length as argument. Both classes have an `area()` function which can print the area of the shape where `Shape`'s area is 0 by default.
+Define a class named `Shape` and a subclass of it named `Square`. The `Square` class has an `__init__()` method that takes a length as its argument. Both classes have an `area()` method that returns the area of the shape; a `Shape`'s area is 0 by default. Test it by printing the area of a square of length 3.
 
 **Hints:**
-To override a method in the super class, we can define a method with the same name in the subclass.
-
+To override a method of the parent class, define a method with the same name in the subclass.
 **Solution:**
 
 ```python
@@ -1650,16 +1579,15 @@ square = Square(3)
 print(square.area())
 ```
 
-### 55. Person, Male, Female — polymorphic `getGender`
+### 55. Person, Male, Female — polymorphic `get_gender()`
 
 **Features:** inheritance, method overriding, polymorphism
 
 **Question:**
-Define a class `Person` and its two child classes: `Male` and `Female`. All classes have a method `get_gender()` which can print "Male" for `Male` class and "Female" for `Female` class.
+Define a class `Person` and two subclasses of it, `Male` and `Female`. Every class has a method `get_gender()`, which returns "Male" for the `Male` class and "Female" for the `Female` class. Test it by printing the gender of a `Male` instance and then of a `Female` instance.
 
 **Hints:**
-Use `class Subclass(ParentClass)` to define a child class.
-
+Use `class Subclass(ParentClass)` to define a subclass.
 **Solution:**
 
 ```python
@@ -1689,11 +1617,10 @@ print(female.get_gender())
 **Features:** `@staticmethod` decorator
 
 **Question:**
-Define a class named `American` which has a static method called `print_nationality()`.
+Define a class named `American` that has a static method called `print_nationality()`, which prints "America". Test it by calling the method once on an instance and once on the class itself.
 
 **Hints:**
 Use the `@staticmethod` decorator to define a static method.
-
 **Solution:**
 
 ```python
@@ -1717,11 +1644,10 @@ custom exception classes, and `assert` statements.
 **Features:** `raise`
 
 **Question:**
-Please raise a RuntimeError exception.
+Write a program that raises a `RuntimeError` exception.
 
 **Hints:**
 Use the `raise` statement to raise an exception.
-
 **Solution:**
 
 ```python
@@ -1733,16 +1659,15 @@ raise RuntimeError('something wrong')
 **Features:** `try`/`except`/`finally`, `ZeroDivisionError`, generic `Exception` handler
 
 **Question:**
-Write a function to compute `5 / 0` and use `try`/`except` to catch the exception.
+Write a function that computes `5 / 0`, and call it inside a `try`/`except` block that catches the `ZeroDivisionError`. Print `"division by zero!"` when the error is caught, and print `"In finally block for cleanup"` from a `finally` clause.
 
 **Hints:**
-Use `try`/`except` to catch exceptions.
-
+Use `try`/`except` to catch exceptions, and `finally` for code that must always run.
 **Solution:**
 
 ```python
 def throws():
-    return 5/0
+    return 5 / 0
 
 
 try:
@@ -1760,11 +1685,10 @@ finally:
 **Features:** inheriting from `Exception`, docstrings
 
 **Question:**
-Define a custom exception class which takes a string message as attribute.
+Define a custom exception class that takes a string message as an attribute.
 
 **Hints:**
-To define a custom exception, we need to define a class inherited from `Exception`.
-
+A custom exception is a class that inherits from `Exception`.
 **Solution:**
 
 ```python
@@ -1787,11 +1711,10 @@ error = MyError("something wrong")
 **Features:** `assert` statement
 
 **Question:**
-Please write `assert` statements to verify that every number in the list `[2, 4, 6, 8]` is even.
+Write `assert` statements to verify that every number in the list `[2, 4, 6, 8]` is even.
 
 **Hints:**
 Use `assert expression` to make an assertion.
-
 **Solution:**
 
 ```python
@@ -1812,33 +1735,27 @@ Square roots, rounding and distance computations with the `math` module.
 **Features:** `math.sqrt()`, `round()`, `float()`, `int()`, `str.split()`, `str.join()`
 
 **Question:**
-Write a program that calculates and prints the value according to the given formula:
+Write a program that calculates and prints values according to the formula:
 
 `Q = square root of [(2 * C * D) / H]`
 
-Following are the fixed values of C and H:
+where `C = 50` and `H = 30` are fixed, and the values of `D` are supplied to the program as a comma-separated sequence. Round each result to the nearest integer and print the results as a comma-separated sequence.
 
-`C = 50`. `H = 30`.
-
-D is the variable whose values should be input to your program in a comma-separated sequence.
-
-Example
-Let us assume the following comma separated input sequence is given to the program:
+For example, given the input:
 
 ```
 100,150,180
 ```
 
-The output of the program should be:
+the program should print:
 
 ```
 18,22,24
 ```
 
 **Hints:**
-If the output received is in decimal form, it should be rounded off to its nearest value (for example, if the output received is `26.0`, it should be printed as `26`).
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+If a result is a decimal, round it to the nearest whole number — for example, `26.0` should be printed as `26`.
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -1849,30 +1766,17 @@ h = 30
 value = []
 items = [x for x in input().split(',')]
 for d in items:
-    value.append(str(int(round(math.sqrt(2*c*float(d)/h)))))
+    value.append(str(int(round(math.sqrt(2 * c * float(d) / h)))))
 
 print(','.join(value))
 ```
 
 ### 62. Robot's distance from the origin
 
-**Features:** `math.sqrt()`, `round()`, `while` loop with sentinel condition, `str.split()`, `if`/`elif` dispatch
+**Features:** `math.sqrt()`, `round()`, `while` loop with a sentinel condition, `str.split()`, `if`/`elif` dispatch
 
 **Question:**
-A robot moves in a plane starting from the original point `(0, 0)`. The robot can move toward UP, DOWN, LEFT and RIGHT with a given steps. The trace of robot movement is shown as the following:
-
-```
-UP 5
-DOWN 3
-LEFT 3
-RIGHT 2
-…
-```
-
-The numbers after the direction are steps. Please write a program to compute the distance from current position after a sequence of movement and original point. If the distance is a float, then just print the nearest integer.
-
-Example:
-If the following movements are given as input to the program:
+A robot moves in a plane, starting from the origin `(0, 0)`. It can move UP, DOWN, LEFT or RIGHT by a given number of steps, and its movements are recorded in a trace like this:
 
 ```
 UP 5
@@ -1881,15 +1785,25 @@ LEFT 3
 RIGHT 2
 ```
 
-Then, the output of the program should be:
+The number after each direction is the number of steps. Write a program that computes the distance between the robot's final position and the origin after a sequence of movements. If the distance is not a whole number, print the nearest integer. Input ends at the first blank line.
+
+For example, given the input:
+
+```
+UP 5
+DOWN 3
+LEFT 3
+RIGHT 2
+```
+
+the program should print:
 
 ```
 2
 ```
 
 **Hints:**
-In case of input data being supplied to the question, it should be assumed to be a console input.
-
+Assume the input is supplied through the console.
 **Solution:**
 
 ```python
@@ -1918,14 +1832,13 @@ print(int(round(math.sqrt(pos[1] ** 2 + pos[0] ** 2))))
 combined with list comprehensions to constrain the candidate pool.
 ### 63. A random float (scaled)
 
-**Features:** `random.random()`
+**Features:** `random.uniform()`
 
 **Question:**
-Please generate a random float where the value is between 10 and 100 using the `random` module.
+Use the `random` module to generate a random float between 10 and 100.
 
 **Hints:**
-Use `random.random()` to generate a random float in `[0, 1]`.
-
+Use `random.uniform()` to generate a random float within a range.
 **Solution:**
 
 ```python
@@ -1935,14 +1848,13 @@ print(random.uniform(10, 100))
 
 ### 64. A random float between 5 and 95
 
-**Features:** `random.random()`
+**Features:** `random.uniform()`
 
 **Question:**
-Please generate a random float where the value is between 5 and 95 using the `random` module.
+Use the `random` module to generate a random float between 5 and 95.
 
 **Hints:**
-Use `random.random()` to generate a random float in `[0, 1]`.
-
+Use `random.uniform()` to generate a random float within a range.
 **Solution:**
 
 ```python
@@ -1955,11 +1867,10 @@ print(random.uniform(5, 95))
 **Features:** `random.choice()`, list comprehension
 
 **Question:**
-Please write a program to output a random even number between 0 and 10 inclusive using the `random` module and a list comprehension.
+Use the `random` module and a list comprehension to print a random even number between 0 and 10 (both included).
 
 **Hints:**
 Use `random.choice()` to pick a random element from a list.
-
 **Solution:**
 
 ```python
@@ -1969,14 +1880,13 @@ print(random.choice([i for i in range(0, 11) if i % 2 == 0]))
 
 ### 66. Random number divisible by 5 and 7
 
-**Features:** `random.choice()`, list comprehension with compound filter
+**Features:** `random.choice()`, list comprehension with a compound filter
 
 **Question:**
-Please write a program to output a random number, which is divisible by 5 and 7, between 0 and 1000 inclusive using the `random` module and a list comprehension.
+Use the `random` module and a list comprehension to print a random number between 0 and 1000 (both included) that is divisible by both 5 and 7.
 
 **Hints:**
 Use `random.choice()` to pick a random element from a list.
-
 **Solution:**
 
 ```python
@@ -1989,11 +1899,10 @@ print(random.choice([i for i in range(0, 1001) if i % 5 == 0 and i % 7 == 0]))
 **Features:** `random.sample()`
 
 **Question:**
-Please write a program to generate a list with 5 random numbers between 100 and 200 inclusive.
+Write a program that generates a list of 5 random numbers between 100 and 200 (both included).
 
 **Hints:**
-Use `random.sample()` to generate a list of random values.
-
+Use `random.sample()` to pick several random values without repetition.
 **Solution:**
 
 ```python
@@ -2006,11 +1915,10 @@ print(random.sample(range(100, 201), 5))
 **Features:** `random.sample()`, list comprehension
 
 **Question:**
-Please write a program to randomly generate a list with 5 even numbers between 100 and 200 inclusive.
+Write a program that generates a list of 5 random even numbers between 100 and 200 (both included).
 
 **Hints:**
-Use `random.sample()` to generate a list of random values.
-
+Use `random.sample()` to pick several random values without repetition.
 **Solution:**
 
 ```python
@@ -2020,14 +1928,13 @@ print(random.sample([i for i in range(100, 201) if i % 2 == 0], 5))
 
 ### 69. 5 random multiples of 5 and 7 (1–1000)
 
-**Features:** `random.sample()`, list comprehension with compound filter
+**Features:** `random.sample()`, list comprehension with a compound filter
 
 **Question:**
-Please write a program to randomly generate a list with 5 numbers, which are divisible by 5 and 7, between 1 and 1000 inclusive.
+Write a program that generates a list of 5 random numbers between 1 and 1000 (both included) that are divisible by both 5 and 7.
 
 **Hints:**
-Use `random.sample()` to generate a list of random values.
-
+Use `random.sample()` to pick several random values without repetition.
 **Solution:**
 
 ```python
@@ -2042,11 +1949,10 @@ print(random.sample(multiples, 5))
 **Features:** `random.randrange()`
 
 **Question:**
-Please write a program to randomly print a integer number between 7 and 15 inclusive.
+Write a program that prints a random integer between 7 and 15 (both included).
 
 **Hints:**
-Use `random.randrange()` to get a random integer in a given range.
-
+Use `random.randrange()` to get a random integer from a range.
 **Solution:**
 
 ```python
@@ -2059,11 +1965,10 @@ print(random.randrange(7, 16))
 **Features:** `random.shuffle()`, `from … import`
 
 **Question:**
-Please write a program to shuffle and print the list [3,6,7,8].
+Write a program that shuffles and prints the list `[3, 6, 7, 8]`.
 
 **Hints:**
-Use `random.shuffle()` to shuffle a list.
-
+Use `random.shuffle()` to shuffle a list in place.
 **Solution:**
 
 ```python
@@ -2081,11 +1986,10 @@ Timing snippet execution with the `timeit` module.
 **Features:** `timeit.Timer`, `Timer.timeit()`
 
 **Question:**
-Please write a program to print the running time of execution of `"1 + 1"` for 100 times.
+Write a program that prints the time taken to execute the statement `1 + 1` 100 times.
 
 **Hints:**
-Use the `timeit` module to measure the running time.
-
+Use the `timeit` module to measure execution time.
 **Solution:**
 
 ```python
