@@ -32,9 +32,9 @@ cloning or bumping the `pyodide` version in package.json.
   (question with sample I/O) and hints, each hint its own collapsed row
   that expands independently; per-hint state persists. The pane toggles via
   the ⓘ button at the toolbar's right end, or by clicking its collapsed
-  edge rail. The feature chips are hidden until the kata is verified —
-  they name the techniques the kata asks the student to choose, so they
-  appear afterwards as a "Features practised" recap.
+  edge rail. The skill chips are hidden until the kata is verified — they
+  name the skills the kata trains (from a fixed vocabulary), so they appear
+  afterwards as a "Skills trained" recap.
 - **Collapsible side rails** — with a side panel closed, its column stays
   visible as a 26px labelled rail ("Kata browser" / "My files" on the
   left, "Kata info" on the right); clicking the rail expands the panel.

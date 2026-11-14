@@ -29,11 +29,29 @@ const fail = (context, rule) => {
 // ---------------------------------------------------------------------------
 // Parsing
 
+// The fixed skill vocabulary. A kata's **Skills:** line may only use these
+// exact strings; anything else fails the sync (and CI). Grouping is for
+// documentation — the sync checks against the flat set.
+const SKILL_GROUPS = {
+  'Program structure': ['function', 'input', 'output', 'data types'],
+  'Operators': ['arithmetic operators', 'comparison operators', 'logical operators'],
+  'Control flow': ['selection', 'fixed iteration', 'conditional iteration', 'sentinel loop', 'early return', 'recursion'],
+  'Iteration patterns': ['indexed iteration', 'zipped iteration', 'window iteration', 'batched iteration', 'cartesian product'],
+  'Data structures': ['tuple and list', 'dict', 'nested data structure', 'indexing', 'slicing', 'membership check'],
+  'Strings': ['string methods', 'string formatting', 'tokenisation'],
+  'Comprehensions & transforms': ['list comprehension', 'mapping', 'filtering'],
+  'Algorithmic patterns': ['search', 'accumulator', 'ratchet', 'greedy', 'data validation'],
+  'Objects': ['class', 'class attribute', 'inheritance', 'polymorphism', 'staticmethod'],
+  'Errors': ['assert', 'exception raising', 'exception handling'],
+  'Standard library': ['random numbers', 'math module', 'date and time', 'time measurement'],
+}
+const SKILLS = new Set(Object.values(SKILL_GROUPS).flat())
+
 const RE_PART = /^# Part ([A-Z]) — (.+)$/
 const RE_SECTION = /^## (\d+)\. (.+)$/
 const RE_KATA = /^### (\d+)\. (.+)$/
 const RE_ORIGIN_SUFFIX = /\s\*\((?:original )?Question[^)]*\)\*$/i
-const LABELS = ['**Features:**', '**Question:**', '**Hints:**', '**Solution:**']
+const LABELS = ['**Skills:**', '**Question:**', '**Hints:**', '**Solution:**']
 const keyOf = label => label.replaceAll('*', '').replaceAll(':', '')
 
 function parse(markdown) {
@@ -46,7 +64,7 @@ function parse(markdown) {
   // kata body collected as labeled sections until the next heading
   let currentLabel = null
   let currentKey = 'prose'
-  let body = { prose: [], Features: [], Question: [], Hints: [], Solution: [] }
+  let body = { prose: [], Skills: [], Question: [], Hints: [], Solution: [] }
   let seenLabels = []
   let inFence = false
 
@@ -56,7 +74,7 @@ function parse(markdown) {
     manifest.katas.push(buildKata(kata, body, seenLabels))
     kata = null
     currentLabel = null
-    body = { prose: [], Features: [], Question: [], Hints: [], Solution: [] }
+    body = { prose: [], Skills: [], Question: [], Hints: [], Solution: [] }
     seenLabels = []
     currentKey = 'prose'
   }
@@ -131,9 +149,9 @@ function parse(markdown) {
     for (const l of LABELS) {
       if (trimmed === l) { label = l; break }
       if (trimmed.startsWith(l)) {
-        // **Features:** carries its content inline on the same line; the
+        // **Skills:** carries its content inline on the same line; the
         // other labels stand alone with content on the following lines.
-        if (l !== '**Features:**') fail(where, `${l} must be on its own line, with content on the following lines`)
+        if (l !== '**Skills:**') fail(where, `${l} must be on its own line, with content on the following lines`)
         label = l
         inlineRest = trimmed.slice(l.length).trim()
         break
@@ -149,8 +167,8 @@ function parse(markdown) {
     }
 
     // stray labels that look like the real thing but aren't
-    if (/^\*\*(?:Features|Question|Hint|Hints|Solution)\*?:?\*?$/.test(trimmed)) {
-      fail(where, `malformed label "${trimmed}" — labels are exactly **Features:**, **Question:**, **Hints:**, **Solution:**`)
+    if (/^\*\*(?:Skills|Features|Question|Hint|Hints|Solution)\*?:?\*?$/.test(trimmed)) {
+      fail(where, `malformed label "${trimmed}" — labels are exactly **Skills:**, **Question:**, **Hints:**, **Solution:**`)
     }
 
     if (inFence || (currentLabel === '**Solution:**' && body.Solution.length > 0)) {
@@ -163,7 +181,7 @@ function parse(markdown) {
     }
     if (currentLabel === null) {
       if (line.trim() === '') continue
-      fail(where, `prose before **Features:**: "${line.trim()}"`)
+      fail(where, `prose before **Skills:**: "${line.trim()}"`)
     }
     if (currentLabel !== '**Solution:**' && body[currentKey].length === 0 && line.trim() === '') continue
     body[currentKey].push(line)
@@ -178,16 +196,22 @@ function parse(markdown) {
 function buildKata(kata, body, seenLabels) {
   const where = `kata ${kata.n} (${kata.title})`
 
-  if (!seenLabels.includes('**Features:**')) fail(where, 'missing **Features:**')
+  if (!seenLabels.includes('**Skills:**')) fail(where, 'missing **Skills:**')
   if (!seenLabels.includes('**Question:**')) fail(where, 'missing **Question:**')
   if (!seenLabels.includes('**Solution:**')) fail(where, 'missing **Solution:**')
-  const expectedOrder = ['**Features:**', '**Question:**', ...((seenLabels.includes('**Hints:**')) ? ['**Hints:**'] : []), '**Solution:**']
+  const expectedOrder = ['**Skills:**', '**Question:**', ...((seenLabels.includes('**Hints:**')) ? ['**Hints:**'] : []), '**Solution:**']
   if (seenLabels.join('|') !== expectedOrder.join('|')) fail(where, `labels out of order: ${seenLabels.join(', ')}`)
 
   if (body.prose.length > 0) fail(where, `unexpected prose: "${body.prose.join(' ').trim()}"`)
 
-  const featuresRaw = body.Features.join('\n').trim()
-  if (!featuresRaw) fail(where, '**Features:** is empty')
+  const skillsRaw = body.Skills.join('\n').trim()
+  if (!skillsRaw) fail(where, '**Skills:** is empty')
+  const skills = splitFeatures(skillsRaw)
+  for (const skill of skills) {
+    if (!SKILLS.has(skill)) {
+      fail(where, `unknown skill "${skill}" — skills must come from the fixed vocabulary (see MARKDOWN-FORMAT.md)`)
+    }
+  }
 
   const question = body.Question.join('\n').trim()
   if (!question) fail(where, '**Question:** is empty')
@@ -207,7 +231,7 @@ function buildKata(kata, body, seenLabels) {
     n: kata.n,
     title: kata.title,
     section: kata.section,
-    features: splitFeatures(featuresRaw),
+    skills,
     question,
     hints,
     starter: null,

@@ -26,8 +26,9 @@ export interface Kata {
   title: string
   /** Section id (`s07`), see {@link Section}. */
   section: string
-  /** What the kata practises, parsed from the **Features:** line. */
-  features: string[]
+  /** The skills this kata trains, from the fixed vocabulary (see
+   * MARKDOWN-FORMAT.md). Shown in the pane only after the kata is verified. */
+  skills: string[]
   /** Question markdown; sample I/O is fenced inline. */
   question: string
   /** Progressive-reveal hints; empty when the source has none. */
@@ -89,8 +90,20 @@ const titleSlug = (id: string): string => id.replace(/^\d+-/, '')
 
 function readStoredCorpus(): KataCorpus | null {
   try {
-    const parsed = JSON.parse(localStorage.getItem(CORPUS_KEY) ?? 'null') as KataCorpus | null
-    return parsed && parsed.version === BUNDLED.version && Array.isArray(parsed.katas) ? parsed : null
+    const parsed = JSON.parse(localStorage.getItem(CORPUS_KEY) ?? 'null') as KataCorpus & { katas?: Array<Kata & { features?: string[] }> } | null
+    if (!parsed || parsed.version !== BUNDLED.version || !Array.isArray(parsed.katas)) return null
+    // Normalise snapshots taken by older builds: renamed fields get mapped
+    // here so an old snapshot loads cleanly until the user accepts a refresh.
+    const katas = parsed.katas.map((kata) => {
+      const { features, ...rest } = kata as Kata & { features?: string[] }
+      const skills = Array.isArray(kata.skills)
+        ? kata.skills
+        : Array.isArray(features)
+          ? features
+          : []
+      return { ...rest, skills } as Kata
+    })
+    return { ...parsed, katas }
   } catch {
     return null
   }

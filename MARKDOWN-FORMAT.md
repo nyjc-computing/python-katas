@@ -31,7 +31,7 @@ same commit.
 
 ### 1. Square of a number
 
-**Features:** `def`, `return`, `**` operator
+**Skills:** function, arithmetic operators, output
 
 **Question:**
 <verbatim question text — may span many paragraphs>
@@ -58,17 +58,17 @@ message:
 
 1. **Heading order** — katas are numbered `### N.` sequentially from 1 with
    no gaps or repeats; sections are numbered sequentially from 1.
-2. **Label order** — inside a kata, `**Features:**`, `**Question:**`,
+2. **Label order** — inside a kata, `**Skills:**`, `**Question:**`,
    [`**Hints:**`], `**Solution:**` appear exactly once each, in that order.
    The labels are exact: `**Hint:**`, `**hints:**`, `**Hints**` without the
-   colon are all errors, not variants. `**Features:**` is an inline label —
+   colon are all errors, not variants. `**Skills:**` is an inline label —
    its content sits on the same line; the other labels stand alone.
 3. **Code fences** — the `**Solution:**` section contains exactly one fenced
    block, tagged `python`. `**Question:**` may additionally carry untagged
    ``` blocks for sample input/output. Fences anywhere else (Hints,
-   Features, stray labels) are errors, and an unclosed fence fails the
+   Skills, stray labels) are errors, and an unclosed fence fails the
    kata.
-4. **Non-empty content** — features line, question, and the solution block
+4. **Non-empty content** — skills line, question, and the solution block
    must be non-empty.
 5. **Unique titles** — titles must be unique (they feed the stable slug ids;
    a duplicate would collide).
@@ -80,7 +80,7 @@ message:
 | `id`       | derived  | `<nnn>-<slug>` from the heading number + title (e.g. `001-square-of-a-number`). **Stable identity** — used as the key for learner progress in the app. Display numbers may shift when katas are inserted; ids must not. |
 | `n`        | derived  | The `### N.` heading number, display order. |
 | `title`    | required | Heading text, minus any `*(…)*` suffix. Verbatim. |
-| `features` | required | The `**Features:**` line, split on commas **outside backticks**; backticks stripped. Backticks are styling — `for` with `range()` parses as two features. |
+| `skills`   | required | The `**Skills:**` line, split on commas. Every entry must be an exact string from the fixed vocabulary below — the sync fails on anything else, so typos can't silently become new tags. |
 | `question` | required | Markdown between the Question and Hints/Solution labels. Sample input/output is fenced (untagged ``` blocks); everything outside the fences is what learners read. |
 | `hints`    | optional | Split on blank lines into an array, revealed progressively in the app. |
 | `solution` | required | The python block, verbatim, runnable as a standalone program. **Stays in the markdown only** — the sync executes it to derive tests and never copies it into `build/katas.json`. |
@@ -108,6 +108,32 @@ to be picked up.
 **Solutions never ship.** `build/katas.json` omits the solution entirely —
 it is executed for test derivation, then dropped. The JSON is what learners'
 browsers download; the markdown is the maintainer-facing document.
+
+## Skill vocabulary
+
+The `**Skills:**` line draws from this fixed list — nothing else is accepted.
+Tags name the **skills a kata trains**, never the APIs its solution uses
+(those were spoilers). 2–5 tags per kata, most central first.
+
+| Group | Tags |
+|---|---|
+| Program structure | `function`, `input`, `output`, `data types` |
+| Operators | `arithmetic operators`, `comparison operators`, `logical operators` |
+| Control flow | `selection`, `fixed iteration`, `conditional iteration`, `sentinel loop`, `early return`, `recursion` |
+| Iteration patterns | `indexed iteration`, `zipped iteration`, `window iteration`, `batched iteration`, `cartesian product` |
+| Data structures | `tuple and list`, `dict`, `nested data structure`, `indexing`, `slicing`, `membership check` |
+| Strings | `string methods`, `string formatting`, `tokenisation` |
+| Comprehensions & transforms | `list comprehension`, `mapping`, `filtering` |
+| Algorithmic patterns | `search`, `accumulator`, `ratchet`, `greedy`, `data validation` |
+| Objects | `class`, `class attribute`, `inheritance`, `polymorphism`, `staticmethod` |
+| Errors | `assert`, `exception raising`, `exception handling` |
+| Standard library | `random numbers`, `math module`, `date and time`, `time measurement` |
+
+Tags not yet used by any kata (`zipped`, `window`, `batched` iteration,
+`date and time`, `greedy`, `ratchet`) are reserved for future katas — they
+validate today so new exercises can adopt them without a vocabulary change.
+Adding a *new* tag means adding it to `SKILL_GROUPS` in
+`runner/scripts/sync-katas.mjs` and to this table, in the same commit.
 
 ## Question and hint conventions
 

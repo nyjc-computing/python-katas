@@ -641,10 +641,10 @@ function renderKataPane(): void {
   const solved = isVerified(kata.id)
   kataFeaturesWrap.hidden = !solved
   kataFeatures.innerHTML = ''
-  for (const feature of kata.features) {
+  for (const skill of kata.skills) {
     const chip = document.createElement('span')
     chip.className = 'chip'
-    chip.textContent = feature
+    chip.textContent = skill
     kataFeatures.appendChild(chip)
   }
   kataQuestion.innerHTML = kataQuestionHtml(kata.question)

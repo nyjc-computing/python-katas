@@ -1,9 +1,9 @@
 # Python katas
 
-A practice corpus of 72 katas, sorted by the **Python features they use or
-require**, ordered roughly from basic to advanced and grouped into five
-parts. Each kata carries a **Features:** line listing exactly what it
-practises, and sits under its primary feature.
+A practice corpus of 72 katas, ordered roughly from basic to advanced and
+grouped into five parts. Each kata carries a **Skills:** line naming the
+skills it trains, drawn from the fixed vocabulary documented in
+[MARKDOWN-FORMAT.md](MARKDOWN-FORMAT.md), and sits under its primary topic.
 
 Before editing this file, read [MARKDOWN-FORMAT.md](MARKDOWN-FORMAT.md) —
 CI rejects markdown that drifts out of its contract. Code expressions in
@@ -44,7 +44,7 @@ Defining functions with `def`/`return`, parameters and calls; explicit type
 conversion with `int()`, `str()`, `len()`; base-`int()` parsing.
 ### 1. Square of a number
 
-**Features:** `def`, `return`, `**` operator
+**Skills:** function, arithmetic operators, output
 
 **Question:**
 Define a function that returns the square of a number. Test it by printing the squares of 2 and 3.
@@ -64,7 +64,7 @@ print(square(3))
 
 ### 2. Sum of two numbers
 
-**Features:** `def`, parameters, `return`
+**Skills:** function, arithmetic operators, output
 
 **Question:**
 Define a function that returns the sum of two numbers. Test it by printing the sum of 1 and 2.
@@ -83,7 +83,7 @@ print(sum_function(1, 2))
 
 ### 3. Convert an integer to a string
 
-**Features:** `str()` conversion
+**Skills:** function, data types, output
 
 **Question:**
 Define a function that converts an integer to a string and prints it to the console. Test it with the integer 3.
@@ -102,7 +102,7 @@ print_value(3)
 
 ### 4. Sum of two numbers given as strings
 
-**Features:** `int()` conversion, parameters
+**Skills:** function, data types, arithmetic operators, output
 
 **Question:**
 Define a function that takes two integers in string form, computes their sum, and prints it to the console. Test it with the strings `"3"` and `"4"`.
@@ -121,7 +121,7 @@ print_value("3", "4")
 
 ### 5. Concatenate two strings
 
-**Features:** string concatenation with `+`
+**Skills:** function, arithmetic operators, output
 
 **Question:**
 Define a function that takes two strings, concatenates them, and prints the result to the console. Test it with the strings `"3"` and `"4"`.
@@ -140,7 +140,7 @@ print_value("3", "4")
 
 ### 6. Print the longer of two strings
 
-**Features:** `len()`, `if`/`elif`/`else`
+**Skills:** function, comparison operators, selection, output
 
 **Question:**
 Define a function that takes two strings and prints the longer one to the console. If both strings have the same length, the function should print each string on its own line. Test it with the strings `"one"` and `"three"`.
@@ -167,7 +167,7 @@ print_value("one", "three")
 
 ### 7. Four-digit binary numbers divisible by 5
 
-**Features:** `int(x, 2)` base conversion, `for` loops, `not`, `list.append()`, `str.join()`
+**Skills:** input, tokenisation, data types, fixed iteration, filtering, output
 
 **Question:**
 Write a program that accepts a sequence of comma-separated 4-digit binary numbers as input and checks whether each one is divisible by 5. The numbers that are divisible by 5 should be printed as a comma-separated sequence.
@@ -205,7 +205,7 @@ The `%` and `**` operators, equality tests, boolean `and`/`or`, and
 `if`/`elif`/`else` branching.
 ### 8. Even or odd
 
-**Features:** `%` operator, `if`/`else`
+**Skills:** function, arithmetic operators, selection, output
 
 **Question:**
 Define a function that takes an integer and prints "It is an even number" if the number is even, or "It is an odd number" otherwise. Test it with the number 7.
@@ -227,7 +227,7 @@ check_value(7)
 
 ### 9. Accept only "yes", "YES" or "Yes"
 
-**Features:** string equality, boolean `or`, `if`/`else`
+**Skills:** input, data validation, selection, comparison operators
 
 **Question:**
 Write a program that accepts a string as input and prints "Yes" if the string is "yes", "YES" or "Yes"; otherwise, it prints "No".
@@ -246,7 +246,7 @@ else:
 
 ### 10. Numbers whose digits are all even
 
-**Features:** `str()` conversion, `all()`, `%` operator, `list.append()`, `str.join()`
+**Skills:** fixed iteration, data types, selection, comparison operators
 
 **Question:**
 Write a program that finds every number between 1000 and 3000 (both included) in which each digit is even. The numbers should be printed as a comma-separated sequence on a single line.
@@ -269,7 +269,7 @@ print(",".join(values))
 `for` loops with `range()`, `while` loops with sentinel conditions, nested loops, and accumulator patterns.
 ### 11. Divisible by 7 but not a multiple of 5
 
-**Features:** `range()`, `for` loop, `%` with `and`, `list.append()`, `str.join()`
+**Skills:** fixed iteration, arithmetic operators, logical operators, selection, output
 
 **Question:**
 Write a program that finds every number between 2000 and 3200 (both included) that is divisible by 7 but is not a multiple of 5. The numbers should be printed as a comma-separated sequence on a single line.
@@ -289,7 +289,7 @@ print(','.join(items))
 
 ### 12. Capitalise input lines until a blank line
 
-**Features:** `while` loop with a sentinel condition, `str.upper()`, `list.append()`
+**Skills:** input, sentinel loop, string methods, accumulator, output
 
 **Question:**
 Write a program that accepts a sequence of lines as input and prints each line with all of its characters capitalised. Input ends at the first blank line.
@@ -325,7 +325,7 @@ for sentence in lines:
 
 ### 13. Net bank balance from a transaction log
 
-**Features:** `while` loop with a sentinel condition, `str.split()`, `if`/`elif`, accumulator
+**Skills:** input, sentinel loop, tokenisation, selection, accumulator
 
 **Question:**
 Write a program that computes the net balance of a bank account from a transaction log supplied through the console. Each log line has the form:
@@ -372,7 +372,7 @@ print(net_amount)
 
 ### 14. Sum the series 1/2 + 2/3 + … + n/(n+1)
 
-**Features:** `for` with `range()`, float accumulator, `float()` conversion
+**Skills:** input, fixed iteration, accumulator, data types
 
 **Question:**
 Write a program that computes `1/2 + 2/3 + 3/4 + … + n/(n+1)` for a given `n` (`n > 0`) supplied through the console.
@@ -403,7 +403,7 @@ print(total)
 
 ### 15. Generate all subject–verb–object sentences
 
-**Features:** nested `for` loops, list indexing, f-strings
+**Skills:** cartesian product, string formatting, tuple and list, output
 
 **Question:**
 Write a program that generates all the sentences whose subject is in `["I", "You"]`, whose verb is in `["Play", "Love"]`, and whose object is in `["Hockey", "Football"]`. Print one sentence per line, ending with a full stop — for example, `I Play Hockey.`
@@ -425,7 +425,7 @@ for i in range(len(subjects)):
 
 ### 16. Chickens and rabbits puzzle
 
-**Features:** `for` loop brute force, function returning a tuple, tuple unpacking
+**Skills:** function, search, fixed iteration, arithmetic operators, early return
 
 **Question:**
 Write a program that solves a classic ancient Chinese puzzle: a farm has chickens and rabbits, and between them there are 35 heads and 94 legs. How many chickens and how many rabbits are there? Print the answer as a `(chickens, rabbits)` tuple.
@@ -452,7 +452,7 @@ print(solutions)
 
 ### 17. Binary search in a sorted list
 
-**Features:** `while` loop, `if`/`elif`/`else`, index arithmetic, `math.floor()`
+**Skills:** search, conditional iteration, function, indexing
 
 **Question:**
 Write a binary search function that searches for an item in a sorted list and returns its index, or `-1` if it is not present. Test it by searching the list `[2, 5, 7, 9, 11, 17, 222]` for 11 and then for 12.
@@ -492,7 +492,7 @@ Character classification (`isdigit()`, `isalpha()`, `isupper()`,
 `islower()`), case conversion, and `%`-style string formatting.
 ### 18. Count letters and digits in a sentence
 
-**Features:** `str.isdigit()`, `str.isalpha()`, dict counter, `for` over a string
+**Skills:** input, string methods, accumulator, selection
 
 **Question:**
 Write a program that accepts a sentence and counts the number of letters and digits in it.
@@ -530,7 +530,7 @@ print("DIGITS", d["DIGITS"])
 
 ### 19. Count upper-case and lower-case letters
 
-**Features:** `str.isupper()`, `str.islower()`, dict counter
+**Skills:** input, string methods, accumulator, selection
 
 **Question:**
 Write a program that accepts a sentence and counts the number of upper-case letters and lower-case letters in it.
@@ -568,7 +568,7 @@ print("LOWER CASE", d["LOWER CASE"])
 
 ### 20. Compute a + aa + aaa + aaaa
 
-**Features:** string concatenation, `int()` conversion
+**Skills:** input, data types, arithmetic operators, output
 
 **Question:**
 Write a program that computes the value of `a + aa + aaa + aaaa`, where `a` is a single digit supplied through the console.
@@ -607,7 +607,7 @@ print(n1 + n2 + n3 + n4)
 Building lists with `append()`, filtering and de-duplicating them, then slicing with positive and negative indexes, `[n:m]` ranges, `[::-1]` reversal and `[::2]` steps.
 ### 21. Build a list of squares (1–20)
 
-**Features:** `list.append()`, `range()`, `**` operator
+**Skills:** function, fixed iteration, accumulator, arithmetic operators
 
 **Question:**
 Define a function that generates and prints a list of the squares of the numbers between 1 and 20 (both included).
@@ -631,7 +631,7 @@ print_list()
 
 ### 22. First 5 elements of a list
 
-**Features:** slicing `[:5]`
+**Skills:** function, accumulator, slicing, output
 
 **Question:**
 Define a function that generates a list of the squares of the numbers between 1 and 20 (both included), then prints the first 5 elements of the list.
@@ -656,7 +656,7 @@ print_list()
 
 ### 23. Last 5 elements of a list
 
-**Features:** negative slicing `[-5:]`
+**Skills:** function, accumulator, slicing, output
 
 **Question:**
 Define a function that generates a list of the squares of the numbers between 1 and 20 (both included), then prints the last 5 elements of the list.
@@ -681,7 +681,7 @@ print_list()
 
 ### 24. All elements except the first 5
 
-**Features:** slicing `[5:]`
+**Skills:** function, accumulator, slicing, output
 
 **Question:**
 Define a function that generates a list of the squares of the numbers between 1 and 20 (both included), then prints every element except the first 5.
@@ -706,7 +706,7 @@ print_list()
 
 ### 25. Print a string in reverse
 
-**Features:** `str` from `input()`, slicing with `[::-1]`
+**Skills:** input, slicing, output
 
 **Question:**
 Write a program that accepts a string from the console and prints it in reverse order.
@@ -735,7 +735,7 @@ print(s)
 
 ### 26. Characters at even indexes
 
-**Features:** slice with step `[::2]`
+**Skills:** input, slicing, output
 
 **Question:**
 Write a program that accepts a string from the console and prints the characters at the even indexes.
@@ -764,7 +764,7 @@ print(s)
 
 ### 27. Remove duplicates, preserving order
 
-**Features:** membership test `not in`, `list.append()`
+**Skills:** tuple and list, membership check, fixed iteration, output
 
 **Question:**
 Given the list `[12, 24, 35, 24, 88, 120, 155, 88, 120, 155]`, write a program that prints the list with all duplicate values removed, preserving the original order.
@@ -789,7 +789,7 @@ Creating tuples from lists with `tuple()`, slicing tuples, and iterating over
 them.
 ### 28. Comma-separated numbers → list and tuple
 
-**Features:** `str.split()`, `tuple()` conversion
+**Skills:** input, tokenisation, tuple and list, data types, output
 
 **Question:**
 Write a program that accepts a sequence of comma-separated numbers from the console and generates a list and a tuple containing every number.
@@ -822,7 +822,7 @@ print(tuple_items)
 
 ### 29. Tuple of squares (1–20)
 
-**Features:** `list.append()`, `tuple()` conversion
+**Skills:** function, fixed iteration, tuple and list, arithmetic operators
 
 **Question:**
 Define a function that generates and prints a tuple of the squares of the numbers between 1 and 20 (both included).
@@ -847,7 +847,7 @@ print_tuple()
 
 ### 30. Print the two halves of a tuple
 
-**Features:** tuple slicing `[:n]`, `[n:]`
+**Skills:** tuple and list, slicing, output
 
 **Question:**
 Given the tuple `(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)`, write a program that prints the first half of its values on one line and the second half on the next.
@@ -866,7 +866,7 @@ print(second_half)
 
 ### 31. Even values of a tuple as a new tuple
 
-**Features:** `for` over a tuple, `tuple()` conversion
+**Skills:** fixed iteration, selection, tuple and list, output
 
 **Question:**
 Write a program that generates and prints a new tuple containing the even numbers of the tuple `(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)`.
@@ -893,7 +893,7 @@ Building dictionaries, `dict.get()` with defaults, and iterating with
 `keys()` / `items()`.
 ### 32. Dictionary of squares {i: i²}
 
-**Features:** `dict()`, dictionary assignment, `range()`, `for` loop
+**Skills:** input, dict, fixed iteration, arithmetic operators, output
 
 **Question:**
 Given an integer `n`, write a program that generates a dictionary containing the pairs `(i, i * i)` for every integer `i` between 1 and `n` (both included), then prints the dictionary.
@@ -926,7 +926,7 @@ print(squares)
 
 ### 33. Dictionary of squares, 1–3
 
-**Features:** `dict()`, `dict[key] = value`, `**` operator
+**Skills:** function, dict, fixed iteration, arithmetic operators
 
 **Question:**
 Define a function that prints a dictionary whose keys are the numbers between 1 and 3 (both included) and whose values are the squares of those keys.
@@ -950,7 +950,7 @@ print_dict()
 
 ### 34. Dictionary of squares, 1–20
 
-**Features:** `dict()`, `range()`, `for` loop
+**Skills:** function, dict, fixed iteration, arithmetic operators
 
 **Question:**
 Define a function that prints a dictionary whose keys are the numbers between 1 and 20 (both included) and whose values are the squares of those keys.
@@ -974,7 +974,7 @@ print_dict()
 
 ### 35. Dictionary of squares — print the values only
 
-**Features:** `dict.items()`, tuple unpacking
+**Skills:** function, dict, fixed iteration, output
 
 **Question:**
 Define a function that generates a dictionary whose keys are the numbers between 1 and 20 (both included) and whose values are the squares of those keys, then prints only the values, one per line.
@@ -1000,7 +1000,7 @@ print_dict()
 
 ### 36. Dictionary of squares — print the keys only
 
-**Features:** `dict.keys()`
+**Skills:** function, dict, fixed iteration, output
 
 **Question:**
 Define a function that generates a dictionary whose keys are the numbers between 1 and 20 (both included) and whose values are the squares of those keys, then prints only the keys, one per line.
@@ -1026,7 +1026,7 @@ print_dict()
 
 ### 37. Count each character in a string
 
-**Features:** `dict.get(key, default)`, `dict.items()`, f-strings
+**Skills:** input, dict, accumulator, output
 
 **Question:**
 Write a program that counts how many times each character appears in a string supplied through the console, and prints one `character,count` pair per line in first-appearance order.
@@ -1073,7 +1073,7 @@ for char, count in counts.items():
 Basic comprehensions, comprehensions with `if` filters, and comprehensions over `enumerate()` — one-dimensional only.
 ### 38. "Square" each odd number in a list
 
-**Features:** list comprehension with `if` filter, `str.split()`, `str.join()`
+**Skills:** input, tokenisation, list comprehension, mapping, filtering
 
 **Question:**
 Use a list comprehension to square each odd number in a list. The list is supplied as a sequence of comma-separated numbers.
@@ -1102,7 +1102,7 @@ print(",".join(numbers))
 
 ### 39. Remove even numbers from a list
 
-**Features:** list comprehension with `if` filter
+**Skills:** list comprehension, filtering, arithmetic operators
 
 **Question:**
 Write a program that prints the list `[5, 6, 77, 45, 22, 12, 24]` with the even numbers removed.
@@ -1119,7 +1119,7 @@ print(li)
 
 ### 40. Remove numbers divisible by 5 and 7
 
-**Features:** list comprehension with compound `if` filter
+**Skills:** list comprehension, filtering, arithmetic operators, logical operators
 
 **Question:**
 Use a list comprehension to print the list `[12, 24, 35, 70, 88, 120, 155]` with the numbers divisible by both 5 and 7 removed.
@@ -1136,7 +1136,7 @@ print(li)
 
 ### 41. Remove all occurrences of a value
 
-**Features:** list comprehension with equality filter
+**Skills:** list comprehension, filtering, comparison operators
 
 **Question:**
 Use a list comprehension to print the list `[12, 24, 35, 24, 88, 120, 155]` with every occurrence of the value 24 removed.
@@ -1153,7 +1153,7 @@ print(li)
 
 ### 42. Drop the even-indexed elements
 
-**Features:** `enumerate()` in a comprehension, tuple unpacking `(i, x)`
+**Skills:** list comprehension, indexed iteration, filtering
 
 **Question:**
 Use a list comprehension to print the list `[12, 24, 35, 70, 88, 120, 155]` with the elements at indexes 0, 2, 4 and 6 removed.
@@ -1171,7 +1171,7 @@ print(li)
 
 ### 43. Drop elements at given indexes
 
-**Features:** `enumerate()` in a comprehension, `not in` membership test against a tuple
+**Skills:** list comprehension, indexed iteration, membership check
 
 **Question:**
 Use a list comprehension to print the list `[12, 24, 35, 70, 88, 120, 155]` with the elements at indexes 0, 4 and 5 removed.
@@ -1189,7 +1189,7 @@ print(li)
 
 ### 44. 2-D multiplication array
 
-**Features:** nested `for` loops, 2-D lists, `int()` conversion
+**Skills:** input, tokenisation, cartesian product, nested data structure, accumulator
 
 **Question:**
 Write a program that takes two numbers, `X` and `Y`, as comma-separated input and generates a 2-dimensional array in which the element in row `i` and column `j` is `i * j`, where `i = 0, 1, …, X-1` and `j = 0, 1, …, Y-1`.
@@ -1230,7 +1230,7 @@ Self-calling functions with base cases — factorial, linear recurrence,
 Fibonacci — and combining recursion with a comprehension.
 ### 45. Factorial
 
-**Features:** recursive `def`, base case
+**Skills:** recursion, input, output
 
 **Question:**
 Write a program that computes the factorial of a number supplied through the console.
@@ -1264,7 +1264,7 @@ print(fact(x))
 
 ### 46. f(n) = f(n−1) + 100
 
-**Features:** recursion, `if`/`else` base case
+**Skills:** recursion, input, output
 
 **Question:**
 Write a program that computes `f(n)` for a given `n` (`n > 0`) supplied through the console, where:
@@ -1301,7 +1301,7 @@ print(f(n))
 
 ### 47. Fibonacci number f(n)
 
-**Features:** recursion with two base cases
+**Skills:** recursion, input, output
 
 **Question:**
 The Fibonacci sequence is defined by:
@@ -1343,7 +1343,7 @@ print(f(n))
 
 ### 48. Fibonacci sequence as a comma-separated string
 
-**Features:** recursion + list comprehension, `str()`, `str.join()`
+**Skills:** recursion, list comprehension, mapping, input, output
 
 **Question:**
 The Fibonacci sequence is defined by:
@@ -1398,7 +1398,7 @@ Defining classes, `__init__` constructors, instance methods, and the
 class-attribute vs instance-attribute distinction.
 ### 49. A string-handling class
 
-**Features:** `class`, `__init__()`, instance methods, instance attributes, `str.upper()`
+**Skills:** class, input, string methods, output
 
 **Question:**
 Define a class that has at least two methods:
@@ -1431,7 +1431,7 @@ string_obj.print_string()
 
 ### 50. Class attribute vs instance attribute
 
-**Features:** class attributes, instance attributes, `__init__()` defaults
+**Skills:** class, class attribute, output
 
 **Question:**
 Define a class named `Person` with a class attribute `name` set to `"Person"` and an instance attribute `name` set through the constructor.
@@ -1469,7 +1469,7 @@ print(f"{Person.name} name is {nico.name}")
 
 ### 51. Circle with an area method
 
-**Features:** `class`, `__init__()` with parameters, instance methods
+**Skills:** class, arithmetic operators, output
 
 **Question:**
 Define a class named `Circle` that is constructed from a radius and has a method that computes the area, using 3.14 for π. Test it by printing the area of a circle of radius 2.
@@ -1493,7 +1493,7 @@ print(circle.area())
 
 ### 52. Rectangle with an area method
 
-**Features:** `class`, `__init__()` with parameters, instance methods
+**Skills:** class, arithmetic operators, output
 
 **Question:**
 Define a class named `Rectangle` that is constructed from a length and a width and has a method that computes the area. Test it by printing the area of a 2 × 10 rectangle.
@@ -1522,7 +1522,7 @@ Subclassing, method overriding, polymorphic dispatch, and the
 `@staticmethod` decorator.
 ### 53. American and its subclass NewYorker
 
-**Features:** `class Subclass(Parent)`, instantiation
+**Skills:** class, inheritance
 
 **Question:**
 Define a class named `American` and a subclass of it named `NewYorker`.
@@ -1548,7 +1548,7 @@ print(new_yorker)
 
 ### 54. Shape and Square: overriding `area()`
 
-**Features:** inheritance, method overriding, `super().__init__()`
+**Skills:** class, inheritance, polymorphism, output
 
 **Question:**
 Define a class named `Shape` and a subclass of it named `Square`. The `Square` class has an `__init__()` method that takes a length as its argument. Both classes have an `area()` method that returns the area of the shape; a `Shape`'s area is 0 by default. Test it by printing the area of a square of length 3.
@@ -1581,7 +1581,7 @@ print(square.area())
 
 ### 55. Person, Male, Female — polymorphic `get_gender()`
 
-**Features:** inheritance, method overriding, polymorphism
+**Skills:** class, inheritance, polymorphism, output
 
 **Question:**
 Define a class `Person` and two subclasses of it, `Male` and `Female`. Every class has a method `get_gender()`, which returns "Male" for the `Male` class and "Female" for the `Female` class. Test it by printing the gender of a `Male` instance and then of a `Female` instance.
@@ -1614,7 +1614,7 @@ print(female.get_gender())
 
 ### 56. A class with a static method
 
-**Features:** `@staticmethod` decorator
+**Skills:** class, staticmethod, output
 
 **Question:**
 Define a class named `American` that has a static method called `print_nationality()`, which prints "America". Test it by calling the method once on an instance and once on the class itself.
@@ -1641,7 +1641,7 @@ Raising exceptions, catching them with `try`/`except`/`finally`, defining
 custom exception classes, and `assert` statements.
 ### 57. Raise a RuntimeError
 
-**Features:** `raise`
+**Skills:** exception raising
 
 **Question:**
 Write a program that raises a `RuntimeError` exception.
@@ -1656,7 +1656,7 @@ raise RuntimeError('something wrong')
 
 ### 58. Catch a division by zero
 
-**Features:** `try`/`except`/`finally`, `ZeroDivisionError`, generic `Exception` handler
+**Skills:** exception handling, function, output
 
 **Question:**
 Write a function that computes `5 / 0`, and call it inside a `try`/`except` block that catches the `ZeroDivisionError`. Print `"division by zero!"` when the error is caught, and print `"In finally block for cleanup"` from a `finally` clause.
@@ -1682,7 +1682,7 @@ finally:
 
 ### 59. A custom exception class
 
-**Features:** inheriting from `Exception`, docstrings
+**Skills:** class, inheritance
 
 **Question:**
 Define a custom exception class that takes a string message as an attribute.
@@ -1708,7 +1708,7 @@ error = MyError("something wrong")
 
 ### 60. Assert every number is even
 
-**Features:** `assert` statement
+**Skills:** assert, fixed iteration, tuple and list
 
 **Question:**
 Write `assert` statements to verify that every number in the list `[2, 4, 6, 8]` is even.
@@ -1732,7 +1732,7 @@ for i in li:
 Square roots, rounding and distance computations with the `math` module.
 ### 61. Evaluate Q = √(2CD/H)
 
-**Features:** `math.sqrt()`, `round()`, `float()`, `int()`, `str.split()`, `str.join()`
+**Skills:** input, tokenisation, math module, data types, output
 
 **Question:**
 Write a program that calculates and prints values according to the formula:
@@ -1773,7 +1773,7 @@ print(','.join(value))
 
 ### 62. Robot's distance from the origin
 
-**Features:** `math.sqrt()`, `round()`, `while` loop with a sentinel condition, `str.split()`, `if`/`elif` dispatch
+**Skills:** input, sentinel loop, tokenisation, math module, selection
 
 **Question:**
 A robot moves in a plane, starting from the origin `(0, 0)`. It can move UP, DOWN, LEFT or RIGHT by a given number of steps, and its movements are recorded in a trace like this:
@@ -1832,7 +1832,7 @@ print(int(round(math.sqrt(pos[1] ** 2 + pos[0] ** 2))))
 combined with list comprehensions to constrain the candidate pool.
 ### 63. A random float (scaled)
 
-**Features:** `random.uniform()`
+**Skills:** random numbers, output
 
 **Question:**
 Use the `random` module to generate a random float between 10 and 100.
@@ -1848,7 +1848,7 @@ print(random.uniform(10, 100))
 
 ### 64. A random float between 5 and 95
 
-**Features:** `random.uniform()`
+**Skills:** random numbers, output
 
 **Question:**
 Use the `random` module to generate a random float between 5 and 95.
@@ -1864,7 +1864,7 @@ print(random.uniform(5, 95))
 
 ### 65. Random even number between 0 and 10
 
-**Features:** `random.choice()`, list comprehension
+**Skills:** random numbers, list comprehension, selection, output
 
 **Question:**
 Use the `random` module and a list comprehension to print a random even number between 0 and 10 (both included).
@@ -1880,7 +1880,7 @@ print(random.choice([i for i in range(0, 11) if i % 2 == 0]))
 
 ### 66. Random number divisible by 5 and 7
 
-**Features:** `random.choice()`, list comprehension with a compound filter
+**Skills:** random numbers, list comprehension, filtering
 
 **Question:**
 Use the `random` module and a list comprehension to print a random number between 0 and 1000 (both included) that is divisible by both 5 and 7.
@@ -1896,7 +1896,7 @@ print(random.choice([i for i in range(0, 1001) if i % 5 == 0 and i % 7 == 0]))
 
 ### 67. A list of 5 random numbers
 
-**Features:** `random.sample()`
+**Skills:** random numbers, output
 
 **Question:**
 Write a program that generates a list of 5 random numbers between 100 and 200 (both included).
@@ -1912,7 +1912,7 @@ print(random.sample(range(100, 201), 5))
 
 ### 68. 5 random even numbers (100–200)
 
-**Features:** `random.sample()`, list comprehension
+**Skills:** random numbers, list comprehension, filtering
 
 **Question:**
 Write a program that generates a list of 5 random even numbers between 100 and 200 (both included).
@@ -1928,7 +1928,7 @@ print(random.sample([i for i in range(100, 201) if i % 2 == 0], 5))
 
 ### 69. 5 random multiples of 5 and 7 (1–1000)
 
-**Features:** `random.sample()`, list comprehension with a compound filter
+**Skills:** random numbers, list comprehension, filtering
 
 **Question:**
 Write a program that generates a list of 5 random numbers between 1 and 1000 (both included) that are divisible by both 5 and 7.
@@ -1946,7 +1946,7 @@ print(random.sample(multiples, 5))
 
 ### 70. Random integer between 7 and 15
 
-**Features:** `random.randrange()`
+**Skills:** random numbers, output
 
 **Question:**
 Write a program that prints a random integer between 7 and 15 (both included).
@@ -1962,7 +1962,7 @@ print(random.randrange(7, 16))
 
 ### 71. Shuffle a list
 
-**Features:** `random.shuffle()`, `from … import`
+**Skills:** random numbers, tuple and list, output
 
 **Question:**
 Write a program that shuffles and prints the list `[3, 6, 7, 8]`.
@@ -1983,7 +1983,7 @@ print(li)
 Timing snippet execution with the `timeit` module.
 ### 72. Measure execution time
 
-**Features:** `timeit.Timer`, `Timer.timeit()`
+**Skills:** time measurement, output
 
 **Question:**
 Write a program that prints the time taken to execute the statement `1 + 1` 100 times.
