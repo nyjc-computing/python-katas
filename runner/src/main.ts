@@ -56,6 +56,7 @@ const indentSelect = document.querySelector('#indent-select') as HTMLSelectEleme
 const activeFileName = document.querySelector('#active-file-name') as HTMLElement
 const saveStateEl = document.querySelector('#save-state') as HTMLElement
 const panelLeft = document.querySelector('#panel-left') as HTMLElement
+const panelRight = document.querySelector('#panel-right') as HTMLElement
 const fileList = document.querySelector('#file-list') as HTMLElement
 const newFileName = document.querySelector('#new-file-name') as HTMLInputElement
 const btnCreate = document.querySelector('#btn-create') as HTMLButtonElement
@@ -79,6 +80,8 @@ const kataFeatures = document.querySelector('#kata-features') as HTMLElement
 const kataQuestion = document.querySelector('#kata-question') as HTMLElement
 const kataHintsWrap = document.querySelector('#kata-hints-wrap') as HTMLElement
 const kataHintsList = document.querySelector('#kata-hints-list') as HTMLElement
+const kataFeaturesWrap = document.querySelector('#kata-features-wrap') as HTMLElement
+const leftRailLabel = document.querySelector('#left-rail-label') as HTMLElement
 
 // ── virtual files ────────────────────────────────────────────────────────────
 const fileStore = new FileStore()
@@ -437,6 +440,7 @@ function handleVerifyFinished(msg: Extract<FromWorker, { type: 'run-finished' }>
     if (currentContext !== 'global') markVerified(currentContext, true)
     consolePane.write('✓ Verified — output matches.\n', 'success')
     renderKataList()
+    renderKataPane()
   } else if (msg.interrupted) {
     consolePane.write('✗ Verify stopped before the program finished.\n', 'stderr')
   } else {
@@ -632,6 +636,10 @@ function renderKataPane(): void {
   kataPaneEmpty.hidden = true
   kataPaneBody.hidden = false
   kataPaneTitle.textContent = `${kata.n}. ${kata.title}`
+  // feature chips are the solution's recipe — a spoiler before solving, a
+  // recap after: they appear only once the kata is verified
+  const solved = isVerified(kata.id)
+  kataFeaturesWrap.hidden = !solved
   kataFeatures.innerHTML = ''
   for (const feature of kata.features) {
     const chip = document.createElement('span')
@@ -650,6 +658,15 @@ function renderKataPane(): void {
 
 btnKatapane.addEventListener('click', () => {
   applyKataPane(!app.classList.contains('katapane-open'))
+})
+
+panelLeft.addEventListener('click', () => {
+  // when collapsed, every child except the rail label is hidden — any click expands
+  if (!app.classList.contains('sidebar-open')) applySidebar(true)
+})
+
+panelRight.addEventListener('click', () => {
+  if (!app.classList.contains('katapane-open')) applyKataPane(true)
 })
 
 applyKataPane(localStorage.getItem('kata.katapane') !== 'closed')
@@ -800,6 +817,7 @@ function applySideMode(mode: SideMode): void {
   fileActions.hidden = mode !== 'files'
   tabKatas.classList.toggle('active', mode === 'katas')
   tabFiles.classList.toggle('active', mode === 'files')
+  leftRailLabel.textContent = mode === 'katas' ? 'Kata browser' : 'My files'
   kataActions.hidden = mode !== 'katas'
   if (mode === 'katas') {
     const id = activeKataId()

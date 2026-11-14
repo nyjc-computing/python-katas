@@ -232,9 +232,9 @@ button:disabled {
   padding: 0.5rem;
 }
 
-/* stacked: editor above, console below (side panels reserved, collapsed) */
+/* stacked: editor above, console below (side panels collapsed to rails) */
 #app.layout-stack {
-  grid-template-columns: 0fr 3fr 2fr 0fr;
+  grid-template-columns: 26px 3fr 2fr 26px;
   grid-template-rows: 3fr 2fr;
   grid-template-areas:
     'left editor editor right'
@@ -243,7 +243,7 @@ button:disabled {
 
 /* side-by-side: editor left, console right */
 #app.layout-side {
-  grid-template-columns: 0fr 3fr 2fr 0fr;
+  grid-template-columns: 26px 3fr 2fr 26px;
   grid-template-rows: 1fr;
   grid-template-areas: 'left editor output right';
 }
@@ -252,13 +252,64 @@ button:disabled {
   grid-area: left;
 }
 
+/* collapsed rails: a labelled strip that expands on click — an obvious
+   affordance instead of a squeezed sliver and a dotted line */
+#panel-left .rail-label,
+#panel-right .rail-label {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+#app:not(.sidebar-open) #panel-left {
+  cursor: pointer;
+}
+
+#app:not(.sidebar-open) #panel-left > :not(.rail-label) {
+  display: none;
+}
+
+#app:not(.sidebar-open) #panel-left .rail-label {
+  display: flex;
+}
+
+#app:not(.sidebar-open) #panel-left:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#app:not(.katapane-open) #panel-right {
+  cursor: pointer;
+}
+
+#app:not(.katapane-open) #panel-right > :not(.rail-label) {
+  display: none;
+}
+
+#app:not(.katapane-open) #panel-right .rail-label {
+  display: flex;
+}
+
+#app:not(.katapane-open) #panel-right:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* open file browser: the reserved left column gets real width */
 #app.sidebar-open.layout-stack {
-  grid-template-columns: 280px 3fr 2fr 0fr;
+  grid-template-columns: 280px 3fr 2fr 26px;
 }
 
 #app.sidebar-open.layout-side {
-  grid-template-columns: 280px 3fr 2fr 0fr;
+  grid-template-columns: 280px 3fr 2fr 26px;
 }
 
 #app.sidebar-open #panel-left {
@@ -744,11 +795,11 @@ button:disabled {
 }
 
 #app.katapane-open.layout-stack {
-  grid-template-columns: 0fr 3fr 2fr clamp(230px, 27vw, 330px);
+  grid-template-columns: 26px 3fr 2fr clamp(230px, 27vw, 330px);
 }
 
 #app.katapane-open.layout-side {
-  grid-template-columns: 0fr 3fr 2fr clamp(230px, 27vw, 330px);
+  grid-template-columns: 26px 3fr 2fr clamp(230px, 27vw, 330px);
 }
 
 /* both sidebars open: the combined state needs its own rule — the single

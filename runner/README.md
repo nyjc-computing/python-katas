@@ -29,9 +29,15 @@ cloning or bumping the `pyodide` version in package.json.
   `{stdin, stdout}` tests (stdin is pre-fed, the interactive input row never
   opens) and marks it with a green ✓ when the normalised output matches.
 - **Kata info pane** — selecting a kata opens the right sidebar: its text
-  (question with sample I/O, feature chips) and hints, each hint its own
-  collapsed row that expands independently; per-hint state persists. The
-  pane toggles via the ⓘ button at the toolbar's right end.
+  (question with sample I/O) and hints, each hint its own collapsed row
+  that expands independently; per-hint state persists. The pane toggles via
+  the ⓘ button at the toolbar's right end, or by clicking its collapsed
+  edge rail. The feature chips are hidden until the kata is verified —
+  they name the techniques the kata asks the student to choose, so they
+  appear afterwards as a "Features practised" recap.
+- **Collapsible side rails** — with a side panel closed, its column stays
+  visible as a 26px labelled rail ("Kata browser" / "My files" on the
+  left, "Kata info" on the right); clicking the rail expands the panel.
 - **Per-kata codebases** — the whole virtual file set belongs to its
   context: switching katas swaps `main.py` and any helper files with it.
   The plain Files workspace is reachable via the "My files" entry at the

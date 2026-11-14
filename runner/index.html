@@ -31,6 +31,7 @@
 
     <main id="app" class="layout-stack">
       <aside id="panel-left" class="panel-side">
+        <div class="rail-label" id="left-rail-label">Kata browser</div>
         <div class="side-head">
           <span class="side-tabs">
             <button id="tab-katas" class="side-tab" type="button">Katas</button>
@@ -85,16 +86,20 @@
 
       <!-- Kata info: question, features and hints for the active kata -->
       <aside id="panel-right" class="panel-side">
+        <div class="rail-label">Kata info</div>
         <div class="side-head">KATA</div>
         <div class="kata-pane">
           <div id="kata-pane-empty" class="kata-pane-empty">Select a kata to see its text and hints.</div>
           <div id="kata-pane-body" hidden>
             <div id="kata-pane-title"></div>
-            <div id="kata-features" class="kata-features"></div>
             <div id="kata-question" class="kata-question"></div>
             <div id="kata-hints-wrap" hidden>
               <div class="kata-hints-header">Hints</div>
               <div id="kata-hints-list"></div>
+            </div>
+            <div id="kata-features-wrap" hidden>
+              <div class="kata-hints-header">Features practised</div>
+              <div id="kata-features" class="kata-features"></div>
             </div>
           </div>
         </div>
