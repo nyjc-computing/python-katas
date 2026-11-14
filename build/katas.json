@@ -286,7 +286,8 @@
         "data types",
         "fixed iteration",
         "filtering",
-        "output"
+        "output",
+        "string methods"
       ],
       "question": "Write a program that accepts a sequence of comma-separated 4-digit binary numbers as input and checks whether each one is divisible by 5. The numbers that are divisible by 5 should be printed as a comma-separated sequence.\n\nFor example, given the input:\n\n```\n0100,0011,1010,1001\n```\n\nthe program should print:\n\n```\n1010\n```",
       "hints": [
@@ -393,7 +394,8 @@
         "sentinel loop",
         "string methods",
         "accumulator",
-        "output"
+        "output",
+        "conditional iteration"
       ],
       "question": "Write a program that accepts a sequence of lines as input and prints each line with all of its characters capitalised. Input ends at the first blank line.\n\nFor example, given the input:\n\n```\nHello world\nPractice makes perfect\n```\n\nthe program should print:\n\n```\nHELLO WORLD\nPRACTICE MAKES PERFECT\n```",
       "hints": [
@@ -412,7 +414,8 @@
         "sentinel loop",
         "tokenisation",
         "selection",
-        "accumulator"
+        "accumulator",
+        "conditional iteration"
       ],
       "question": "Write a program that computes the net balance of a bank account from a transaction log supplied through the console. Each log line has the form:\n\n```\nD 100\nW 200\n```\n\n`D` means deposit and `W` means withdrawal. Input ends at the first blank line.\n\nFor example, given the input:\n\n```\nD 300\nD 300\nW 200\nD 100\n```\n\nthe program should print:\n\n```\n500\n```",
       "hints": [
@@ -510,8 +513,27 @@
       ]
     },
     {
-      "id": "018-count-letters-and-digits-in-a-sentence",
+      "id": "018-2-d-multiplication-array",
       "n": 18,
+      "title": "2-D multiplication array",
+      "section": "s03",
+      "skills": [
+        "input",
+        "tokenisation",
+        "cartesian product",
+        "nested data structure",
+        "accumulator"
+      ],
+      "question": "Write a program that takes two numbers, `X` and `Y`, as comma-separated input and generates a 2-dimensional array in which the element in row `i` and column `j` is `i * j`, where `i = 0, 1, …, X-1` and `j = 0, 1, …, Y-1`.\n\nFor example, given the input:\n\n```\n3,5\n```\n\nthe program should print:\n\n```\n[[0, 0, 0, 0, 0], [0, 1, 2, 3, 4], [0, 2, 4, 6, 8]]\n```",
+      "hints": [
+        "Assume the input is supplied through the console as two comma-separated numbers."
+      ],
+      "starter": null,
+      "tests": null
+    },
+    {
+      "id": "019-count-letters-and-digits-in-a-sentence",
+      "n": 19,
       "title": "Count letters and digits in a sentence",
       "section": "s04",
       "skills": [
@@ -528,8 +550,8 @@
       "tests": null
     },
     {
-      "id": "019-count-upper-case-and-lower-case-letters",
-      "n": 19,
+      "id": "020-count-upper-case-and-lower-case-letters",
+      "n": 20,
       "title": "Count upper-case and lower-case letters",
       "section": "s04",
       "skills": [
@@ -546,8 +568,8 @@
       "tests": null
     },
     {
-      "id": "020-compute-a-aa-aaa-aaaa",
-      "n": 20,
+      "id": "021-compute-a-aa-aaa-aaaa",
+      "n": 21,
       "title": "Compute a + aa + aaa + aaaa",
       "section": "s04",
       "skills": [
@@ -564,8 +586,8 @@
       "tests": null
     },
     {
-      "id": "021-build-a-list-of-squares-1-20",
-      "n": 21,
+      "id": "022-build-a-list-of-squares-1-20",
+      "n": 22,
       "title": "Build a list of squares (1–20)",
       "section": "s05",
       "skills": [
@@ -587,8 +609,8 @@
       ]
     },
     {
-      "id": "022-first-5-elements-of-a-list",
-      "n": 22,
+      "id": "023-first-5-elements-of-a-list",
+      "n": 23,
       "title": "First 5 elements of a list",
       "section": "s05",
       "skills": [
@@ -610,8 +632,8 @@
       ]
     },
     {
-      "id": "023-last-5-elements-of-a-list",
-      "n": 23,
+      "id": "024-last-5-elements-of-a-list",
+      "n": 24,
       "title": "Last 5 elements of a list",
       "section": "s05",
       "skills": [
@@ -633,8 +655,8 @@
       ]
     },
     {
-      "id": "024-all-elements-except-the-first-5",
-      "n": 24,
+      "id": "025-all-elements-except-the-first-5",
+      "n": 25,
       "title": "All elements except the first 5",
       "section": "s05",
       "skills": [
@@ -656,8 +678,8 @@
       ]
     },
     {
-      "id": "025-print-a-string-in-reverse",
-      "n": 25,
+      "id": "026-print-a-string-in-reverse",
+      "n": 26,
       "title": "Print a string in reverse",
       "section": "s05",
       "skills": [
@@ -673,8 +695,8 @@
       "tests": null
     },
     {
-      "id": "026-characters-at-even-indexes",
-      "n": 26,
+      "id": "027-characters-at-even-indexes",
+      "n": 27,
       "title": "Characters at even indexes",
       "section": "s05",
       "skills": [
@@ -690,8 +712,8 @@
       "tests": null
     },
     {
-      "id": "027-remove-duplicates-preserving-order",
-      "n": 27,
+      "id": "028-remove-duplicates-preserving-order",
+      "n": 28,
       "title": "Remove duplicates, preserving order",
       "section": "s05",
       "skills": [
@@ -713,8 +735,8 @@
       ]
     },
     {
-      "id": "028-comma-separated-numbers-list-and-tuple",
-      "n": 28,
+      "id": "029-comma-separated-numbers-list-and-tuple",
+      "n": 29,
       "title": "Comma-separated numbers → list and tuple",
       "section": "s06",
       "skills": [
@@ -732,8 +754,8 @@
       "tests": null
     },
     {
-      "id": "029-tuple-of-squares-1-20",
-      "n": 29,
+      "id": "030-tuple-of-squares-1-20",
+      "n": 30,
       "title": "Tuple of squares (1–20)",
       "section": "s06",
       "skills": [
@@ -755,8 +777,8 @@
       ]
     },
     {
-      "id": "030-print-the-two-halves-of-a-tuple",
-      "n": 30,
+      "id": "031-print-the-two-halves-of-a-tuple",
+      "n": 31,
       "title": "Print the two halves of a tuple",
       "section": "s06",
       "skills": [
@@ -777,8 +799,8 @@
       ]
     },
     {
-      "id": "031-even-values-of-a-tuple-as-a-new-tuple",
-      "n": 31,
+      "id": "032-even-values-of-a-tuple-as-a-new-tuple",
+      "n": 32,
       "title": "Even values of a tuple as a new tuple",
       "section": "s06",
       "skills": [
@@ -800,8 +822,8 @@
       ]
     },
     {
-      "id": "032-dictionary-of-squares-i-i2",
-      "n": 32,
+      "id": "033-dictionary-of-squares-i-i2",
+      "n": 33,
       "title": "Dictionary of squares {i: i²}",
       "section": "s07",
       "skills": [
@@ -819,8 +841,8 @@
       "tests": null
     },
     {
-      "id": "033-dictionary-of-squares-1-3",
-      "n": 33,
+      "id": "034-dictionary-of-squares-1-3",
+      "n": 34,
       "title": "Dictionary of squares, 1–3",
       "section": "s07",
       "skills": [
@@ -842,8 +864,8 @@
       ]
     },
     {
-      "id": "034-dictionary-of-squares-1-20",
-      "n": 34,
+      "id": "035-dictionary-of-squares-1-20",
+      "n": 35,
       "title": "Dictionary of squares, 1–20",
       "section": "s07",
       "skills": [
@@ -865,8 +887,8 @@
       ]
     },
     {
-      "id": "035-dictionary-of-squares-print-the-values-only",
-      "n": 35,
+      "id": "036-dictionary-of-squares-print-the-values-only",
+      "n": 36,
       "title": "Dictionary of squares — print the values only",
       "section": "s07",
       "skills": [
@@ -888,8 +910,8 @@
       ]
     },
     {
-      "id": "036-dictionary-of-squares-print-the-keys-only",
-      "n": 36,
+      "id": "037-dictionary-of-squares-print-the-keys-only",
+      "n": 37,
       "title": "Dictionary of squares — print the keys only",
       "section": "s07",
       "skills": [
@@ -911,8 +933,8 @@
       ]
     },
     {
-      "id": "037-count-each-character-in-a-string",
-      "n": 37,
+      "id": "038-count-each-character-in-a-string",
+      "n": 38,
       "title": "Count each character in a string",
       "section": "s07",
       "skills": [
@@ -929,8 +951,8 @@
       "tests": null
     },
     {
-      "id": "038-square-each-odd-number-in-a-list",
-      "n": 38,
+      "id": "039-square-each-odd-number-in-a-list",
+      "n": 39,
       "title": "\"Square\" each odd number in a list",
       "section": "s08",
       "skills": [
@@ -948,8 +970,8 @@
       "tests": null
     },
     {
-      "id": "039-remove-even-numbers-from-a-list",
-      "n": 39,
+      "id": "040-remove-even-numbers-from-a-list",
+      "n": 40,
       "title": "Remove even numbers from a list",
       "section": "s08",
       "skills": [
@@ -970,8 +992,8 @@
       ]
     },
     {
-      "id": "040-remove-numbers-divisible-by-5-and-7",
-      "n": 40,
+      "id": "041-remove-numbers-divisible-by-5-and-7",
+      "n": 41,
       "title": "Remove numbers divisible by 5 and 7",
       "section": "s08",
       "skills": [
@@ -993,8 +1015,8 @@
       ]
     },
     {
-      "id": "041-remove-all-occurrences-of-a-value",
-      "n": 41,
+      "id": "042-remove-all-occurrences-of-a-value",
+      "n": 42,
       "title": "Remove all occurrences of a value",
       "section": "s08",
       "skills": [
@@ -1015,8 +1037,8 @@
       ]
     },
     {
-      "id": "042-drop-the-even-indexed-elements",
-      "n": 42,
+      "id": "043-drop-the-even-indexed-elements",
+      "n": 43,
       "title": "Drop the even-indexed elements",
       "section": "s08",
       "skills": [
@@ -1037,8 +1059,8 @@
       ]
     },
     {
-      "id": "043-drop-elements-at-given-indexes",
-      "n": 43,
+      "id": "044-drop-elements-at-given-indexes",
+      "n": 44,
       "title": "Drop elements at given indexes",
       "section": "s08",
       "skills": [
@@ -1057,25 +1079,6 @@
           "stdout": "[24, 35, 70, 155]\n"
         }
       ]
-    },
-    {
-      "id": "044-2-d-multiplication-array",
-      "n": 44,
-      "title": "2-D multiplication array",
-      "section": "s08",
-      "skills": [
-        "input",
-        "tokenisation",
-        "cartesian product",
-        "nested data structure",
-        "accumulator"
-      ],
-      "question": "Write a program that takes two numbers, `X` and `Y`, as comma-separated input and generates a 2-dimensional array in which the element in row `i` and column `j` is `i * j`, where `i = 0, 1, …, X-1` and `j = 0, 1, …, Y-1`.\n\nFor example, given the input:\n\n```\n3,5\n```\n\nthe program should print:\n\n```\n[[0, 0, 0, 0, 0], [0, 1, 2, 3, 4], [0, 2, 4, 6, 8]]\n```",
-      "hints": [
-        "Assume the input is supplied through the console as two comma-separated numbers."
-      ],
-      "starter": null,
-      "tests": null
     },
     {
       "id": "045-factorial",
@@ -1415,7 +1418,8 @@
         "sentinel loop",
         "tokenisation",
         "math module",
-        "selection"
+        "selection",
+        "conditional iteration"
       ],
       "question": "A robot moves in a plane, starting from the origin `(0, 0)`. It can move UP, DOWN, LEFT or RIGHT by a given number of steps, and its movements are recorded in a trace like this:\n\n```\nUP 5\nDOWN 3\nLEFT 3\nRIGHT 2\n```\n\nThe number after each direction is the number of steps. Write a program that computes the distance between the robot's final position and the origin after a sequence of movements. If the distance is not a whole number, print the nearest integer. Input ends at the first blank line.\n\nFor example, given the input:\n\n```\nUP 5\nDOWN 3\nLEFT 3\nRIGHT 2\n```\n\nthe program should print:\n\n```\n2\n```",
       "hints": [
@@ -1591,5 +1595,5 @@
       "tests": null
     }
   ],
-  "digest": "30357ff3bef89455"
+  "digest": "62ccbc52cd4114be"
 }

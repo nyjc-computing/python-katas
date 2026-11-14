@@ -27,6 +27,27 @@ const fail = (context, rule) => {
 }
 
 // ---------------------------------------------------------------------------
+// Scaffolding audit: prerequisites must appear no later than the skill they
+// introduce (same kata counts — co-introduction is fine).
+
+function auditScaffolding(katas) {
+  const problems = []
+  const firstAt = new Map()
+  katas.forEach((kata, index) => {
+    for (const skill of kata.skills) if (!firstAt.has(skill)) firstAt.set(skill, index)
+  })
+  for (const [skill, prereqs] of Object.entries(SKILL_PREREQS)) {
+    if (!firstAt.has(skill) || prereqs.length === 0) continue
+    const satisfied = prereqs.filter((p) => firstAt.has(p) && firstAt.get(p) <= firstAt.get(skill))
+    if (satisfied.length === 0) {
+      const at = katas[firstAt.get(skill)]
+      problems.push(`kata ${at.n} (${at.title}) introduces "${skill}" before any prerequisite ${prereqs.map((p) => `"${p}"`).join(' / ')}`)
+    }
+  }
+  return problems
+}
+
+// ---------------------------------------------------------------------------
 // Parsing
 
 // The fixed skill vocabulary. A kata's **Skills:** line may only use these
@@ -46,6 +67,42 @@ const SKILL_GROUPS = {
   'Standard library': ['random numbers', 'math module', 'date and time', 'time measurement'],
 }
 const SKILLS = new Set(Object.values(SKILL_GROUPS).flat())
+
+// Scaffolding: a skill's first appearance must not precede the appearance of
+// the skills it rests on. Each entry lists ANY-of introducer skills; a skill
+// may be co-introduced in the same kata as its prerequisites. Violations
+// fail the sync, so the teaching order can't silently drift.
+const SKILL_PREREQS = {
+  'accumulator': ['fixed iteration', 'conditional iteration', 'sentinel loop', 'list comprehension'],
+  'sentinel loop': ['conditional iteration'],
+  'tokenisation': ['string methods'],
+  'string methods': ['data types'],
+  'string formatting': ['data types'],
+  'list comprehension': ['fixed iteration', 'tuple and list'],
+  'mapping': ['list comprehension', 'fixed iteration'],
+  'filtering': ['selection', 'fixed iteration', 'list comprehension'],
+  'slicing': ['tuple and list', 'indexing'],
+  'indexing': ['tuple and list'],
+  'membership check': ['tuple and list'],
+  'recursion': ['function'],
+  'early return': ['function', 'selection'],
+  'search': ['fixed iteration', 'conditional iteration'],
+  'data validation': ['selection'],
+  'cartesian product': ['fixed iteration'],
+  'indexed iteration': ['list comprehension', 'fixed iteration'],
+  'nested data structure': ['tuple and list'],
+  'dict': ['data types'],
+  'inheritance': ['class'],
+  'polymorphism': ['inheritance'],
+  'staticmethod': ['class'],
+  'class attribute': ['class'],
+  'exception handling': ['exception raising'],
+  'zipped iteration': ['fixed iteration'],
+  'window iteration': ['fixed iteration'],
+  'batched iteration': ['fixed iteration'],
+  'ratchet': ['comparison operators', 'selection'],
+  'greedy': ['selection'],
+}
 
 const RE_PART = /^# Part ([A-Z]) — (.+)$/
 const RE_SECTION = /^## (\d+)\. (.+)$/
@@ -190,6 +247,11 @@ function parse(markdown) {
 
   if (manifest.parts.length === 0) fail('document', 'no "# Part X — Title" headings found')
   if (manifest.katas.length === 0) fail('document', 'no kata headings found')
+  const scaffoldProblems = auditScaffolding(manifest.katas)
+  if (scaffoldProblems.length > 0) {
+    for (const problem of scaffoldProblems) console.error(`scaffolding violation: ${problem}`)
+    fail('document', 'scaffolding order violated — reorder katas or adjust skills (see SKILL_PREREQS)')
+  }
   return manifest
 }
 

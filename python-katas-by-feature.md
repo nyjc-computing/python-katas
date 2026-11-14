@@ -1,47 +1,7 @@
 # Python katas
-
-A practice corpus of 72 katas, ordered roughly from basic to advanced and
-grouped into five parts. Each kata carries a **Skills:** line naming the
-skills it trains, drawn from the fixed vocabulary documented in
-[MARKDOWN-FORMAT.md](MARKDOWN-FORMAT.md), and sits under its primary topic.
-
-Before editing this file, read [MARKDOWN-FORMAT.md](MARKDOWN-FORMAT.md) —
-CI rejects markdown that drifts out of its contract. Code expressions in
-questions and hints are wrapped in backticks and follow PEP 8; sample
-input/output is fenced; solutions are PEP 8-gated and must not change
-observable behavior (the auto-check tests are derived from them).
-
 ## Contents
-
-- **Part A — Core language**
-  1. Functions & type conversion — katas 1–7
-  2. Operators, arithmetic & conditionals — katas 8–10
-  3. Loops & iteration — katas 11–17
-  4. Strings & character methods — katas 18–20
-- **Part B — Built-in data structures**
-  5. Lists & slicing — katas 21–27
-  6. Tuples — katas 28–31
-  7. Dictionaries — katas 32–37
-- **Part C — Functional & idiomatic Python**
-  8. List comprehensions — katas 38–44
-  9. Recursion — katas 45–48
-- **Part D — OOP, errors & introspection**
-  10. Classes & objects — katas 49–52
-  11. Inheritance, polymorphism & static methods — katas 53–56
-  12. Exceptions & assertions — katas 57–60
-- **Part E — Standard library**
-  13. `math` — katas 61–62
-  14. `random` — katas 63–71
-  15. `timeit` — kata 72
-
----
-
 # Part A — Core language
-
 ## 1. Functions & type conversion
-
-Defining functions with `def`/`return`, parameters and calls; explicit type
-conversion with `int()`, `str()`, `len()`; base-`int()` parsing.
 ### 1. Square of a number
 
 **Skills:** function, arithmetic operators, output
@@ -167,7 +127,7 @@ print_value("one", "three")
 
 ### 7. Four-digit binary numbers divisible by 5
 
-**Skills:** input, tokenisation, data types, fixed iteration, filtering, output
+**Skills:** input, tokenisation, data types, fixed iteration, filtering, output, string methods
 
 **Question:**
 Write a program that accepts a sequence of comma-separated 4-digit binary numbers as input and checks whether each one is divisible by 5. The numbers that are divisible by 5 should be printed as a comma-separated sequence.
@@ -200,9 +160,6 @@ print(','.join(value))
 ```
 
 ## 2. Operators, arithmetic & conditionals
-
-The `%` and `**` operators, equality tests, boolean `and`/`or`, and
-`if`/`elif`/`else` branching.
 ### 8. Even or odd
 
 **Skills:** function, arithmetic operators, selection, output
@@ -265,8 +222,6 @@ print(",".join(values))
 ```
 
 ## 3. Loops & iteration
-
-`for` loops with `range()`, `while` loops with sentinel conditions, nested loops, and accumulator patterns.
 ### 11. Divisible by 7 but not a multiple of 5
 
 **Skills:** fixed iteration, arithmetic operators, logical operators, selection, output
@@ -289,7 +244,7 @@ print(','.join(items))
 
 ### 12. Capitalise input lines until a blank line
 
-**Skills:** input, sentinel loop, string methods, accumulator, output
+**Skills:** input, sentinel loop, string methods, accumulator, output, conditional iteration
 
 **Question:**
 Write a program that accepts a sequence of lines as input and prints each line with all of its characters capitalised. Input ends at the first blank line.
@@ -325,7 +280,7 @@ for sentence in lines:
 
 ### 13. Net bank balance from a transaction log
 
-**Skills:** input, sentinel loop, tokenisation, selection, accumulator
+**Skills:** input, sentinel loop, tokenisation, selection, accumulator, conditional iteration
 
 **Question:**
 Write a program that computes the net balance of a bank account from a transaction log supplied through the console. Each log line has the form:
@@ -486,11 +441,45 @@ print(bin_search(li, 11))
 print(bin_search(li, 12))
 ```
 
-## 4. Strings & character methods
+### 18. 2-D multiplication array
 
-Character classification (`isdigit()`, `isalpha()`, `isupper()`,
-`islower()`), case conversion, and `%`-style string formatting.
-### 18. Count letters and digits in a sentence
+**Skills:** input, tokenisation, cartesian product, nested data structure, accumulator
+
+**Question:**
+Write a program that takes two numbers, `X` and `Y`, as comma-separated input and generates a 2-dimensional array in which the element in row `i` and column `j` is `i * j`, where `i = 0, 1, …, X-1` and `j = 0, 1, …, Y-1`.
+
+For example, given the input:
+
+```
+3,5
+```
+
+the program should print:
+
+```
+[[0, 0, 0, 0, 0], [0, 1, 2, 3, 4], [0, 2, 4, 6, 8]]
+```
+
+**Hints:**
+Assume the input is supplied through the console as two comma-separated numbers.
+**Solution:**
+
+```python
+x_string, y_string = input().split(',')
+x = int(x_string)
+y = int(y_string)
+matrix = []
+for i in range(x):
+    row = []
+    for j in range(y):
+        row.append(i * j)
+    matrix.append(row)
+
+print(matrix)
+```
+
+## 4. Strings & character methods
+### 19. Count letters and digits in a sentence
 
 **Skills:** input, string methods, accumulator, selection
 
@@ -528,7 +517,7 @@ print("LETTERS", d["LETTERS"])
 print("DIGITS", d["DIGITS"])
 ```
 
-### 19. Count upper-case and lower-case letters
+### 20. Count upper-case and lower-case letters
 
 **Skills:** input, string methods, accumulator, selection
 
@@ -566,7 +555,7 @@ print("UPPER CASE", d["UPPER CASE"])
 print("LOWER CASE", d["LOWER CASE"])
 ```
 
-### 20. Compute a + aa + aaa + aaaa
+### 21. Compute a + aa + aaa + aaaa
 
 **Skills:** input, data types, arithmetic operators, output
 
@@ -601,11 +590,8 @@ print(n1 + n2 + n3 + n4)
 ---
 
 # Part B — Built-in data structures
-
 ## 5. Lists & slicing
-
-Building lists with `append()`, filtering and de-duplicating them, then slicing with positive and negative indexes, `[n:m]` ranges, `[::-1]` reversal and `[::2]` steps.
-### 21. Build a list of squares (1–20)
+### 22. Build a list of squares (1–20)
 
 **Skills:** function, fixed iteration, accumulator, arithmetic operators
 
@@ -629,7 +615,7 @@ def print_list():
 print_list()
 ```
 
-### 22. First 5 elements of a list
+### 23. First 5 elements of a list
 
 **Skills:** function, accumulator, slicing, output
 
@@ -654,7 +640,7 @@ def print_list():
 print_list()
 ```
 
-### 23. Last 5 elements of a list
+### 24. Last 5 elements of a list
 
 **Skills:** function, accumulator, slicing, output
 
@@ -679,7 +665,7 @@ def print_list():
 print_list()
 ```
 
-### 24. All elements except the first 5
+### 25. All elements except the first 5
 
 **Skills:** function, accumulator, slicing, output
 
@@ -704,7 +690,7 @@ def print_list():
 print_list()
 ```
 
-### 25. Print a string in reverse
+### 26. Print a string in reverse
 
 **Skills:** input, slicing, output
 
@@ -733,7 +719,7 @@ s = s[::-1]
 print(s)
 ```
 
-### 26. Characters at even indexes
+### 27. Characters at even indexes
 
 **Skills:** input, slicing, output
 
@@ -762,7 +748,7 @@ s = s[::2]
 print(s)
 ```
 
-### 27. Remove duplicates, preserving order
+### 28. Remove duplicates, preserving order
 
 **Skills:** tuple and list, membership check, fixed iteration, output
 
@@ -784,10 +770,7 @@ print(values)
 ```
 
 ## 6. Tuples
-
-Creating tuples from lists with `tuple()`, slicing tuples, and iterating over
-them.
-### 28. Comma-separated numbers → list and tuple
+### 29. Comma-separated numbers → list and tuple
 
 **Skills:** input, tokenisation, tuple and list, data types, output
 
@@ -820,7 +803,7 @@ print(items)
 print(tuple_items)
 ```
 
-### 29. Tuple of squares (1–20)
+### 30. Tuple of squares (1–20)
 
 **Skills:** function, fixed iteration, tuple and list, arithmetic operators
 
@@ -845,7 +828,7 @@ def print_tuple():
 print_tuple()
 ```
 
-### 30. Print the two halves of a tuple
+### 31. Print the two halves of a tuple
 
 **Skills:** tuple and list, slicing, output
 
@@ -864,7 +847,7 @@ print(first_half)
 print(second_half)
 ```
 
-### 31. Even values of a tuple as a new tuple
+### 32. Even values of a tuple as a new tuple
 
 **Skills:** fixed iteration, selection, tuple and list, output
 
@@ -888,10 +871,7 @@ print(evens)
 ```
 
 ## 7. Dictionaries
-
-Building dictionaries, `dict.get()` with defaults, and iterating with
-`keys()` / `items()`.
-### 32. Dictionary of squares {i: i²}
+### 33. Dictionary of squares {i: i²}
 
 **Skills:** input, dict, fixed iteration, arithmetic operators, output
 
@@ -924,7 +904,7 @@ for i in range(1, n + 1):
 print(squares)
 ```
 
-### 33. Dictionary of squares, 1–3
+### 34. Dictionary of squares, 1–3
 
 **Skills:** function, dict, fixed iteration, arithmetic operators
 
@@ -948,7 +928,7 @@ def print_dict():
 print_dict()
 ```
 
-### 34. Dictionary of squares, 1–20
+### 35. Dictionary of squares, 1–20
 
 **Skills:** function, dict, fixed iteration, arithmetic operators
 
@@ -972,7 +952,7 @@ def print_dict():
 print_dict()
 ```
 
-### 35. Dictionary of squares — print the values only
+### 36. Dictionary of squares — print the values only
 
 **Skills:** function, dict, fixed iteration, output
 
@@ -998,7 +978,7 @@ def print_dict():
 print_dict()
 ```
 
-### 36. Dictionary of squares — print the keys only
+### 37. Dictionary of squares — print the keys only
 
 **Skills:** function, dict, fixed iteration, output
 
@@ -1024,7 +1004,7 @@ def print_dict():
 print_dict()
 ```
 
-### 37. Count each character in a string
+### 38. Count each character in a string
 
 **Skills:** input, dict, accumulator, output
 
@@ -1067,11 +1047,8 @@ for char, count in counts.items():
 ---
 
 # Part C — Functional & idiomatic Python
-
 ## 8. List comprehensions
-
-Basic comprehensions, comprehensions with `if` filters, and comprehensions over `enumerate()` — one-dimensional only.
-### 38. "Square" each odd number in a list
+### 39. "Square" each odd number in a list
 
 **Skills:** input, tokenisation, list comprehension, mapping, filtering
 
@@ -1100,7 +1077,7 @@ numbers = [str(int(x)**2) for x in values.split(",") if int(x) % 2 != 0]
 print(",".join(numbers))
 ```
 
-### 39. Remove even numbers from a list
+### 40. Remove even numbers from a list
 
 **Skills:** list comprehension, filtering, arithmetic operators
 
@@ -1117,7 +1094,7 @@ li = [x for x in li if x % 2 != 0]
 print(li)
 ```
 
-### 40. Remove numbers divisible by 5 and 7
+### 41. Remove numbers divisible by 5 and 7
 
 **Skills:** list comprehension, filtering, arithmetic operators, logical operators
 
@@ -1134,7 +1111,7 @@ li = [x for x in li if x % 5 != 0 and x % 7 != 0]
 print(li)
 ```
 
-### 41. Remove all occurrences of a value
+### 42. Remove all occurrences of a value
 
 **Skills:** list comprehension, filtering, comparison operators
 
@@ -1151,7 +1128,7 @@ li = [x for x in li if x != 24]
 print(li)
 ```
 
-### 42. Drop the even-indexed elements
+### 43. Drop the even-indexed elements
 
 **Skills:** list comprehension, indexed iteration, filtering
 
@@ -1169,7 +1146,7 @@ li = [x for (i, x) in enumerate(li) if i % 2 != 0]
 print(li)
 ```
 
-### 43. Drop elements at given indexes
+### 44. Drop elements at given indexes
 
 **Skills:** list comprehension, indexed iteration, membership check
 
@@ -1187,47 +1164,7 @@ li = [x for (i, x) in enumerate(li) if i not in (0, 4, 5)]
 print(li)
 ```
 
-### 44. 2-D multiplication array
-
-**Skills:** input, tokenisation, cartesian product, nested data structure, accumulator
-
-**Question:**
-Write a program that takes two numbers, `X` and `Y`, as comma-separated input and generates a 2-dimensional array in which the element in row `i` and column `j` is `i * j`, where `i = 0, 1, …, X-1` and `j = 0, 1, …, Y-1`.
-
-For example, given the input:
-
-```
-3,5
-```
-
-the program should print:
-
-```
-[[0, 0, 0, 0, 0], [0, 1, 2, 3, 4], [0, 2, 4, 6, 8]]
-```
-
-**Hints:**
-Assume the input is supplied through the console as two comma-separated numbers.
-**Solution:**
-
-```python
-x_string, y_string = input().split(',')
-x = int(x_string)
-y = int(y_string)
-matrix = []
-for i in range(x):
-    row = []
-    for j in range(y):
-        row.append(i * j)
-    matrix.append(row)
-
-print(matrix)
-```
-
 ## 9. Recursion
-
-Self-calling functions with base cases — factorial, linear recurrence,
-Fibonacci — and combining recursion with a comprehension.
 ### 45. Factorial
 
 **Skills:** recursion, input, output
@@ -1391,11 +1328,7 @@ print(",".join(values))
 ---
 
 # Part D — OOP, errors & introspection
-
 ## 10. Classes & objects
-
-Defining classes, `__init__` constructors, instance methods, and the
-class-attribute vs instance-attribute distinction.
 ### 49. A string-handling class
 
 **Skills:** class, input, string methods, output
@@ -1517,9 +1450,6 @@ print(rectangle.area())
 ```
 
 ## 11. Inheritance, polymorphism & static methods
-
-Subclassing, method overriding, polymorphic dispatch, and the
-`@staticmethod` decorator.
 ### 53. American and its subclass NewYorker
 
 **Skills:** class, inheritance
@@ -1636,9 +1566,6 @@ American.print_nationality()
 ```
 
 ## 12. Exceptions & assertions
-
-Raising exceptions, catching them with `try`/`except`/`finally`, defining
-custom exception classes, and `assert` statements.
 ### 57. Raise a RuntimeError
 
 **Skills:** exception raising
@@ -1726,10 +1653,7 @@ for i in li:
 ---
 
 # Part E — Standard library
-
 ## 13. `math`
-
-Square roots, rounding and distance computations with the `math` module.
 ### 61. Evaluate Q = √(2CD/H)
 
 **Skills:** input, tokenisation, math module, data types, output
@@ -1773,7 +1697,7 @@ print(','.join(value))
 
 ### 62. Robot's distance from the origin
 
-**Skills:** input, sentinel loop, tokenisation, math module, selection
+**Skills:** input, sentinel loop, tokenisation, math module, selection, conditional iteration
 
 **Question:**
 A robot moves in a plane, starting from the origin `(0, 0)`. It can move UP, DOWN, LEFT or RIGHT by a given number of steps, and its movements are recorded in a trace like this:
@@ -1827,9 +1751,6 @@ print(int(round(math.sqrt(pos[1] ** 2 + pos[0] ** 2))))
 ```
 
 ## 14. `random`
-
-`random()`, `choice()`, `sample()`, `randrange()` and `shuffle()` — often
-combined with list comprehensions to constrain the candidate pool.
 ### 63. A random float (scaled)
 
 **Skills:** random numbers, output
@@ -1979,8 +1900,6 @@ print(li)
 ```
 
 ## 15. `timeit`
-
-Timing snippet execution with the `timeit` module.
 ### 72. Measure execution time
 
 **Skills:** time measurement, output
