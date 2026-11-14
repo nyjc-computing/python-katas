@@ -748,6 +748,16 @@ button:disabled {
   grid-template-columns: 0fr 3fr 2fr clamp(230px, 27vw, 330px);
 }
 
+/* both sidebars open: the combined state needs its own rule — the single
+   katapane rule above would otherwise re-collapse the left column */
+#app.sidebar-open.katapane-open.layout-stack {
+  grid-template-columns: 280px 3fr 2fr clamp(230px, 27vw, 330px);
+}
+
+#app.sidebar-open.katapane-open.layout-side {
+  grid-template-columns: 280px 3fr 2fr clamp(230px, 27vw, 330px);
+}
+
 #app.katapane-open #panel-right {
   overflow: auto;
 }
