@@ -44,7 +44,6 @@ const consoleHost = document.querySelector('#console') as HTMLElement
 const runStatus = document.querySelector('#run-status') as HTMLElement
 const btnRun = document.querySelector('#btn-run') as HTMLButtonElement
 const btnVerify = document.querySelector('#btn-verify') as HTMLButtonElement
-const btnStop = document.querySelector('#btn-stop') as HTMLButtonElement
 const btnClear = document.querySelector('#btn-clear') as HTMLButtonElement
 const btnLayout = document.querySelector('#btn-layout') as HTMLButtonElement
 const btnReset = document.querySelector('#btn-reset') as HTMLButtonElement
@@ -353,8 +352,12 @@ function verifyAvailable(): boolean {
 }
 
 function setButtons(): void {
-  btnRun.disabled = phase !== 'idle'
-  btnStop.disabled = phase !== 'running'
+  // Run and Stop share one button: the phase machine keeps them mutually
+  // exclusive (loading = both off, idle = Run, running = Stop).
+  const running = phase === 'running'
+  btnRun.innerHTML = running ? '&#9632; Stop' : '&#9654; Run'
+  btnRun.title = running ? 'Stop (Esc, or Ctrl+C in the console)' : 'Run (Ctrl+Enter)'
+  btnRun.disabled = running ? false : phase !== 'idle'
   btnVerify.disabled = !verifyAvailable()
   btnVerify.title =
     currentDoc.kind === 'kata'
@@ -422,9 +425,8 @@ function handleVerifyFinished(msg: Extract<FromWorker, { type: 'run-finished' }>
   setButtons()
 }
 
-btnRun.addEventListener('click', run)
+btnRun.addEventListener('click', () => (phase === 'running' ? stop() : run()))
 btnVerify.addEventListener('click', startVerify)
-btnStop.addEventListener('click', stop)
 btnClear.addEventListener('click', () => consolePane.clear())
 
 // ── virtual files UI ─────────────────────────────────────────────────────────

@@ -15,8 +15,6 @@
       <span id="brand">Python Katas</span>
       <button id="btn-run" title="Run (Ctrl+Enter)">&#9654; Run</button>
       <button id="btn-verify" title="Select a kata to verify" disabled>&#10003; Verify</button>
-      <button id="btn-stop" title="Stop (Esc, or Ctrl+C in the console)" disabled>&#9632; Stop</button>
-      <button id="btn-clear" title="Clear the console">Clear output</button>
       <span class="spacer"></span>
       <span id="run-status" aria-live="polite"></span>
       <label for="indent-select" id="indent-label" title="Indent width (spaces)">Indent</label>
@@ -73,7 +71,7 @@
       </section>
 
       <section id="output-pane" class="pane">
-        <div class="pane-title">console</div>
+        <div class="pane-title console-title"><span>console</span><button id="btn-clear" title="Clear the console">Clear</button></div>
         <div id="console"></div>
         <div id="console-input-row" hidden>
           <span class="console-caret" aria-hidden="true">&#8250;</span>
