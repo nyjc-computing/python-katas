@@ -23,6 +23,10 @@
         <option value="4" selected>4 spaces</option>
       </select>
       <button id="btn-layout" title="Toggle editor/output layout">Layout: stacked</button>
+      <button id="btn-katapane" class="hamburger" title="Show kata info" aria-label="Toggle the kata info panel" aria-expanded="false">
+        <span class="icon-menu" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1Zm-.9 5.2h1.8V12H7.1V6.2Zm0-2.7h1.8v1.6H7.1V3.5Z" fill="currentColor"/></svg></span>
+        <span class="icon-collapse" aria-hidden="true">&#8250;</span>
+      </button>
     </header>
 
     <main id="app" class="layout-stack">
@@ -79,8 +83,22 @@
         </div>
       </section>
 
-      <!-- Reserved for the future debugger panel -->
-      <aside id="panel-right" class="panel-side" aria-hidden="true"></aside>
+      <!-- Kata info: question, features and hints for the active kata -->
+      <aside id="panel-right" class="panel-side">
+        <div class="side-head">KATA</div>
+        <div class="kata-pane">
+          <div id="kata-pane-empty" class="kata-pane-empty">Select a kata to see its text and hints.</div>
+          <div id="kata-pane-body" hidden>
+            <div id="kata-pane-title"></div>
+            <div id="kata-features" class="kata-features"></div>
+            <div id="kata-question" class="kata-question"></div>
+            <div id="kata-hints-wrap" hidden>
+              <div class="kata-hints-header">Hints</div>
+              <div id="kata-hints-list"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </main>
 
     <!-- On header-less hosts (GitHub Pages) this service worker injects

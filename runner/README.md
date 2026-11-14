@@ -24,10 +24,18 @@ cloning or bumping the `pyodide` version in package.json.
 
 - **Kata browser** — the hamburger (left of the logo) opens the kata
   selector, which covers the Files sidebar; the panel's Katas/Files tabs
-  switch what the editor is bound to. Picking a kata loads its saved attempt
-  into the editor; **Verify** runs it against the kata's `{stdin, stdout}`
-  tests (stdin is pre-fed, the interactive input row never opens) and marks
-  it with a green ✓ when the normalised output matches.
+  switch what the editor is bound to. Picking a kata loads its saved
+  codebase into the editor; **Verify** runs it against the kata's
+  `{stdin, stdout}` tests (stdin is pre-fed, the interactive input row never
+  opens) and marks it with a green ✓ when the normalised output matches.
+- **Kata info pane** — selecting a kata opens the right sidebar: its text
+  (question with sample I/O, feature chips) and hints, each hint its own
+  collapsed row that expands independently; per-hint state persists. The
+  pane toggles via the ⓘ button at the toolbar's right end.
+- **Per-kata codebases** — the whole virtual file set belongs to its
+  context: switching katas swaps `main.py` and any helper files with it.
+  The plain Files workspace is reachable via the "My files" entry at the
+  top of the kata list; the Files tab always manages the active context.
 - **Corpus snapshots** — the kata set is bundled at build time but the app
   runs against a localStorage snapshot taken on first visit, so deployments
   never move the corpus mid-practice. When a newer set ships, a banner shows

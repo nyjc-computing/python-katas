@@ -7,20 +7,24 @@ import {
   activeKataId,
   bumpTries,
   dismissCorpusUpdate,
-  getAttempt,
   getKatas,
   getParts,
   getSections,
   isVerified,
   kataById,
   loadCorpus,
+  loadHintState,
+  loadWorkspace,
   markVerified,
   refreshCorpus,
-  saveAttemptCode,
+  resetWorkspaces,
+  saveHintState,
+  saveWorkspace,
   setActiveKata,
   type CorpusUpdate,
   type KataTest,
 } from './katas'
+import { kataQuestionHtml } from './katatext'
 import {
   FromWorker,
   STDIN_HEADER_INTS,
@@ -67,6 +71,14 @@ const fileView = document.querySelector('#file-view') as HTMLElement
 const kataView = document.querySelector('#kata-view') as HTMLElement
 const kataList = document.querySelector('#kata-list') as HTMLElement
 const kataSummary = document.querySelector('#kata-summary') as HTMLElement
+const btnKatapane = document.querySelector('#btn-katapane') as HTMLButtonElement
+const kataPaneEmpty = document.querySelector('#kata-pane-empty') as HTMLElement
+const kataPaneBody = document.querySelector('#kata-pane-body') as HTMLElement
+const kataPaneTitle = document.querySelector('#kata-pane-title') as HTMLElement
+const kataFeatures = document.querySelector('#kata-features') as HTMLElement
+const kataQuestion = document.querySelector('#kata-question') as HTMLElement
+const kataHintsWrap = document.querySelector('#kata-hints-wrap') as HTMLElement
+const kataHintsList = document.querySelector('#kata-hints-list') as HTMLElement
 
 // ── virtual files ────────────────────────────────────────────────────────────
 const fileStore = new FileStore()
@@ -136,43 +148,55 @@ const loadedCorpus = loadCorpus()
 const storedKataId = activeKataId()
 const startingInKatas = localStorage.getItem('kata.sideMode') === 'katas'
 
-type DocRef = { kind: 'file'; name: string } | { kind: 'kata'; id: string }
-let currentDoc: DocRef =
-  startingInKatas && storedKataId && kataById(storedKataId)
-    ? { kind: 'kata', id: storedKataId }
-    : { kind: 'file', name: fileStore.activeName() }
+// ── per-kata codebases ───────────────────────────────────────────────────────
+// Every context — the plain Files workspace ('global') and each kata — owns
+// the WHOLE virtual file set. Switching contexts swaps FileStore's contents,
+// so `main.py` and any helper files travel with their kata. The live copy
+// is captured back on every switch and again on tab hide/unload.
+type ContextId = 'global' | string
+let currentContext: ContextId =
+  startingInKatas && storedKataId && kataById(storedKataId) ? storedKataId : 'global'
 
-function currentDocTitle(): string {
-  if (currentDoc.kind === 'kata') {
-    const kata = kataById(currentDoc.id)
-    return kata ? `${kata.n}. ${kata.title}` : 'kata'
-  }
-  return currentDoc.name
+function captureCurrentContext(): void {
+  fileStore.flush()
+  saveWorkspace(currentContext, fileStore.all(), fileStore.activeName())
+}
+
+function switchContext(next: ContextId): void {
+  if (next === currentContext) return
+  captureCurrentContext()
+  const workspace = loadWorkspace(next)
+  fileStore.replaceAll(workspace.files, workspace.activeFile)
+  currentContext = next
+}
+
+// Seed the context store on first run after this feature ships: the booted
+// FileStore state is the user's pre-existing global workspace. Kata
+// workspaces start fresh (legacy attempt code migrates inside loadWorkspace).
+if (!('global' in (JSON.parse(localStorage.getItem('kata.workspaces') ?? '{}') as object))) {
+  saveWorkspace('global', fileStore.all(), fileStore.activeName())
+}
+// starting inside a kata: swap in its codebase before the editor is created
+// (safe — the FileStore change listeners attach after editor creation)
+if (currentContext !== 'global') {
+  const bootWorkspace = loadWorkspace(currentContext)
+  fileStore.replaceAll(bootWorkspace.files, bootWorkspace.activeFile)
+}
+
+for (const evt of ['beforeunload', 'visibilitychange']) {
+  window.addEventListener(evt, () => {
+    if (document.visibilityState === 'hidden' || evt === 'beforeunload') captureCurrentContext()
+  })
 }
 
 // ── editor ───────────────────────────────────────────────────────────────────
 let analyzeTimer: ReturnType<typeof setTimeout> | undefined
-let attemptTimer: ReturnType<typeof setTimeout> | undefined
 let analyzeVersion = 0
 
-const initialDoc =
-  currentDoc.kind === 'kata' ? getAttempt(currentDoc.id).code : fileStore.get(fileStore.activeName())
-
-const editor = createEditor(editorHost, initialDoc, {
+// whatever context is live, the editor edits its workspace through FileStore
+const editor = createEditor(editorHost, fileStore.get(fileStore.activeName()), {
   onCodeChanged: (code) => {
-    if (currentDoc.kind === 'kata') {
-      saveStateEl.dataset.state = 'dirty'
-      saveStateEl.textContent = '● unsaved'
-      clearTimeout(attemptTimer)
-      attemptTimer = setTimeout(() => {
-        if (currentDoc.kind !== 'kata') return
-        saveAttemptCode(currentDoc.id, editor.state.doc.toString())
-        saveStateEl.dataset.state = 'saved'
-        saveStateEl.textContent = '✓ saved'
-      }, 800)
-    } else {
-      fileStore.write(fileStore.activeName(), code)
-    }
+    fileStore.write(fileStore.activeName(), code)
     clearTimeout(analyzeTimer)
     analyzeTimer = setTimeout(() => {
       analyzeVersion++
@@ -302,7 +326,7 @@ let stopWatchdog: ReturnType<typeof setTimeout> | undefined
 
 function run(): void {
   if (phase !== 'idle') return
-  if (currentDoc.kind === 'kata') bumpTries(currentDoc.id)
+  if (currentContext !== 'global') bumpTries(currentContext)
   // 'loading' until the worker reports run-started. When the interpreter is
   // already warm that gap is a millisecond; on a retry-after-load-failure it
   // spans the reload, and pyodide-ready → run-started drive the phases.
@@ -346,8 +370,8 @@ function stop(): void {
 }
 
 function verifyAvailable(): boolean {
-  if (phase !== 'idle' || currentDoc.kind !== 'kata') return false
-  const kata = kataById(currentDoc.id)
+  if (phase !== 'idle' || currentContext === 'global') return false
+  const kata = kataById(currentContext)
   return !!kata?.tests?.length
 }
 
@@ -359,12 +383,12 @@ function setButtons(): void {
   btnRun.title = running ? 'Stop (Esc, or Ctrl+C in the console)' : 'Run (Ctrl+Enter)'
   btnRun.disabled = running ? false : phase !== 'idle'
   btnVerify.disabled = !verifyAvailable()
-  btnVerify.title =
-    currentDoc.kind === 'kata'
-      ? kataById(currentDoc.id)?.tests?.length
-        ? `Verify “${currentDocTitle()}” against its tests`
-        : 'This kata has no auto-check tests — compare by eye'
-      : 'Select a kata first (hamburger menu)'
+  const activeKata = currentContext === 'global' ? undefined : kataById(currentContext)
+  btnVerify.title = activeKata
+    ? activeKata.tests?.length
+      ? `Verify “${activeKata.n}. ${activeKata.title}” against its tests`
+      : 'This kata has no auto-check tests — compare by eye'
+    : 'Select a kata first (hamburger menu)'
   runStatus.textContent =
     phase === 'running' ? 'running…' : phase === 'loading' ? 'loading Python…' : ''
 }
@@ -379,8 +403,8 @@ let verifying: { tests: KataTest[]; index: number; got: string } | null = null
 const normalizeOutput = (s: string): string => s.replace(/[ \t]+$/gm, '').replace(/\n+$/, '')
 
 function startVerify(): void {
-  if (!verifyAvailable() || currentDoc.kind !== 'kata') return
-  const kata = kataById(currentDoc.id)!
+  if (!verifyAvailable() || currentContext === 'global') return
+  const kata = kataById(currentContext)!
   bumpTries(kata.id)
   verifying = { tests: kata.tests!, index: 0, got: '' }
   consolePane.clear()
@@ -410,7 +434,7 @@ function handleVerifyFinished(msg: Extract<FromWorker, { type: 'run-finished' }>
   }
   verifying = null
   if (pass) {
-    if (currentDoc.kind === 'kata') markVerified(currentDoc.id, true)
+    if (currentContext !== 'global') markVerified(currentContext, true)
     consolePane.write('✓ Verified — output matches.\n', 'success')
     renderKataList()
   } else if (msg.interrupted) {
@@ -540,10 +564,9 @@ function renderFileList(): void {
   activeFileName.textContent = active
 }
 
-/** Swap the editor's content and language to the active file. */
+/** Swap the editor's content and language to the active file. Fires on
+ * every context switch too — replaceAll() emits a change. */
 function syncEditorToActive(): void {
-  if (currentDoc.kind === 'kata') flushAttempt()
-  currentDoc = { kind: 'file', name: fileStore.activeName() }
   editor.dispatch({
     changes: { from: 0, to: editor.state.doc.length, insert: fileStore.get(fileStore.activeName()) },
   })
@@ -552,39 +575,96 @@ function syncEditorToActive(): void {
   setButtons()
 }
 
-function flushAttempt(): void {
-  if (currentDoc.kind !== 'kata') return
-  clearTimeout(attemptTimer)
-  saveAttemptCode(currentDoc.id, editor.state.doc.toString())
-  saveStateEl.dataset.state = 'saved'
-  saveStateEl.textContent = '✓ saved'
-}
-
 fileStore.onChange(() => {
   renderFileList()
   syncEditorToActive()
 })
 renderFileList()
-activeFileName.textContent = currentDocTitle()
+activeFileName.textContent = fileStore.activeName()
+
+// ── kata info pane ───────────────────────────────────────────────────────────
+
+function applyKataPane(open: boolean): void {
+  app.classList.toggle('katapane-open', open)
+  btnKatapane.classList.toggle('open', open)
+  btnKatapane.setAttribute('aria-expanded', String(open))
+  btnKatapane.title = open ? 'Hide kata info' : 'Show kata info'
+  localStorage.setItem('kata.katapane', open ? 'open' : 'closed')
+}
+
+function hintItem(kataId: string, index: number, text: string, expanded: boolean): HTMLElement {
+  const item = document.createElement('div')
+  item.className = 'hint-item' + (expanded ? ' open' : '')
+  const toggle = document.createElement('button')
+  toggle.type = 'button'
+  toggle.className = 'hint-toggle'
+  toggle.innerHTML = '<span class="hint-chevron" aria-hidden="true">&#9656;</span>'
+  const label = document.createElement('span')
+  label.textContent = `Hint ${index + 1}`
+  toggle.appendChild(label)
+  const body = document.createElement('div')
+  body.className = 'hint-body'
+  // hint text: backticked code only — reuse the question inline renderer
+  body.innerHTML = kataQuestionHtml(text).replace(/<p>|<\/p>/g, '')
+  const apply = () => {
+    item.classList.toggle('open', expanded)
+    toggle.setAttribute('aria-expanded', String(expanded))
+  }
+  toggle.addEventListener('click', () => {
+    expanded = !expanded
+    const state = loadHintState(kataId)
+    state[index] = expanded
+    saveHintState(kataId, state)
+    apply()
+  })
+  apply()
+  item.append(toggle, body)
+  return item
+}
+
+function renderKataPane(): void {
+  const kata = currentContext === 'global' ? undefined : kataById(currentContext)
+  if (!kata) {
+    kataPaneEmpty.hidden = false
+    kataPaneBody.hidden = true
+    return
+  }
+  kataPaneEmpty.hidden = true
+  kataPaneBody.hidden = false
+  kataPaneTitle.textContent = `${kata.n}. ${kata.title}`
+  kataFeatures.innerHTML = ''
+  for (const feature of kata.features) {
+    const chip = document.createElement('span')
+    chip.className = 'chip'
+    chip.textContent = feature
+    kataFeatures.appendChild(chip)
+  }
+  kataQuestion.innerHTML = kataQuestionHtml(kata.question)
+  kataHintsList.innerHTML = ''
+  const expanded = loadHintState(kata.id)
+  kata.hints.forEach((hint, index) => {
+    kataHintsList.appendChild(hintItem(kata.id, index, hint, expanded[index] ?? false))
+  })
+  kataHintsWrap.hidden = kata.hints.length === 0
+}
+
+btnKatapane.addEventListener('click', () => {
+  applyKataPane(!app.classList.contains('katapane-open'))
+})
+
+applyKataPane(localStorage.getItem('kata.katapane') !== 'closed')
+renderKataPane()
 
 // ── kata browser ─────────────────────────────────────────────────────────────
 
 /** Swap the editor's content to a kata attempt. */
-function setDocContent(text: string): void {
-  editor.dispatch({
-    changes: { from: 0, to: editor.state.doc.length, insert: text },
-  })
-  void setLanguage(editor, 'py')
-  activeFileName.textContent = currentDocTitle()
-}
-
 function selectKata(id: string): void {
-  if (currentDoc.kind === 'kata' && currentDoc.id === id) return
-  if (currentDoc.kind === 'kata') flushAttempt()
-  else fileStore.flush()
+  if (currentContext === id) return
+  switchContext(id)
   setActiveKata(id)
-  currentDoc = { kind: 'kata', id }
-  setDocContent(getAttempt(id).code)
+  // loading a kata surfaces its text
+  applyKataPane(true)
+  renderKataPane()
   renderKataList()
   setButtons()
 }
@@ -592,6 +672,28 @@ function selectKata(id: string): void {
 function renderKataList(): void {
   kataList.innerHTML = ''
   let verified = 0
+
+  const filesRow = document.createElement('li')
+  const filesBtn = document.createElement('button')
+  filesBtn.type = 'button'
+  filesBtn.className = 'kata-row my-files' + (currentContext === 'global' ? ' active' : '')
+  filesBtn.title = 'Leave kata mode and work on your own files'
+  const filesTitle = document.createElement('span')
+  filesTitle.className = 'kata-title'
+  filesTitle.textContent = 'My files'
+  filesBtn.appendChild(filesTitle)
+  filesBtn.addEventListener('click', () => {
+    if (currentContext === 'global') return
+    switchContext('global')
+    setActiveKata(null)
+    syncEditorToActive()
+    renderKataList()
+    renderKataPane()
+    setButtons()
+  })
+  filesRow.appendChild(filesBtn)
+  kataList.appendChild(filesRow)
+
   for (const part of getParts()) {
     const partHeader = document.createElement('li')
     partHeader.className = 'kata-part'
@@ -610,7 +712,7 @@ function renderKataList(): void {
         const row = document.createElement('li')
         const btn = document.createElement('button')
         btn.type = 'button'
-        btn.className = 'kata-row' + (currentDoc.kind === 'kata' && currentDoc.id === kata.id ? ' active' : '')
+        btn.className = 'kata-row' + (currentContext === kata.id ? ' active' : '')
         btn.title = kata.tests
           ? `Open kata ${kata.n}`
           : `Kata ${kata.n} — no auto-check tests (compare by eye)`
@@ -655,18 +757,19 @@ function showCorpusBanner(update: CorpusUpdate): void {
   refresh.addEventListener('click', () => {
     const migrated = refreshCorpus()
     banner.remove()
-    if (migrated && kataById(migrated)) {
-      // reopen the (possibly renumbered) active kata with its migrated code
-      fileStore.flush()
-      currentDoc = { kind: 'kata', id: migrated }
-      setDocContent(getAttempt(migrated).code)
-    } else if (currentDoc.kind === 'kata') {
-      const kata = kataById(currentDoc.id)
-      if (!kata) {
-        currentDoc = { kind: 'file', name: fileStore.activeName() }
-        syncEditorToActive()
+    if (currentContext !== 'global') {
+      const migratedId = migrated && kataById(migrated) ? migrated : null
+      if (migratedId) {
+        // workspace + attempt migrated by slug: rebind to the new id
+        currentContext = 'global' // force the switch to re-load the workspace
+        switchContext(migratedId)
+        setActiveKata(migratedId)
+        renderKataPane()
       } else {
-        setDocContent(getAttempt(currentDoc.id).code)
+        // the active kata vanished in the new set: fall back to Files
+        switchContext('global')
+        setActiveKata(null)
+        syncEditorToActive()
       }
     }
     renderKataList()
@@ -701,8 +804,6 @@ function applySideMode(mode: SideMode): void {
   if (mode === 'katas') {
     const id = activeKataId()
     if (id && kataById(id)) selectKata(id)
-  } else if (currentDoc.kind === 'kata') {
-    syncEditorToActive()
   }
 }
 
@@ -721,8 +822,14 @@ btnReset.addEventListener('click', () => {
   )
   if (!confirmed) return
   localStorage.removeItem('kata.attempts')
-  if (currentDoc.kind === 'kata') setDocContent('')
+  resetWorkspaces()
+  if (currentContext !== 'global') {
+    // the active kata's workspace is gone: drop in a fresh one
+    fileStore.replaceAll({ 'main.py': '' }, 'main.py')
+    saveWorkspace(currentContext, fileStore.all(), fileStore.activeName())
+  }
   renderKataList()
+  renderKataPane()
   setButtons()
 })
 
@@ -868,11 +975,10 @@ window.addEventListener('keydown', (e) => {
     run()
     return
   }
-  // Ctrl+S flushes the debounced save (file or kata attempt) immediately.
+  // Ctrl+S flushes the debounced workspace save immediately.
   if ((e.ctrlKey || e.metaKey) && e.key === 's') {
     e.preventDefault()
-    if (currentDoc.kind === 'kata') flushAttempt()
-    else fileStore.flush()
+    fileStore.flush()
     return
   }
   // Esc stops a running program; while renaming it cancels the rename first

@@ -91,6 +91,22 @@ export class FileStore {
     this.emitChange()
   }
 
+  /** Swap the entire workspace at once (context switch between the global
+   * file set and a per-kata codebase). Emits one change. */
+  replaceAll(files: Record<string, string>, active: string): void {
+    this.files = {}
+    for (const [name, content] of Object.entries(files)) {
+      if (isAllowedFileName(name) && content.length <= MAX_FILE_CHARS) {
+        this.files[name] = content
+      }
+    }
+    if (Object.keys(this.files).length === 0) this.files[DEFAULT_FILE] = ''
+    this.active = active in this.files ? active : this.names()[0] ?? DEFAULT_FILE
+    this.dirty.clear()
+    this.persist()
+    this.emitChange()
+  }
+
   /** Content updates from the editor; capped, debounced persistence. */
   write(name: string, content: string): void {
     if (!(name in this.files)) return

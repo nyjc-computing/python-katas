@@ -63,18 +63,25 @@ export interface KataCorpus {
   katas: Kata[]
 }
 
-/** Learner state for one kata (telemetry seeds live here too). */
+/** Learner state for one kata (telemetry seeds live here too). The code
+ * itself lives in the kata's workspace (see {@link loadWorkspace}). */
 export interface AttemptState {
-  code: string
   verified: boolean
   /** Every Run counts one; Verify counts one per click. Not reported yet. */
   tries: number
+}
+
+export interface Workspace {
+  files: Record<string, string>
+  activeFile: string
 }
 
 const CORPUS_KEY = 'kata.corpus'
 const SEEN_KEY = 'kata.corpusSeen'
 const ATTEMPTS_KEY = 'kata.attempts'
 const ACTIVE_KEY = 'kata.activeKata'
+const WORKSPACES_KEY = 'kata.workspaces'
+const HINTS_KEY = 'kata.hints'
 
 const BUNDLED = raw as KataCorpus
 
@@ -89,17 +96,68 @@ function readStoredCorpus(): KataCorpus | null {
   }
 }
 
-function readAttempts(): Record<string, AttemptState> {
+function readAttemptsRaw(): Record<string, AttemptState & { code?: string }> {
   try {
-    const parsed = JSON.parse(localStorage.getItem(ATTEMPTS_KEY) ?? '{}') as Record<string, AttemptState>
+    const parsed = JSON.parse(localStorage.getItem(ATTEMPTS_KEY) ?? '{}') as Record<string, AttemptState & { code?: string }>
     return parsed && typeof parsed === 'object' ? parsed : {}
   } catch {
     return {}
   }
 }
 
+function readAttempts(): Record<string, AttemptState> {
+  const out: Record<string, AttemptState> = {}
+  for (const [id, entry] of Object.entries(readAttemptsRaw())) {
+    out[id] = { verified: !!entry.verified, tries: entry.tries ?? 0 }
+  }
+  return out
+}
+
 function writeAttempts(attempts: Record<string, AttemptState>): void {
   localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(attempts))
+}
+
+function readWorkspaces(): Record<string, Workspace> {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(WORKSPACES_KEY) ?? '{}') as Record<string, Workspace>
+    return parsed && typeof parsed === 'object' ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
+/** The kata's saved codebase. One-time migration: legacy attempts stored a
+ * single code string — it becomes main.py of a fresh workspace. */
+export function loadWorkspace(id: string): Workspace {
+  const stored = readWorkspaces()[id]
+  if (stored) return stored
+  const legacy = (readAttemptsRaw()[id] as Partial<AttemptState & { code: string }> | undefined)?.code
+  return { files: { 'main.py': typeof legacy === 'string' ? legacy : '' }, activeFile: 'main.py' }
+}
+
+export function saveWorkspace(id: string, files: Record<string, string>, activeFile: string): void {
+  const workspaces = readWorkspaces()
+  workspaces[id] = { files, activeFile }
+  localStorage.setItem(WORKSPACES_KEY, JSON.stringify(workspaces))
+}
+
+export function resetWorkspaces(): void {
+  localStorage.removeItem(WORKSPACES_KEY)
+}
+
+export function loadHintState(id: string): boolean[] {
+  try {
+    const all = JSON.parse(localStorage.getItem(HINTS_KEY) ?? '{}') as Record<string, boolean[]>
+    return Array.isArray(all[id]) ? (all[id] as boolean[]) : []
+  } catch {
+    return []
+  }
+}
+
+export function saveHintState(id: string, expanded: boolean[]): void {
+  const all = JSON.parse(localStorage.getItem(HINTS_KEY) ?? '{}') as Record<string, boolean[]>
+  all[id] = expanded
+  localStorage.setItem(HINTS_KEY, JSON.stringify(all))
 }
 
 export interface CorpusUpdate {
@@ -166,6 +224,13 @@ export function refreshCorpus(): string | null {
     if (target) migrated[target] = state
   }
   writeAttempts(migrated)
+  const workspaces = readWorkspaces()
+  const migratedWorkspaces: Record<string, Workspace> = {}
+  for (const [id, workspace] of Object.entries(workspaces)) {
+    const target = id === 'global' ? 'global' : bySlug.get(titleSlug(id))
+    if (target) migratedWorkspaces[target] = workspace
+  }
+  localStorage.setItem(WORKSPACES_KEY, JSON.stringify(migratedWorkspaces))
   localStorage.setItem(CORPUS_KEY, JSON.stringify(BUNDLED))
   localStorage.setItem(SEEN_KEY, BUNDLED.digest)
   current = BUNDLED
@@ -207,7 +272,7 @@ export function kataById(id: string): Kata | undefined {
 }
 
 export function getAttempt(id: string): AttemptState {
-  return readAttempts()[id] ?? { code: '', verified: false, tries: 0 }
+  return readAttempts()[id] ?? { verified: false, tries: 0 }
 }
 
 export function isVerified(id: string): boolean {
@@ -216,12 +281,6 @@ export function isVerified(id: string): boolean {
 
 export function verifiedCount(): number {
   return Object.values(readAttempts()).filter((a) => a.verified).length
-}
-
-export function saveAttemptCode(id: string, code: string): void {
-  const attempts = readAttempts()
-  attempts[id] = { ...(attempts[id] ?? { verified: false, tries: 0 }), code }
-  writeAttempts(attempts)
 }
 
 export function markVerified(id: string, verified: boolean): void {
