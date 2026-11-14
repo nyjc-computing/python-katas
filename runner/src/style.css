@@ -179,6 +179,9 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* fixed height: the Katas and Files action groups have different content,
+     and a content-driven head would shift everything below on tab switch */
+  height: 2.2rem;
 }
 
 .side-actions[hidden] {
@@ -198,6 +201,7 @@ button:disabled {
   padding: 0.15rem 0.3rem;
   display: flex;
   align-items: center;
+  height: 1.6rem;
 }
 
 .side-action:hover {
