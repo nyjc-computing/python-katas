@@ -8,8 +8,9 @@
   </head>
   <body>
     <header id="toolbar">
-      <button id="btn-menu" class="hamburger" title="Browse katas" aria-label="Browse katas">
-        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M1.5 3h13v1.6h-13V3Zm0 4.2h13v1.6h-13V7.2Zm0 4.2h13V13h-13v-1.6Z" fill="currentColor"/></svg>
+      <button id="btn-menu" class="hamburger" title="Open the kata browser" aria-label="Toggle the side panel" aria-expanded="false">
+        <span class="icon-menu" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M1.5 3h13v1.6h-13V3Zm0 4.2h13v1.6h-13V7.2Zm0 4.2h13V13h-13v-1.6Z" fill="currentColor"/></svg></span>
+        <span class="icon-collapse" aria-hidden="true">&#8249;</span>
       </button>
       <span id="brand">Python Katas</span>
       <button id="btn-run" title="Run (Ctrl+Enter)">&#9654; Run</button>
@@ -26,18 +27,15 @@
       <button id="btn-layout" title="Toggle editor/output layout">Layout: stacked</button>
     </header>
 
-    <!-- Floating drawer-pull on the left edge: opens/closes the file browser -->
-    <button id="sidebar-tab" title="Toggle the file browser" aria-expanded="true">
-      <span id="sidebar-tab-chevron" aria-hidden="true">&#8249;</span>
-      <span class="tab-label">Files</span>
-    </button>
-
     <main id="app" class="layout-stack">
       <aside id="panel-left" class="panel-side">
         <div class="side-head">
           <span class="side-tabs">
             <button id="tab-katas" class="side-tab" type="button">Katas</button>
             <button id="tab-files" class="side-tab active" type="button">Files</button>
+          </span>
+          <span class="side-actions" id="kata-actions" hidden>
+            <button id="btn-reset" class="danger" title="Reset all kata progress — verified ticks, saved code and counters">Reset</button>
           </span>
           <span class="side-actions" id="file-actions">
             <button id="btn-upload" class="side-action" title="Upload text files from this computer">

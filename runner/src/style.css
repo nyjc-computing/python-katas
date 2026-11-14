@@ -93,41 +93,31 @@ button:disabled {
   background: #fff;
 }
 
-/* floating drawer-pull on the left edge for the file browser */
-#sidebar-tab {
-  position: fixed;
-  left: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--chrome);
-  color: var(--muted);
-  font-size: 0.78rem;
+/* the hamburger doubles as the panel toggle: menu icon when closed,
+   collapse chevron when open */
+.hamburger .icon-collapse {
+  display: none;
+  font-size: 16px;
   line-height: 1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  z-index: 10;
 }
 
-#sidebar-tab .tab-label {
+.hamburger.open .icon-menu {
+  display: none;
+}
+
+.hamburger.open .icon-collapse {
+  display: inline;
+}
+
+.side-action.danger,
+#btn-reset.danger {
+  color: #dc2626;
   font-weight: 600;
 }
 
-#sidebar-tab:hover {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-
-#sidebar-tab[aria-expanded='true'] {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
+.side-action.danger:hover,
+#btn-reset.danger:hover {
+  color: #b91c1c;
 }
 
 .file-type {

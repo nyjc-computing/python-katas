@@ -47,8 +47,8 @@ const btnVerify = document.querySelector('#btn-verify') as HTMLButtonElement
 const btnStop = document.querySelector('#btn-stop') as HTMLButtonElement
 const btnClear = document.querySelector('#btn-clear') as HTMLButtonElement
 const btnLayout = document.querySelector('#btn-layout') as HTMLButtonElement
-const sidebarTab = document.querySelector('#sidebar-tab') as HTMLButtonElement
-const sidebarTabChevron = document.querySelector('#sidebar-tab-chevron') as HTMLElement
+const btnReset = document.querySelector('#btn-reset') as HTMLButtonElement
+const kataActions = document.querySelector('#kata-actions') as HTMLElement
 const indentSelect = document.querySelector('#indent-select') as HTMLSelectElement
 const activeFileName = document.querySelector('#active-file-name') as HTMLElement
 const saveStateEl = document.querySelector('#save-state') as HTMLElement
@@ -68,7 +68,6 @@ const fileView = document.querySelector('#file-view') as HTMLElement
 const kataView = document.querySelector('#kata-view') as HTMLElement
 const kataList = document.querySelector('#kata-list') as HTMLElement
 const kataSummary = document.querySelector('#kata-summary') as HTMLElement
-const sideTabLabel = sidebarTab.querySelector('.tab-label') as HTMLElement
 
 // ── virtual files ────────────────────────────────────────────────────────────
 const fileStore = new FileStore()
@@ -696,7 +695,7 @@ function applySideMode(mode: SideMode): void {
   fileActions.hidden = mode !== 'files'
   tabKatas.classList.toggle('active', mode === 'katas')
   tabFiles.classList.toggle('active', mode === 'files')
-  sideTabLabel.textContent = mode === 'katas' ? 'Katas' : 'Files'
+  kataActions.hidden = mode !== 'katas'
   if (mode === 'katas') {
     const id = activeKataId()
     if (id && kataById(id)) selectKata(id)
@@ -706,15 +705,23 @@ function applySideMode(mode: SideMode): void {
 }
 
 btnMenu.addEventListener('click', () => {
-  const open = app.classList.contains('sidebar-open')
-  if (!open) {
-    applySideMode('katas')
-    applySidebar(true)
-  } else if (sideMode !== 'katas') {
-    applySideMode('katas')
-  } else {
-    applySidebar(false)
-  }
+  applySidebar(!app.classList.contains('sidebar-open'))
+})
+
+// ── reset progress ───────────────────────────────────────────────────────────
+// Red button on the Katas tab: wipes attempt state (verified ticks, saved
+// code, try counters). Gated behind a confirmation; the corpus snapshot and
+// the file workspace are untouched.
+
+btnReset.addEventListener('click', () => {
+  const confirmed = confirm(
+    'Reset all kata progress?\n\nVerified ticks, saved code and attempt counters are deleted. This cannot be undone.',
+  )
+  if (!confirmed) return
+  localStorage.removeItem('kata.attempts')
+  if (currentDoc.kind === 'kata') setDocContent('')
+  renderKataList()
+  setButtons()
 })
 
 tabKatas.addEventListener('click', () => applySideMode('katas'))
@@ -842,19 +849,14 @@ btnLayout.addEventListener('click', () => {
 
 function applySidebar(open: boolean): void {
   app.classList.toggle('sidebar-open', open)
-  sidebarTab.setAttribute('aria-expanded', String(open))
-  const browsing = sideMode === 'katas' ? 'kata browser' : 'file browser'
-  sidebarTab.title = open ? `Hide the ${browsing}` : `Show the ${browsing}`
-  sidebarTabChevron.textContent = open ? '\u2039' : '\u203a'
+  btnMenu.classList.toggle('open', open)
+  btnMenu.setAttribute('aria-expanded', String(open))
+  btnMenu.title = open ? 'Hide the kata browser' : 'Open the kata browser'
   localStorage.setItem('kata.sidebar', open ? 'open' : 'closed')
 }
 
 applySideMode(sideMode)
 applySidebar(localStorage.getItem('kata.sidebar') !== 'closed')
-
-sidebarTab.addEventListener('click', () => {
-  applySidebar(!app.classList.contains('sidebar-open'))
-})
 
 // ── keyboard ─────────────────────────────────────────────────────────────────
 
