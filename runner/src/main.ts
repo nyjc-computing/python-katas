@@ -34,10 +34,14 @@ import {
 } from './protocol'
 import {
   INDENT_OPTIONS,
+  LOAD_HINT_SLOW_MS,
+  LOAD_HINT_STUCK_MS,
   OUTPUT_DROP_CHUNK_CHARS,
   OUTPUT_KEEP_CHUNK_CHARS,
   OUTPUT_TICK_MS,
   STOP_WATCHDOG_MS,
+  UPDATE_CHECK_DELAY_MS,
+  UPDATE_CHECK_INTERVAL_MS,
 } from './limits'
 
 // ── DOM ──────────────────────────────────────────────────────────────────────
@@ -230,6 +234,9 @@ fileStore.onSaveState((state) => {
 // the only recovery from a wedged run — never disabled mid-run).
 type Phase = 'loading' | 'idle' | 'running'
 let phase: Phase = 'loading'
+// False until this worker's Pyodide has loaded; a Run/Verify pressed before
+// that spans the load, so the watch must stay (or re-arm) for that gap.
+let interpreterWarm = false
 let interrupt: Int32Array | null = null
 let worker: Worker
 
@@ -238,10 +245,80 @@ function setPhase(next: Phase): void {
   setButtons()
 }
 
+// ── load watch ───────────────────────────────────────────────────────────────
+// Measures the interpreter load itself (worker spawn → pyodide-ready), not
+// the run/verify gap that also passes through phase 'loading'. On a stalled
+// download the status line counts up and the console explains at 30s / 90s
+// instead of leaving a frozen pane and an empty console.
+interface LoadWatch {
+  since: number
+  interval: ReturnType<typeof setInterval>
+  hintedSlow: boolean
+  hintedStuck: boolean
+}
+let loadWatch: LoadWatch | null = null
+
+function beginLoadWatch(): void {
+  endLoadWatch()
+  loadWatch = {
+    since: Date.now(),
+    interval: setInterval(loadWatchTick, 1000),
+    hintedSlow: false,
+    hintedStuck: false,
+  }
+  setButtons() // pick up the "(0s)" suffix immediately
+}
+
+function endLoadWatch(): void {
+  if (loadWatch) {
+    clearInterval(loadWatch.interval)
+    loadWatch = null
+  }
+}
+
+function loadWatchTick(): void {
+  if (!loadWatch) return
+  const elapsed = Date.now() - loadWatch.since
+  if (elapsed >= LOAD_HINT_STUCK_MS && !loadWatch.hintedStuck) {
+    loadWatch.hintedStuck = true
+    consolePane.write(
+      'Python still has not loaded (90s) — the download looks stuck.\n' +
+        'Reload the page (Ctrl+Shift+R) to retry; some school web filters stall large downloads.\n',
+      'stderr',
+    )
+  } else if (elapsed >= LOAD_HINT_SLOW_MS && !loadWatch.hintedSlow) {
+    loadWatch.hintedSlow = true
+    consolePane.write(
+      'Python is taking a while to load (30s) — the first load downloads ~13 MB, ' +
+        'so slow networks can take a minute or two.\n',
+      'stderr',
+    )
+  }
+  if (phase === 'loading') setButtons() // refresh the elapsed count
+}
+
 function spawnWorker(): void {
   // The worker prewarms Pyodide immediately; pyodide-ready flips us to idle.
   setPhase('loading')
+  beginLoadWatch()
   worker = new Worker(new URL('./pyworker/worker.ts', import.meta.url), { type: 'module' })
+  // Without this, a worker that never comes up (stale cached page pointing at
+  // an old hashed chunk, network hiccup) hangs in 'loading' with an empty
+  // console — exactly the "console isn't responding" report.
+  worker.onerror = (e) => {
+    consolePane.write(
+      `Python failed to start: ${e.message || 'worker error'}\n` +
+        'Reload the page (Ctrl+Shift+R) to pick up the current version.\n',
+      'stderr',
+    )
+  }
+  worker.onmessageerror = () => {
+    consolePane.write(
+      'Python failed to start: the worker returned an unreadable message.\n' +
+        'Reload the page (Ctrl+Shift+R) to pick up the current version.\n',
+      'stderr',
+    )
+  }
   worker.onmessage = (event: MessageEvent<FromWorker>) => {
     const msg = event.data
     switch (msg.type) {
@@ -259,11 +336,15 @@ function spawnWorker(): void {
         break
       }
       case 'pyodide-ready':
+        interpreterWarm = true
+        endLoadWatch()
         if (phase === 'loading') setPhase('idle')
         break
       case 'pyodide-error':
         // Load failed (bad deploy, blocked fetch). The worker cleared its
         // cached load, so the next Run retries it.
+        interpreterWarm = false
+        endLoadWatch()
         setPhase('idle')
         consolePane.write(`Python failed to load: ${msg.message}\nPress Run to retry.\n`, 'stderr')
         break
@@ -303,6 +384,7 @@ function spawnWorker(): void {
           }
         }
         setPhase(msg.restart ? 'loading' : 'idle')
+        if (!msg.restart) void checkForUpdate() // prompt promptly after activity settles
         if (msg.restart) {
           // Self-heal: the worker hit an interrupt it could not contain and
           // asked to be replaced; the fresh worker prewarms immediately.
@@ -334,6 +416,7 @@ function run(): void {
   // already warm that gap is a millisecond; on a retry-after-load-failure it
   // spans the reload, and pyodide-ready → run-started drive the phases.
   setPhase('loading')
+  if (!interpreterWarm && !loadWatch) beginLoadWatch() // retry after a failed load
   consolePane.clear()
   worker.postMessage({
     type: 'run',
@@ -393,7 +476,13 @@ function setButtons(): void {
       : 'This kata has no auto-check tests — compare by eye'
     : 'Select a kata first (hamburger menu)'
   runStatus.textContent =
-    phase === 'running' ? 'running…' : phase === 'loading' ? 'loading Python…' : ''
+    phase === 'running'
+      ? 'running…'
+      : phase === 'loading'
+        ? loadWatch
+          ? `loading Python… (${Math.round((Date.now() - loadWatch.since) / 1000)}s)`
+          : 'loading Python…'
+        : ''
 }
 
 // ── verify ───────────────────────────────────────────────────────────────────
@@ -418,6 +507,7 @@ function sendVerifyRun(): void {
   const state = verifying!
   state.got = ''
   setPhase('loading')
+  if (!interpreterWarm && !loadWatch) beginLoadWatch() // retry after a failed load
   worker.postMessage({
     type: 'run',
     code: editor.state.doc.toString(),
@@ -1015,3 +1105,78 @@ window.addEventListener('keydown', (e) => {
     }
   }
 })
+
+// ── app update badge ─────────────────────────────────────────────────────────
+// GitHub Pages serves every deploy at the same URL, so a stale open tab (or a
+// browser-cached index.html pointing at old hashed chunks) can run an old
+// build indefinitely — with no signal that anything is missing. Each build
+// stamps an id into its index.html (see injectBuildId in vite.config.ts);
+// this fetches the deployed copy, compares, and when they diverge shows a
+// badge whose button reloads the page onto the new build.
+declare const __BUILD_ID__: string
+const BUILD_ID: string = __BUILD_ID__
+
+let updateBadge: HTMLElement | null = null
+let dismissedBuildId: string | null = null // this session only: a reload settles it either way
+let checkingUpdate = false
+
+async function checkForUpdate(): Promise<void> {
+  if (checkingUpdate || phase === 'running') return // never distract mid-run
+  checkingUpdate = true
+  try {
+    // no-store: the point is to see the *deployed* index.html, not a cached one
+    const res = await fetch(`${import.meta.env.BASE_URL}index.html?update=${Date.now()}`, {
+      cache: 'no-store',
+    })
+    if (!res.ok) return
+    const html = await res.text()
+    // extract content= independently of attribute order in the emitted tag
+    const metaTag = /<meta[^>]*name=["']build-id["'][^>]*>/.exec(html)?.[0] ?? ''
+    const deployedId = /content=["']([^"']+)["']/.exec(metaTag)?.[1]
+    if (deployedId && deployedId !== BUILD_ID && deployedId !== dismissedBuildId) {
+      showUpdateBadge(deployedId)
+    }
+  } catch {
+    // offline or the fetch was blocked: the badge is best-effort by design
+  } finally {
+    checkingUpdate = false
+  }
+}
+
+function showUpdateBadge(newId: string): void {
+  if (updateBadge) return
+  const badge = document.createElement('div')
+  badge.id = 'update-badge'
+  const text = document.createElement('span')
+  text.textContent = 'A new version of Python Katas is available.'
+  const actions = document.createElement('span')
+  actions.className = 'banner-actions'
+  const update = document.createElement('button')
+  update.className = 'primary'
+  update.textContent = 'Update'
+  update.addEventListener('click', () => {
+    // The editor autosaves, so code is safe across the reload — but a live
+    // run dies with the page, so ask before cutting one short.
+    if (phase === 'running' && !confirm('A program is running — updating now stops it. Update anyway?')) {
+      return
+    }
+    location.reload()
+  })
+  const dismiss = document.createElement('button')
+  dismiss.textContent = '×'
+  dismiss.title = 'Hide until the next check'
+  dismiss.addEventListener('click', () => {
+    dismissedBuildId = newId
+    updateBadge = null
+    badge.remove()
+  })
+  actions.append(update, dismiss)
+  badge.append(text, actions)
+  document.body.appendChild(badge)
+  updateBadge = badge
+}
+
+void checkForUpdate()
+setTimeout(() => void checkForUpdate(), UPDATE_CHECK_DELAY_MS)
+setInterval(() => void checkForUpdate(), UPDATE_CHECK_INTERVAL_MS)
+window.addEventListener('focus', () => void checkForUpdate())

@@ -46,6 +46,31 @@ function servePyodideRaw(): Plugin {
   }
 }
 
+// Every build carries an id (deploy sha + timestamp) so the app can detect,
+// from a stale open tab or a browser-cached index.html, that a newer build is
+// live: it fetches the deployed index.html, compares ids, and offers an
+// update badge with a reload button (see main.ts). In dev the id is the same
+// on both sides, so no badge ever fires.
+const BUILD_ID = `${process.env.GITHUB_SHA ? process.env.GITHUB_SHA.slice(0, 7) : 'dev'} ${new Date().toISOString().slice(0, 16)}`
+
+function injectBuildId(): Plugin {
+  return {
+    name: 'inject-build-id',
+    config(userConfig) {
+      userConfig.define = { ...userConfig.define, __BUILD_ID__: JSON.stringify(BUILD_ID) }
+    },
+    transformIndexHtml() {
+      return [
+        {
+          tag: 'meta',
+          attrs: { name: 'build-id', content: BUILD_ID },
+          injectTo: 'head-prepend',
+        },
+      ]
+    },
+  }
+}
+
 export default defineConfig({
   // GitHub Pages project sites serve under /python-katas/ — set PAGES_BASE in
   // the deploy workflow; everything else (dev, preview, CF Pages) uses '/'.
@@ -54,5 +79,5 @@ export default defineConfig({
   preview: { headers: isolationHeaders },
   worker: { format: 'es' },
   build: { target: 'es2022' },
-  plugins: [servePyodideRaw()],
+  plugins: [servePyodideRaw(), injectBuildId()],
 })

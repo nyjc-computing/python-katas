@@ -743,11 +743,9 @@ button:disabled {
 }
 
 /* corpus update toast */
-#corpus-banner {
+#corpus-banner,
+#update-badge {
   position: fixed;
-  top: 52px;
-  left: 50%;
-  transform: translateX(-50%);
   z-index: 50;
   display: flex;
   align-items: center;
@@ -762,13 +760,28 @@ button:disabled {
   box-shadow: 0 6px 24px rgba(2, 6, 23, 0.35);
 }
 
-#corpus-banner .banner-actions {
+/* the corpus toast is centred under the toolbar; the update badge tucks into
+   the bottom-right corner so the two never collide */
+#corpus-banner {
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#update-badge {
+  bottom: 14px;
+  right: 14px;
+}
+
+#corpus-banner .banner-actions,
+#update-badge .banner-actions {
   display: inline-flex;
   gap: 6px;
   margin-left: auto;
 }
 
-#corpus-banner button {
+#corpus-banner button,
+#update-badge button {
   font: inherit;
   font-size: 12px;
   border: 1px solid var(--console-muted);
@@ -779,7 +792,8 @@ button:disabled {
   cursor: pointer;
 }
 
-#corpus-banner button.primary {
+#corpus-banner button.primary,
+#update-badge button.primary {
   background: var(--console-accent);
   border-color: var(--console-accent);
   color: #0f172a;

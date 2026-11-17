@@ -23,6 +23,17 @@ export const OUTPUT_KEEP_CHUNK_CHARS = 150_000 // …keeps only the newest part
 // ── stop ─────────────────────────────────────────────────────────────────────
 export const STOP_WATCHDOG_MS = 2500 // interrupt first, then force-restart the worker
 
+// ── interpreter load watch ───────────────────────────────────────────────────
+// The Pyodide payload is ~13 MB; on a filtered school network the first load
+// can crawl or stall silently. The status line counts up, and the console
+// explains at these thresholds instead of leaving an empty, frozen pane.
+export const LOAD_HINT_SLOW_MS = 30_000 // console hint: still downloading
+export const LOAD_HINT_STUCK_MS = 90_000 // console hint: looks stuck, how to recover
+
+// ── app update check ─────────────────────────────────────────────────────────
+export const UPDATE_CHECK_DELAY_MS = 5_000 // first check after boot
+export const UPDATE_CHECK_INTERVAL_MS = 10 * 60_000 // steady-state re-check
+
 // ── blocked imports ──────────────────────────────────────────────────────────
 // Clarity, not security: in a browser tab raw sockets fake-connect and then
 // hang until timeout, which reads as a hang to a learner. A meta-path finder
