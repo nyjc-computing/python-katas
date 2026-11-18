@@ -1,3 +1,0 @@
-[    1399ms] TypeError: n.skills is not iterable
-    at ji (http://localhost:4173/assets/index-py3iDVIc.js:69:3694)
-    at http://localhost:4173/assets/index-py3iDVIc.js:69:4243
