@@ -708,12 +708,54 @@ redirect_url = (
 print(undirect(redirect_url))
 ```
 
+### 26. Look-and-say sequence
+
+**Skills:** accumulator, indexed iteration, conditional iteration, string formatting
+
+**Question:**
+The look-and-say sequence starts from `1`. Each later term describes the previous term by reading off its runs of identical digits: a run of `M` consecutive copies of a digit `N` is written as the count followed by the digit, so `1211` — one 1, one 2, two 1s — reads as `111221`.
+
+Write a program that prints the first 8 terms of the look-and-say sequence, one per line:
+
+```
+1
+11
+21
+1211
+111221
+312211
+13112221
+1113213211
+```
+
+**Hints:**
+Keep the current term in a string, and repeat 8 times: print the term, then build the next term from it.
+
+Walk the term with an index `i`: while the character after `term[i]` matches it, extend the run and count it; when the run ends, append `f"{count}{term[i]}"` to the next term and move past the run.
+
+**Solution:**
+```python
+term = "1"
+for _ in range(8):
+    print(term)
+    next_term = ""
+    i = 0
+    while i < len(term):
+        count = 1
+        while i + 1 < len(term) and term[i] == term[i + 1]:
+            i += 1
+            count += 1
+        next_term += f"{count}{term[i]}"
+        i += 1
+    term = next_term
+```
+
 
 ---
 
 # Part B — Built-in data structures
 ## 5. Lists & slicing
-### 26. Build a list of squares (1–20)
+### 27. Build a list of squares (1–20)
 
 **Skills:** function, fixed iteration, accumulator, arithmetic operators
 
@@ -737,7 +779,7 @@ def print_list():
 print_list()
 ```
 
-### 27. First 5 elements of a list
+### 28. First 5 elements of a list
 
 **Skills:** function, accumulator, slicing, output
 
@@ -762,7 +804,7 @@ def print_list():
 print_list()
 ```
 
-### 28. Last 5 elements of a list
+### 29. Last 5 elements of a list
 
 **Skills:** function, accumulator, slicing, output
 
@@ -787,7 +829,7 @@ def print_list():
 print_list()
 ```
 
-### 29. All elements except the first 5
+### 30. All elements except the first 5
 
 **Skills:** function, accumulator, slicing, output
 
@@ -812,7 +854,7 @@ def print_list():
 print_list()
 ```
 
-### 30. Print a string in reverse
+### 31. Print a string in reverse
 
 **Skills:** input, slicing, output
 
@@ -841,7 +883,7 @@ s = s[::-1]
 print(s)
 ```
 
-### 31. Characters at even indexes
+### 32. Characters at even indexes
 
 **Skills:** input, slicing, output
 
@@ -870,7 +912,7 @@ s = s[::2]
 print(s)
 ```
 
-### 32. Remove duplicates, preserving order
+### 33. Remove duplicates, preserving order
 
 **Skills:** tuple and list, membership check, fixed iteration, output
 
@@ -892,7 +934,7 @@ print(values)
 ```
 
 ## 6. Tuples
-### 33. Comma-separated numbers → list and tuple
+### 34. Comma-separated numbers → list and tuple
 
 **Skills:** input, tokenisation, tuple and list, data types, output
 
@@ -925,7 +967,7 @@ print(items)
 print(tuple_items)
 ```
 
-### 34. Tuple of squares (1–20)
+### 35. Tuple of squares (1–20)
 
 **Skills:** function, fixed iteration, tuple and list, arithmetic operators
 
@@ -950,7 +992,7 @@ def print_tuple():
 print_tuple()
 ```
 
-### 35. Print the two halves of a tuple
+### 36. Print the two halves of a tuple
 
 **Skills:** tuple and list, slicing, output
 
@@ -969,7 +1011,7 @@ print(first_half)
 print(second_half)
 ```
 
-### 36. Even values of a tuple as a new tuple
+### 37. Even values of a tuple as a new tuple
 
 **Skills:** fixed iteration, selection, tuple and list, output
 
@@ -993,7 +1035,7 @@ print(evens)
 ```
 
 ## 7. Dictionaries
-### 37. Dictionary of squares {i: i²}
+### 38. Dictionary of squares {i: i²}
 
 **Skills:** input, dict, fixed iteration, arithmetic operators, output
 
@@ -1026,7 +1068,7 @@ for i in range(1, n + 1):
 print(squares)
 ```
 
-### 38. Dictionary of squares, 1–3
+### 39. Dictionary of squares, 1–3
 
 **Skills:** function, dict, fixed iteration, arithmetic operators
 
@@ -1050,7 +1092,7 @@ def print_dict():
 print_dict()
 ```
 
-### 39. Dictionary of squares, 1–20
+### 40. Dictionary of squares, 1–20
 
 **Skills:** function, dict, fixed iteration, arithmetic operators
 
@@ -1074,7 +1116,7 @@ def print_dict():
 print_dict()
 ```
 
-### 40. Dictionary of squares — print the values only
+### 41. Dictionary of squares — print the values only
 
 **Skills:** function, dict, fixed iteration, output
 
@@ -1100,7 +1142,7 @@ def print_dict():
 print_dict()
 ```
 
-### 41. Dictionary of squares — print the keys only
+### 42. Dictionary of squares — print the keys only
 
 **Skills:** function, dict, fixed iteration, output
 
@@ -1126,7 +1168,7 @@ def print_dict():
 print_dict()
 ```
 
-### 42. Count each character in a string
+### 43. Count each character in a string
 
 **Skills:** input, dict, accumulator, output
 
@@ -1170,7 +1212,7 @@ for char, count in counts.items():
 
 # Part C — Functional & idiomatic Python
 ## 8. List comprehensions
-### 43. "Square" each odd number in a list
+### 44. "Square" each odd number in a list
 
 **Skills:** input, tokenisation, list comprehension, mapping, filtering
 
@@ -1199,7 +1241,7 @@ numbers = [str(int(x)**2) for x in values.split(",") if int(x) % 2 != 0]
 print(",".join(numbers))
 ```
 
-### 44. Remove even numbers from a list
+### 45. Remove even numbers from a list
 
 **Skills:** list comprehension, filtering, arithmetic operators
 
@@ -1216,7 +1258,7 @@ li = [x for x in li if x % 2 != 0]
 print(li)
 ```
 
-### 45. Remove numbers divisible by 5 and 7
+### 46. Remove numbers divisible by 5 and 7
 
 **Skills:** list comprehension, filtering, arithmetic operators, logical operators
 
@@ -1233,7 +1275,7 @@ li = [x for x in li if x % 5 != 0 and x % 7 != 0]
 print(li)
 ```
 
-### 46. Remove all occurrences of a value
+### 47. Remove all occurrences of a value
 
 **Skills:** list comprehension, filtering, comparison operators
 
@@ -1250,7 +1292,7 @@ li = [x for x in li if x != 24]
 print(li)
 ```
 
-### 47. Drop the even-indexed elements
+### 48. Drop the even-indexed elements
 
 **Skills:** list comprehension, indexed iteration, filtering
 
@@ -1268,7 +1310,7 @@ li = [x for (i, x) in enumerate(li) if i % 2 != 0]
 print(li)
 ```
 
-### 48. Drop elements at given indexes
+### 49. Drop elements at given indexes
 
 **Skills:** list comprehension, indexed iteration, membership check
 
@@ -1287,7 +1329,7 @@ print(li)
 ```
 
 ## 9. Recursion
-### 49. Factorial
+### 50. Factorial
 
 **Skills:** recursion, input, output
 
@@ -1321,7 +1363,7 @@ x = int(input())
 print(fact(x))
 ```
 
-### 50. f(n) = f(n−1) + 100
+### 51. f(n) = f(n−1) + 100
 
 **Skills:** recursion, input, output
 
@@ -1358,7 +1400,7 @@ n = int(input())
 print(f(n))
 ```
 
-### 51. Fibonacci number f(n)
+### 52. Fibonacci number f(n)
 
 **Skills:** recursion, input, output
 
@@ -1400,7 +1442,7 @@ n = int(input())
 print(f(n))
 ```
 
-### 52. Fibonacci sequence as a comma-separated string
+### 53. Fibonacci sequence as a comma-separated string
 
 **Skills:** recursion, list comprehension, mapping, input, output
 
@@ -1451,7 +1493,7 @@ print(",".join(values))
 
 # Part D — OOP, errors & introspection
 ## 10. Classes & objects
-### 53. A string-handling class
+### 54. A string-handling class
 
 **Skills:** class, input, string methods, output
 
@@ -1484,7 +1526,7 @@ string_obj.get_string()
 string_obj.print_string()
 ```
 
-### 54. Class attribute vs instance attribute
+### 55. Class attribute vs instance attribute
 
 **Skills:** class, class attribute, output
 
@@ -1522,7 +1564,7 @@ nico.name = "Nico"
 print(f"{Person.name} name is {nico.name}")
 ```
 
-### 55. Circle with an area method
+### 56. Circle with an area method
 
 **Skills:** class, arithmetic operators, output
 
@@ -1546,7 +1588,7 @@ circle = Circle(2)
 print(circle.area())
 ```
 
-### 56. Rectangle with an area method
+### 57. Rectangle with an area method
 
 **Skills:** class, arithmetic operators, output
 
@@ -1571,7 +1613,7 @@ rectangle = Rectangle(2, 10)
 print(rectangle.area())
 ```
 
-### 57. Caesar cipher class
+### 58. Caesar cipher class
 
 **Skills:** class, string methods, fixed iteration, arithmetic operators
 
@@ -1620,7 +1662,7 @@ print(cipher.decode(encoded))
 
 
 ## 11. Inheritance, polymorphism & static methods
-### 58. American and its subclass NewYorker
+### 59. American and its subclass NewYorker
 
 **Skills:** class, inheritance
 
@@ -1646,7 +1688,7 @@ print(american)
 print(new_yorker)
 ```
 
-### 59. Shape and Square: overriding `area()`
+### 60. Shape and Square: overriding `area()`
 
 **Skills:** class, inheritance, polymorphism, output
 
@@ -1679,7 +1721,7 @@ square = Square(3)
 print(square.area())
 ```
 
-### 60. Person, Male, Female — polymorphic `get_gender()`
+### 61. Person, Male, Female — polymorphic `get_gender()`
 
 **Skills:** class, inheritance, polymorphism, output
 
@@ -1712,7 +1754,7 @@ print(male.get_gender())
 print(female.get_gender())
 ```
 
-### 61. A class with a static method
+### 62. A class with a static method
 
 **Skills:** class, staticmethod, output
 
@@ -1736,7 +1778,7 @@ American.print_nationality()
 ```
 
 ## 12. Exceptions & assertions
-### 62. Raise a RuntimeError
+### 63. Raise a RuntimeError
 
 **Skills:** exception raising
 
@@ -1751,7 +1793,7 @@ Use the `raise` statement to raise an exception.
 raise RuntimeError('something wrong')
 ```
 
-### 63. Catch a division by zero
+### 64. Catch a division by zero
 
 **Skills:** exception handling, function, output
 
@@ -1777,7 +1819,7 @@ finally:
     print('In finally block for cleanup')
 ```
 
-### 64. A custom exception class
+### 65. A custom exception class
 
 **Skills:** class, inheritance
 
@@ -1803,7 +1845,7 @@ class MyError(Exception):
 error = MyError("something wrong")
 ```
 
-### 65. Assert every number is even
+### 66. Assert every number is even
 
 **Skills:** assert, fixed iteration, tuple and list
 
@@ -1824,7 +1866,7 @@ for i in li:
 
 # Part E — Standard library
 ## 13. `math`
-### 66. Evaluate Q = √(2CD/H)
+### 67. Evaluate Q = √(2CD/H)
 
 **Skills:** input, tokenisation, math module, data types, output
 
@@ -1865,7 +1907,7 @@ for d in items:
 print(','.join(value))
 ```
 
-### 67. Robot's distance from the origin
+### 68. Robot's distance from the origin
 
 **Skills:** input, sentinel loop, tokenisation, math module, selection, conditional iteration
 
@@ -1921,7 +1963,7 @@ print(int(round(math.sqrt(pos[1] ** 2 + pos[0] ** 2))))
 ```
 
 ## 14. `random`
-### 68. A random float (scaled)
+### 69. A random float (scaled)
 
 **Skills:** random numbers, output
 
@@ -1937,7 +1979,7 @@ import random
 print(random.uniform(10, 100))
 ```
 
-### 69. A random float between 5 and 95
+### 70. A random float between 5 and 95
 
 **Skills:** random numbers, output
 
@@ -1953,7 +1995,7 @@ import random
 print(random.uniform(5, 95))
 ```
 
-### 70. Random even number between 0 and 10
+### 71. Random even number between 0 and 10
 
 **Skills:** random numbers, list comprehension, selection, output
 
@@ -1969,7 +2011,7 @@ import random
 print(random.choice([i for i in range(0, 11) if i % 2 == 0]))
 ```
 
-### 71. Random number divisible by 5 and 7
+### 72. Random number divisible by 5 and 7
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -1985,7 +2027,7 @@ import random
 print(random.choice([i for i in range(0, 1001) if i % 5 == 0 and i % 7 == 0]))
 ```
 
-### 72. A list of 5 random numbers
+### 73. A list of 5 random numbers
 
 **Skills:** random numbers, output
 
@@ -2001,7 +2043,7 @@ import random
 print(random.sample(range(100, 201), 5))
 ```
 
-### 73. 5 random even numbers (100–200)
+### 74. 5 random even numbers (100–200)
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -2017,7 +2059,7 @@ import random
 print(random.sample([i for i in range(100, 201) if i % 2 == 0], 5))
 ```
 
-### 74. 5 random multiples of 5 and 7 (1–1000)
+### 75. 5 random multiples of 5 and 7 (1–1000)
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -2035,7 +2077,7 @@ multiples = [i for i in range(1, 1001) if i % 5 == 0 and i % 7 == 0]
 print(random.sample(multiples, 5))
 ```
 
-### 75. Random integer between 7 and 15
+### 76. Random integer between 7 and 15
 
 **Skills:** random numbers, output
 
@@ -2051,7 +2093,7 @@ import random
 print(random.randrange(7, 16))
 ```
 
-### 76. Shuffle a list
+### 77. Shuffle a list
 
 **Skills:** random numbers, tuple and list, output
 
@@ -2070,7 +2112,7 @@ print(li)
 ```
 
 ## 15. `timeit`
-### 77. Measure execution time
+### 78. Measure execution time
 
 **Skills:** time measurement, output
 
@@ -2089,7 +2131,7 @@ print(timer.timeit())
 
 
 ## 16. `datetime`
-### 78. HTTP date string
+### 79. HTTP date string
 
 **Skills:** date and time, string formatting, function
 
