@@ -242,7 +242,31 @@ for i in range(2000, 3201):
 print(','.join(items))
 ```
 
-### 12. Capitalise input lines until a blank line
+### 12. FizzBuzz
+
+**Skills:** fixed iteration, selection, arithmetic operators, logical operators, output
+
+**Question:**
+Write a program that prints the numbers from 1 to 100, replacing every multiple of three with "Fizz", every multiple of five with "Buzz", and every multiple of both three and five with "FizzBuzz".
+
+**Hints:**
+A number divisible by both 3 and 5 is divisible by 15.
+**Solution:**
+
+```python
+for i in range(1, 101):
+    if i % 15 == 0:
+        print("FizzBuzz")
+    elif i % 3 == 0:
+        print("Fizz")
+    elif i % 5 == 0:
+        print("Buzz")
+    else:
+        print(i)
+```
+
+
+### 13. Capitalise input lines until a blank line
 
 **Skills:** input, sentinel loop, string methods, accumulator, output, conditional iteration
 
@@ -278,7 +302,7 @@ for sentence in lines:
     print(sentence)
 ```
 
-### 13. Net bank balance from a transaction log
+### 14. Net bank balance from a transaction log
 
 **Skills:** input, sentinel loop, tokenisation, selection, accumulator, conditional iteration
 
@@ -325,7 +349,7 @@ while line != '':
 print(net_amount)
 ```
 
-### 14. Sum the series 1/2 + 2/3 + … + n/(n+1)
+### 15. Sum the series 1/2 + 2/3 + … + n/(n+1)
 
 **Skills:** input, fixed iteration, accumulator, data types
 
@@ -356,7 +380,7 @@ for i in range(1, n + 1):
 print(total)
 ```
 
-### 15. Generate all subject–verb–object sentences
+### 16. Generate all subject–verb–object sentences
 
 **Skills:** cartesian product, string formatting, tuple and list, output
 
@@ -378,7 +402,7 @@ for i in range(len(subjects)):
             print(sentence)
 ```
 
-### 16. Chickens and rabbits puzzle
+### 17. Chickens and rabbits puzzle
 
 **Skills:** function, search, fixed iteration, arithmetic operators, early return
 
@@ -405,7 +429,7 @@ solutions = solve(numheads, numlegs)
 print(solutions)
 ```
 
-### 17. Binary search in a sorted list
+### 18. Binary search in a sorted list
 
 **Skills:** search, conditional iteration, function, indexing
 
@@ -441,7 +465,7 @@ print(bin_search(li, 11))
 print(bin_search(li, 12))
 ```
 
-### 18. 2-D multiplication array
+### 19. 2-D multiplication array
 
 **Skills:** input, tokenisation, cartesian product, nested data structure, accumulator
 
@@ -478,8 +502,43 @@ for i in range(x):
 print(matrix)
 ```
 
+### 20. Multiplication table
+
+**Skills:** function, fixed iteration, string formatting, output
+
+**Question:**
+Define a function `mult_table(n)` that takes an integer `n` and prints the n × n multiplication table. Each cell must be right-aligned, with at least a space between columns.
+
+For example, `mult_table(5)` should print:
+
+```
+ 1  2  3  4  5
+ 2  4  6  8 10
+ 3  6  9 12 15
+ 4  8 12 16 20
+ 5 10 15 20 25
+```
+
+**Hints:**
+Right-align each cell with a format spec such as `{row * col:>{width}}`, where `width = len(str(n * n))`.
+**Solution:**
+
+```python
+def mult_table(n):
+    width = len(str(n * n))
+    for row in range(1, n + 1):
+        cells = []
+        for col in range(1, n + 1):
+            cells.append(f"{row * col:>{width}}")
+        print(" ".join(cells))
+
+
+mult_table(5)
+```
+
+
 ## 4. Strings & character methods
-### 19. Count letters and digits in a sentence
+### 21. Count letters and digits in a sentence
 
 **Skills:** input, string methods, accumulator, selection
 
@@ -517,7 +576,7 @@ print("LETTERS", d["LETTERS"])
 print("DIGITS", d["DIGITS"])
 ```
 
-### 20. Count upper-case and lower-case letters
+### 22. Count upper-case and lower-case letters
 
 **Skills:** input, string methods, accumulator, selection
 
@@ -555,7 +614,7 @@ print("UPPER CASE", d["UPPER CASE"])
 print("LOWER CASE", d["LOWER CASE"])
 ```
 
-### 21. Compute a + aa + aaa + aaaa
+### 23. Compute a + aa + aaa + aaaa
 
 **Skills:** input, data types, arithmetic operators, output
 
@@ -587,11 +646,74 @@ n4 = int(a + a + a + a)
 print(n1 + n2 + n3 + n4)
 ```
 
+### 24. Percent-encode a string
+
+**Skills:** function, fixed iteration, selection, string formatting, membership check
+
+**Question:**
+URLs only allow letters, digits, and the characters `-` `_` `.` `~`; every other character must be percent-encoded: replaced by `%` followed by the character code in upper-case hexadecimal.
+
+Define a function `percent_encode(text)` that returns `text` with every character outside the allowed set encoded. For example, `percent_encode("!*'();:@&=+$,/?%#[]")` returns `'%21%2A%27%28%29%3B%3A%40%26%3D%2B%24%2C%2F%3F%25%23%5B%5D'`, and `percent_encode("Send a message")` returns `'Send%20a%20message'`.
+
+**Hints:**
+Test each character with `c.isalnum()` or membership in the string `"-_.~"`, and format the code with `f"%{ord(c):X}"`.
+**Solution:**
+
+```python
+def percent_encode(text):
+    encoded = ""
+    for c in text:
+        if c.isalnum() or c in "-_.~":
+            encoded += c
+        else:
+            encoded += f"%{ord(c):X}"
+    return encoded
+
+
+print(percent_encode("!*'();:@&=+$,/?%#[]"))
+print(percent_encode("Send a message"))
+```
+
+### 25. Unwrap a Google redirect URL
+
+**Skills:** function, string methods, tokenisation, search, early return
+
+**Question:**
+Links in Google search results are rewritten to route through `google.com` before the browser follows them. Each rewritten link carries the destination, percent-encoded, in the `url` query parameter, like this:
+
+```
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjAhNDPz7zqAhVt_XMBHepeBf8QFjAAegQIBRAB&url=https%3A%2F%2Fmoz.com%2Flearn%2Fseo%2Fredirection&usg=AOvVaw0OxLud1UuZx_hO1HV9QrJ2
+```
+
+Define a function `undirect(link)` that takes a rewritten link and returns the original destination: the value of the `url` parameter, with `%3A` restored to `:` and `%2F` restored to `/`.
+
+**Hints:**
+Split the query string on `&` and `=`, look for the pair whose name is `url`, and decode it with `str.replace()` twice — once for `%3A`, once for `%2F`.
+**Solution:**
+
+```python
+def undirect(link):
+    for pair in link.split('?')[1].split('&'):
+        name, value = pair.split('=')
+        if name == 'url':
+            return value.replace('%3A', ':').replace('%2F', '/')
+
+
+redirect_url = (
+    'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd='
+    '&cad=rja&uact=8&ved=2ahUKEwjAhNDPz7zqAhVt_XMBHepeBf8QFjAAegQIBRAB'
+    '&url=https%3A%2F%2Fmoz.com%2Flearn%2Fseo%2Fredirection'
+    '&usg=AOvVaw0OxLud1UuZx_hO1HV9QrJ2'
+)
+print(undirect(redirect_url))
+```
+
+
 ---
 
 # Part B — Built-in data structures
 ## 5. Lists & slicing
-### 22. Build a list of squares (1–20)
+### 26. Build a list of squares (1–20)
 
 **Skills:** function, fixed iteration, accumulator, arithmetic operators
 
@@ -615,7 +737,7 @@ def print_list():
 print_list()
 ```
 
-### 23. First 5 elements of a list
+### 27. First 5 elements of a list
 
 **Skills:** function, accumulator, slicing, output
 
@@ -640,7 +762,7 @@ def print_list():
 print_list()
 ```
 
-### 24. Last 5 elements of a list
+### 28. Last 5 elements of a list
 
 **Skills:** function, accumulator, slicing, output
 
@@ -665,7 +787,7 @@ def print_list():
 print_list()
 ```
 
-### 25. All elements except the first 5
+### 29. All elements except the first 5
 
 **Skills:** function, accumulator, slicing, output
 
@@ -690,7 +812,7 @@ def print_list():
 print_list()
 ```
 
-### 26. Print a string in reverse
+### 30. Print a string in reverse
 
 **Skills:** input, slicing, output
 
@@ -719,7 +841,7 @@ s = s[::-1]
 print(s)
 ```
 
-### 27. Characters at even indexes
+### 31. Characters at even indexes
 
 **Skills:** input, slicing, output
 
@@ -748,7 +870,7 @@ s = s[::2]
 print(s)
 ```
 
-### 28. Remove duplicates, preserving order
+### 32. Remove duplicates, preserving order
 
 **Skills:** tuple and list, membership check, fixed iteration, output
 
@@ -770,7 +892,7 @@ print(values)
 ```
 
 ## 6. Tuples
-### 29. Comma-separated numbers → list and tuple
+### 33. Comma-separated numbers → list and tuple
 
 **Skills:** input, tokenisation, tuple and list, data types, output
 
@@ -803,7 +925,7 @@ print(items)
 print(tuple_items)
 ```
 
-### 30. Tuple of squares (1–20)
+### 34. Tuple of squares (1–20)
 
 **Skills:** function, fixed iteration, tuple and list, arithmetic operators
 
@@ -828,7 +950,7 @@ def print_tuple():
 print_tuple()
 ```
 
-### 31. Print the two halves of a tuple
+### 35. Print the two halves of a tuple
 
 **Skills:** tuple and list, slicing, output
 
@@ -847,7 +969,7 @@ print(first_half)
 print(second_half)
 ```
 
-### 32. Even values of a tuple as a new tuple
+### 36. Even values of a tuple as a new tuple
 
 **Skills:** fixed iteration, selection, tuple and list, output
 
@@ -871,7 +993,7 @@ print(evens)
 ```
 
 ## 7. Dictionaries
-### 33. Dictionary of squares {i: i²}
+### 37. Dictionary of squares {i: i²}
 
 **Skills:** input, dict, fixed iteration, arithmetic operators, output
 
@@ -904,7 +1026,7 @@ for i in range(1, n + 1):
 print(squares)
 ```
 
-### 34. Dictionary of squares, 1–3
+### 38. Dictionary of squares, 1–3
 
 **Skills:** function, dict, fixed iteration, arithmetic operators
 
@@ -928,7 +1050,7 @@ def print_dict():
 print_dict()
 ```
 
-### 35. Dictionary of squares, 1–20
+### 39. Dictionary of squares, 1–20
 
 **Skills:** function, dict, fixed iteration, arithmetic operators
 
@@ -952,7 +1074,7 @@ def print_dict():
 print_dict()
 ```
 
-### 36. Dictionary of squares — print the values only
+### 40. Dictionary of squares — print the values only
 
 **Skills:** function, dict, fixed iteration, output
 
@@ -978,7 +1100,7 @@ def print_dict():
 print_dict()
 ```
 
-### 37. Dictionary of squares — print the keys only
+### 41. Dictionary of squares — print the keys only
 
 **Skills:** function, dict, fixed iteration, output
 
@@ -1004,7 +1126,7 @@ def print_dict():
 print_dict()
 ```
 
-### 38. Count each character in a string
+### 42. Count each character in a string
 
 **Skills:** input, dict, accumulator, output
 
@@ -1048,7 +1170,7 @@ for char, count in counts.items():
 
 # Part C — Functional & idiomatic Python
 ## 8. List comprehensions
-### 39. "Square" each odd number in a list
+### 43. "Square" each odd number in a list
 
 **Skills:** input, tokenisation, list comprehension, mapping, filtering
 
@@ -1077,7 +1199,7 @@ numbers = [str(int(x)**2) for x in values.split(",") if int(x) % 2 != 0]
 print(",".join(numbers))
 ```
 
-### 40. Remove even numbers from a list
+### 44. Remove even numbers from a list
 
 **Skills:** list comprehension, filtering, arithmetic operators
 
@@ -1094,7 +1216,7 @@ li = [x for x in li if x % 2 != 0]
 print(li)
 ```
 
-### 41. Remove numbers divisible by 5 and 7
+### 45. Remove numbers divisible by 5 and 7
 
 **Skills:** list comprehension, filtering, arithmetic operators, logical operators
 
@@ -1111,7 +1233,7 @@ li = [x for x in li if x % 5 != 0 and x % 7 != 0]
 print(li)
 ```
 
-### 42. Remove all occurrences of a value
+### 46. Remove all occurrences of a value
 
 **Skills:** list comprehension, filtering, comparison operators
 
@@ -1128,7 +1250,7 @@ li = [x for x in li if x != 24]
 print(li)
 ```
 
-### 43. Drop the even-indexed elements
+### 47. Drop the even-indexed elements
 
 **Skills:** list comprehension, indexed iteration, filtering
 
@@ -1146,7 +1268,7 @@ li = [x for (i, x) in enumerate(li) if i % 2 != 0]
 print(li)
 ```
 
-### 44. Drop elements at given indexes
+### 48. Drop elements at given indexes
 
 **Skills:** list comprehension, indexed iteration, membership check
 
@@ -1165,7 +1287,7 @@ print(li)
 ```
 
 ## 9. Recursion
-### 45. Factorial
+### 49. Factorial
 
 **Skills:** recursion, input, output
 
@@ -1199,7 +1321,7 @@ x = int(input())
 print(fact(x))
 ```
 
-### 46. f(n) = f(n−1) + 100
+### 50. f(n) = f(n−1) + 100
 
 **Skills:** recursion, input, output
 
@@ -1236,7 +1358,7 @@ n = int(input())
 print(f(n))
 ```
 
-### 47. Fibonacci number f(n)
+### 51. Fibonacci number f(n)
 
 **Skills:** recursion, input, output
 
@@ -1278,7 +1400,7 @@ n = int(input())
 print(f(n))
 ```
 
-### 48. Fibonacci sequence as a comma-separated string
+### 52. Fibonacci sequence as a comma-separated string
 
 **Skills:** recursion, list comprehension, mapping, input, output
 
@@ -1329,7 +1451,7 @@ print(",".join(values))
 
 # Part D — OOP, errors & introspection
 ## 10. Classes & objects
-### 49. A string-handling class
+### 53. A string-handling class
 
 **Skills:** class, input, string methods, output
 
@@ -1362,7 +1484,7 @@ string_obj.get_string()
 string_obj.print_string()
 ```
 
-### 50. Class attribute vs instance attribute
+### 54. Class attribute vs instance attribute
 
 **Skills:** class, class attribute, output
 
@@ -1400,7 +1522,7 @@ nico.name = "Nico"
 print(f"{Person.name} name is {nico.name}")
 ```
 
-### 51. Circle with an area method
+### 55. Circle with an area method
 
 **Skills:** class, arithmetic operators, output
 
@@ -1424,7 +1546,7 @@ circle = Circle(2)
 print(circle.area())
 ```
 
-### 52. Rectangle with an area method
+### 56. Rectangle with an area method
 
 **Skills:** class, arithmetic operators, output
 
@@ -1449,8 +1571,56 @@ rectangle = Rectangle(2, 10)
 print(rectangle.area())
 ```
 
+### 57. Caesar cipher class
+
+**Skills:** class, string methods, fixed iteration, arithmetic operators
+
+**Question:**
+A Caesar cipher replaces each letter with the letter a fixed number of positions down the alphabet, wrapping around: with a shift of 5, `'a'` becomes `'f'` and `'y'` becomes `'d'`. Punctuation and spaces are left unchanged.
+
+Define a class `CaesarCipher` instantiated with an integer shift. It should implement two methods: `encode(text)`, which returns the text with each letter shifted, and `decode(text)`, which restores it.
+
+For example, `CaesarCipher(7)` encodes `'If he had anything confidential to say, he wrote it in cipher, that is, by so changing the order of the letters of the alphabet, that not a word could be made out.'` as `'Pm ol ohk hufaopun jvumpkluaphs av zhf, ol dyval pa pu jpwoly, aoha pz, if zv johunpun aol vykly vm aol slaalyz vm aol hswohila, aoha uva h dvyk jvbsk il thkl vba.'`
+
+**Hints:**
+Shift letters with `chr((ord(c) - base + shift) % 26 + base)`, where `base` is `ord('a')` or `ord('A')`.
+Decoding is encoding with the opposite shift.
+**Solution:**
+
+```python
+class CaesarCipher:
+    def __init__(self, shift):
+        self.shift = shift
+
+    def encode(self, text):
+        encoded = ""
+        for c in text:
+            if c.isalpha():
+                if c.islower():
+                    base = ord('a')
+                else:
+                    base = ord('A')
+                encoded += chr((ord(c) - base + self.shift) % 26 + base)
+            else:
+                encoded += c
+        return encoded
+
+    def decode(self, text):
+        return CaesarCipher(26 - self.shift).encode(text)
+
+
+cipher = CaesarCipher(7)
+sentence = ('If he had anything confidential to say, he wrote it in '
+            'cipher, that is, by so changing the order of the letters '
+            'of the alphabet, that not a word could be made out.')
+encoded = cipher.encode(sentence)
+print(encoded)
+print(cipher.decode(encoded))
+```
+
+
 ## 11. Inheritance, polymorphism & static methods
-### 53. American and its subclass NewYorker
+### 58. American and its subclass NewYorker
 
 **Skills:** class, inheritance
 
@@ -1476,7 +1646,7 @@ print(american)
 print(new_yorker)
 ```
 
-### 54. Shape and Square: overriding `area()`
+### 59. Shape and Square: overriding `area()`
 
 **Skills:** class, inheritance, polymorphism, output
 
@@ -1509,7 +1679,7 @@ square = Square(3)
 print(square.area())
 ```
 
-### 55. Person, Male, Female — polymorphic `get_gender()`
+### 60. Person, Male, Female — polymorphic `get_gender()`
 
 **Skills:** class, inheritance, polymorphism, output
 
@@ -1542,7 +1712,7 @@ print(male.get_gender())
 print(female.get_gender())
 ```
 
-### 56. A class with a static method
+### 61. A class with a static method
 
 **Skills:** class, staticmethod, output
 
@@ -1566,7 +1736,7 @@ American.print_nationality()
 ```
 
 ## 12. Exceptions & assertions
-### 57. Raise a RuntimeError
+### 62. Raise a RuntimeError
 
 **Skills:** exception raising
 
@@ -1581,7 +1751,7 @@ Use the `raise` statement to raise an exception.
 raise RuntimeError('something wrong')
 ```
 
-### 58. Catch a division by zero
+### 63. Catch a division by zero
 
 **Skills:** exception handling, function, output
 
@@ -1607,7 +1777,7 @@ finally:
     print('In finally block for cleanup')
 ```
 
-### 59. A custom exception class
+### 64. A custom exception class
 
 **Skills:** class, inheritance
 
@@ -1633,7 +1803,7 @@ class MyError(Exception):
 error = MyError("something wrong")
 ```
 
-### 60. Assert every number is even
+### 65. Assert every number is even
 
 **Skills:** assert, fixed iteration, tuple and list
 
@@ -1654,7 +1824,7 @@ for i in li:
 
 # Part E — Standard library
 ## 13. `math`
-### 61. Evaluate Q = √(2CD/H)
+### 66. Evaluate Q = √(2CD/H)
 
 **Skills:** input, tokenisation, math module, data types, output
 
@@ -1695,7 +1865,7 @@ for d in items:
 print(','.join(value))
 ```
 
-### 62. Robot's distance from the origin
+### 67. Robot's distance from the origin
 
 **Skills:** input, sentinel loop, tokenisation, math module, selection, conditional iteration
 
@@ -1751,7 +1921,7 @@ print(int(round(math.sqrt(pos[1] ** 2 + pos[0] ** 2))))
 ```
 
 ## 14. `random`
-### 63. A random float (scaled)
+### 68. A random float (scaled)
 
 **Skills:** random numbers, output
 
@@ -1767,7 +1937,7 @@ import random
 print(random.uniform(10, 100))
 ```
 
-### 64. A random float between 5 and 95
+### 69. A random float between 5 and 95
 
 **Skills:** random numbers, output
 
@@ -1783,7 +1953,7 @@ import random
 print(random.uniform(5, 95))
 ```
 
-### 65. Random even number between 0 and 10
+### 70. Random even number between 0 and 10
 
 **Skills:** random numbers, list comprehension, selection, output
 
@@ -1799,7 +1969,7 @@ import random
 print(random.choice([i for i in range(0, 11) if i % 2 == 0]))
 ```
 
-### 66. Random number divisible by 5 and 7
+### 71. Random number divisible by 5 and 7
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -1815,7 +1985,7 @@ import random
 print(random.choice([i for i in range(0, 1001) if i % 5 == 0 and i % 7 == 0]))
 ```
 
-### 67. A list of 5 random numbers
+### 72. A list of 5 random numbers
 
 **Skills:** random numbers, output
 
@@ -1831,7 +2001,7 @@ import random
 print(random.sample(range(100, 201), 5))
 ```
 
-### 68. 5 random even numbers (100–200)
+### 73. 5 random even numbers (100–200)
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -1847,7 +2017,7 @@ import random
 print(random.sample([i for i in range(100, 201) if i % 2 == 0], 5))
 ```
 
-### 69. 5 random multiples of 5 and 7 (1–1000)
+### 74. 5 random multiples of 5 and 7 (1–1000)
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -1865,7 +2035,7 @@ multiples = [i for i in range(1, 1001) if i % 5 == 0 and i % 7 == 0]
 print(random.sample(multiples, 5))
 ```
 
-### 70. Random integer between 7 and 15
+### 75. Random integer between 7 and 15
 
 **Skills:** random numbers, output
 
@@ -1881,7 +2051,7 @@ import random
 print(random.randrange(7, 16))
 ```
 
-### 71. Shuffle a list
+### 76. Shuffle a list
 
 **Skills:** random numbers, tuple and list, output
 
@@ -1900,7 +2070,7 @@ print(li)
 ```
 
 ## 15. `timeit`
-### 72. Measure execution time
+### 77. Measure execution time
 
 **Skills:** time measurement, output
 
@@ -1915,4 +2085,30 @@ Use the `timeit` module to measure execution time.
 from timeit import Timer
 timer = Timer("for i in range(100): 1 + 1")
 print(timer.timeit())
+```
+
+
+## 16. `datetime`
+### 78. HTTP date string
+
+**Skills:** date and time, string formatting, function
+
+**Question:**
+When a browser and server communicate over HTTP, the protocol fixes a format for dates: `Sun, 06 Nov 1994 08:49:37 GMT`. Define a function `http_date(moment)` that takes a `datetime` object representing a GMT time and returns it in this format.
+
+**Hints:**
+Build a fixed datetime with `datetime(1994, 11, 6, 8, 49, 37)`.
+Format codes: `%a` weekday abbreviation, `%d` day, `%b` month abbreviation, `%Y` year, and `%H` `%M` `%S` for hour, minute, second.
+**Solution:**
+
+```python
+from datetime import datetime
+
+
+def http_date(moment):
+    return f"{moment:%a, %d %b %Y %H:%M:%S} GMT"
+
+
+print(http_date(datetime(1994, 11, 6, 8, 49, 37)))
+print(http_date(datetime(2020, 7, 8, 10, 25, 28)))
 ```
