@@ -751,11 +751,171 @@ for _ in range(8):
 ```
 
 
+### 27. Count each word in a text file
+
+**Skills:** tokenisation, file IO, dict, accumulator, string methods, selection
+
+**Question:**
+The text file `prose.txt` is supplied with this kata and listed in its Files tab. It contains the passage:
+
+```
+The quick brown fox jumps
+over the lazy dog.
+The dog barks; the fox runs away.
+
+"Where did the fox go?" asked the dog.
+Nobody knew, so the dog slept.
+```
+
+Write a program that reads `prose.txt` and counts how many times each word appears in the passage. Capitalisation is ignored, and a word is a run of letters: whitespace and punctuation both separate words, so `barks;` and `"Where` count as the words `barks` and `where`.
+
+The program should print one `word,count` pair per line in first-appearance order:
+
+```
+the,7
+quick,1
+brown,1
+fox,3
+jumps,1
+over,1
+lazy,1
+dog,4
+barks,1
+runs,1
+away,1
+where,1
+did,1
+go,1
+asked,1
+nobody,1
+knew,1
+so,1
+slept,1
+```
+
+**Files:**
+`prose.txt`
+```
+The quick brown fox jumps
+over the lazy dog.
+The dog barks; the fox runs away.
+
+"Where did the fox go?" asked the dog.
+Nobody knew, so the dog slept.
+```
+
+**Hints:**
+Read the whole passage into a string with `f.read()` inside a `with open("prose.txt") as f:` block, then loop over its characters with `for c in text:`.
+
+Build each word in a string `word`: when `c.isalpha()`, add `c.lower()` to it. Any other character means the word has just ended.
+
+When a word ends, count it with `counts[word] = counts.get(word, 0) + 1` and reset `word` to an empty string. The last word is still in `word` when the loop finishes, so count it once more afterwards.
+
+**Solution:**
+```python
+counts = {}
+with open("prose.txt") as f:
+    text = f.read()
+
+word = ""
+for c in text:
+    if c.isalpha():
+        word += c.lower()
+    elif word:
+        counts[word] = counts.get(word, 0) + 1
+        word = ""
+if word:
+    counts[word] = counts.get(word, 0) + 1
+
+for word, count in counts.items():
+    print(f"{word},{count}")
+```
+
+
+### 28. Parse a quoted CSV file without the csv module
+
+**Skills:** tokenisation, file IO, conditional iteration, indexed iteration, selection, accumulator, function
+
+**Question:**
+A CSV file stores one row of values per line, separated by commas. A value that contains commas is enclosed in double quotes, and a double quote inside a quoted value is written twice: `"Austen, Jane"` holds the value `Austen, Jane`, and `"The ""Outsiders"""` holds the value `The "Outsiders"`. Double quotes appear only in these two roles.
+
+The text file `books.csv` is supplied with this kata and listed in its Files tab. It contains:
+
+```
+"Emma","Austen, Jane"
+"The ""Outsiders""","Hinton, S. E."
+Animal Farm,"Orwell, George"
+"Dune","Herbert, Frank"
+```
+
+Without using the `csv` module, define a function `parse_row(line)` that takes one line of the file and returns the list of values on that line. Use it in a program that prints each line of `books.csv` as a list. A quoted value never contains a line break.
+
+The program should print:
+
+```
+['Emma', 'Austen, Jane']
+['The "Outsiders"', 'Hinton, S. E.']
+['Animal Farm', 'Orwell, George']
+['Dune', 'Herbert, Frank']
+```
+
+**Files:**
+`books.csv`
+```
+"Emma","Austen, Jane"
+"The ""Outsiders""","Hinton, S. E."
+Animal Farm,"Orwell, George"
+"Dune","Herbert, Frank"
+```
+
+**Hints:**
+Walk the line one character at a time with an index in a `while i < len(line):` loop. Keep the value being built in a string, and a flag `in_quotes` that is `True` while you are inside a quoted value.
+
+Outside quotes, a comma ends the current value — add it to the list and start a new one — and a double quote starts a quoted value. Inside quotes, every character belongs to the current value.
+
+Inside quotes, a double quote followed by another double quote is an escaped quote: add one double quote to the value and skip both. Any other double quote ends the quoted value. Add the final value after the loop, and remove the newline from each line with `str.strip()` before parsing.
+
+**Solution:**
+```python
+def parse_row(line):
+    values = []
+    value = ""
+    in_quotes = False
+    i = 0
+    while i < len(line):
+        c = line[i]
+        if in_quotes:
+            if c == '"':
+                if i + 1 < len(line) and line[i + 1] == '"':
+                    value += '"'
+                    i += 1
+                else:
+                    in_quotes = False
+            else:
+                value += c
+        elif c == '"':
+            in_quotes = True
+        elif c == ",":
+            values.append(value)
+            value = ""
+        else:
+            value += c
+        i += 1
+    values.append(value)
+    return values
+
+
+with open("books.csv") as f:
+    for line in f:
+        print(parse_row(line.strip()))
+```
+
+
 ---
 
 # Part B — Built-in data structures
 ## 5. Lists & slicing
-### 27. Build a list of squares (1–20)
+### 29. Build a list of squares (1–20)
 
 **Skills:** function, fixed iteration, accumulator, arithmetic operators
 
@@ -779,7 +939,7 @@ def print_list():
 print_list()
 ```
 
-### 28. First 5 elements of a list
+### 30. First 5 elements of a list
 
 **Skills:** function, accumulator, slicing, output
 
@@ -804,7 +964,7 @@ def print_list():
 print_list()
 ```
 
-### 29. Last 5 elements of a list
+### 31. Last 5 elements of a list
 
 **Skills:** function, accumulator, slicing, output
 
@@ -829,7 +989,7 @@ def print_list():
 print_list()
 ```
 
-### 30. All elements except the first 5
+### 32. All elements except the first 5
 
 **Skills:** function, accumulator, slicing, output
 
@@ -854,7 +1014,7 @@ def print_list():
 print_list()
 ```
 
-### 31. Print a string in reverse
+### 33. Print a string in reverse
 
 **Skills:** input, slicing, output
 
@@ -883,7 +1043,7 @@ s = s[::-1]
 print(s)
 ```
 
-### 32. Characters at even indexes
+### 34. Characters at even indexes
 
 **Skills:** input, slicing, output
 
@@ -912,7 +1072,7 @@ s = s[::2]
 print(s)
 ```
 
-### 33. Remove duplicates, preserving order
+### 35. Remove duplicates, preserving order
 
 **Skills:** tuple and list, membership check, fixed iteration, output
 
@@ -934,7 +1094,7 @@ print(values)
 ```
 
 ## 6. Tuples
-### 34. Comma-separated numbers → list and tuple
+### 36. Comma-separated numbers → list and tuple
 
 **Skills:** input, tokenisation, tuple and list, data types, output
 
@@ -967,7 +1127,7 @@ print(items)
 print(tuple_items)
 ```
 
-### 35. Tuple of squares (1–20)
+### 37. Tuple of squares (1–20)
 
 **Skills:** function, fixed iteration, tuple and list, arithmetic operators
 
@@ -992,7 +1152,7 @@ def print_tuple():
 print_tuple()
 ```
 
-### 36. Print the two halves of a tuple
+### 38. Print the two halves of a tuple
 
 **Skills:** tuple and list, slicing, output
 
@@ -1011,7 +1171,7 @@ print(first_half)
 print(second_half)
 ```
 
-### 37. Even values of a tuple as a new tuple
+### 39. Even values of a tuple as a new tuple
 
 **Skills:** fixed iteration, selection, tuple and list, output
 
@@ -1035,7 +1195,7 @@ print(evens)
 ```
 
 ## 7. Dictionaries
-### 38. Dictionary of squares {i: i²}
+### 40. Dictionary of squares {i: i²}
 
 **Skills:** input, dict, fixed iteration, arithmetic operators, output
 
@@ -1068,7 +1228,7 @@ for i in range(1, n + 1):
 print(squares)
 ```
 
-### 39. Dictionary of squares, 1–3
+### 41. Dictionary of squares, 1–3
 
 **Skills:** function, dict, fixed iteration, arithmetic operators
 
@@ -1092,7 +1252,7 @@ def print_dict():
 print_dict()
 ```
 
-### 40. Dictionary of squares, 1–20
+### 42. Dictionary of squares, 1–20
 
 **Skills:** function, dict, fixed iteration, arithmetic operators
 
@@ -1116,7 +1276,7 @@ def print_dict():
 print_dict()
 ```
 
-### 41. Dictionary of squares — print the values only
+### 43. Dictionary of squares — print the values only
 
 **Skills:** function, dict, fixed iteration, output
 
@@ -1142,7 +1302,7 @@ def print_dict():
 print_dict()
 ```
 
-### 42. Dictionary of squares — print the keys only
+### 44. Dictionary of squares — print the keys only
 
 **Skills:** function, dict, fixed iteration, output
 
@@ -1168,7 +1328,7 @@ def print_dict():
 print_dict()
 ```
 
-### 43. Count each character in a string
+### 45. Count each character in a string
 
 **Skills:** input, dict, accumulator, output
 
@@ -1212,7 +1372,7 @@ for char, count in counts.items():
 
 # Part C — Functional & idiomatic Python
 ## 8. List comprehensions
-### 44. "Square" each odd number in a list
+### 46. "Square" each odd number in a list
 
 **Skills:** input, tokenisation, list comprehension, mapping, filtering
 
@@ -1241,7 +1401,7 @@ numbers = [str(int(x)**2) for x in values.split(",") if int(x) % 2 != 0]
 print(",".join(numbers))
 ```
 
-### 45. Remove even numbers from a list
+### 47. Remove even numbers from a list
 
 **Skills:** list comprehension, filtering, arithmetic operators
 
@@ -1258,7 +1418,7 @@ li = [x for x in li if x % 2 != 0]
 print(li)
 ```
 
-### 46. Remove numbers divisible by 5 and 7
+### 48. Remove numbers divisible by 5 and 7
 
 **Skills:** list comprehension, filtering, arithmetic operators, logical operators
 
@@ -1275,7 +1435,7 @@ li = [x for x in li if x % 5 != 0 and x % 7 != 0]
 print(li)
 ```
 
-### 47. Remove all occurrences of a value
+### 49. Remove all occurrences of a value
 
 **Skills:** list comprehension, filtering, comparison operators
 
@@ -1292,7 +1452,7 @@ li = [x for x in li if x != 24]
 print(li)
 ```
 
-### 48. Drop the even-indexed elements
+### 50. Drop the even-indexed elements
 
 **Skills:** list comprehension, indexed iteration, filtering
 
@@ -1310,7 +1470,7 @@ li = [x for (i, x) in enumerate(li) if i % 2 != 0]
 print(li)
 ```
 
-### 49. Drop elements at given indexes
+### 51. Drop elements at given indexes
 
 **Skills:** list comprehension, indexed iteration, membership check
 
@@ -1329,7 +1489,7 @@ print(li)
 ```
 
 ## 9. Recursion
-### 50. Factorial
+### 52. Factorial
 
 **Skills:** recursion, input, output
 
@@ -1363,7 +1523,7 @@ x = int(input())
 print(fact(x))
 ```
 
-### 51. f(n) = f(n−1) + 100
+### 53. f(n) = f(n−1) + 100
 
 **Skills:** recursion, input, output
 
@@ -1400,7 +1560,7 @@ n = int(input())
 print(f(n))
 ```
 
-### 52. Fibonacci number f(n)
+### 54. Fibonacci number f(n)
 
 **Skills:** recursion, input, output
 
@@ -1442,7 +1602,7 @@ n = int(input())
 print(f(n))
 ```
 
-### 53. Fibonacci sequence as a comma-separated string
+### 55. Fibonacci sequence as a comma-separated string
 
 **Skills:** recursion, list comprehension, mapping, input, output
 
@@ -1493,7 +1653,7 @@ print(",".join(values))
 
 # Part D — OOP, errors & introspection
 ## 10. Classes & objects
-### 54. A string-handling class
+### 56. A string-handling class
 
 **Skills:** class, input, string methods, output
 
@@ -1526,7 +1686,7 @@ string_obj.get_string()
 string_obj.print_string()
 ```
 
-### 55. Class attribute vs instance attribute
+### 57. Class attribute vs instance attribute
 
 **Skills:** class, class attribute, output
 
@@ -1564,7 +1724,7 @@ nico.name = "Nico"
 print(f"{Person.name} name is {nico.name}")
 ```
 
-### 56. Circle with an area method
+### 58. Circle with an area method
 
 **Skills:** class, arithmetic operators, output
 
@@ -1588,7 +1748,7 @@ circle = Circle(2)
 print(circle.area())
 ```
 
-### 57. Rectangle with an area method
+### 59. Rectangle with an area method
 
 **Skills:** class, arithmetic operators, output
 
@@ -1613,7 +1773,7 @@ rectangle = Rectangle(2, 10)
 print(rectangle.area())
 ```
 
-### 58. Caesar cipher class
+### 60. Caesar cipher class
 
 **Skills:** class, string methods, fixed iteration, arithmetic operators
 
@@ -1662,7 +1822,7 @@ print(cipher.decode(encoded))
 
 
 ## 11. Inheritance, polymorphism & static methods
-### 59. American and its subclass NewYorker
+### 61. American and its subclass NewYorker
 
 **Skills:** class, inheritance
 
@@ -1688,7 +1848,7 @@ print(american)
 print(new_yorker)
 ```
 
-### 60. Shape and Square: overriding `area()`
+### 62. Shape and Square: overriding `area()`
 
 **Skills:** class, inheritance, polymorphism, output
 
@@ -1721,7 +1881,7 @@ square = Square(3)
 print(square.area())
 ```
 
-### 61. Person, Male, Female — polymorphic `get_gender()`
+### 63. Person, Male, Female — polymorphic `get_gender()`
 
 **Skills:** class, inheritance, polymorphism, output
 
@@ -1754,7 +1914,7 @@ print(male.get_gender())
 print(female.get_gender())
 ```
 
-### 62. A class with a static method
+### 64. A class with a static method
 
 **Skills:** class, staticmethod, output
 
@@ -1778,7 +1938,7 @@ American.print_nationality()
 ```
 
 ## 12. Exceptions & assertions
-### 63. Raise a RuntimeError
+### 65. Raise a RuntimeError
 
 **Skills:** exception raising
 
@@ -1793,7 +1953,7 @@ Use the `raise` statement to raise an exception.
 raise RuntimeError('something wrong')
 ```
 
-### 64. Catch a division by zero
+### 66. Catch a division by zero
 
 **Skills:** exception handling, function, output
 
@@ -1819,7 +1979,7 @@ finally:
     print('In finally block for cleanup')
 ```
 
-### 65. A custom exception class
+### 67. A custom exception class
 
 **Skills:** class, inheritance
 
@@ -1845,7 +2005,7 @@ class MyError(Exception):
 error = MyError("something wrong")
 ```
 
-### 66. Assert every number is even
+### 68. Assert every number is even
 
 **Skills:** assert, fixed iteration, tuple and list
 
@@ -1866,7 +2026,7 @@ for i in li:
 
 # Part E — Standard library
 ## 13. `math`
-### 67. Evaluate Q = √(2CD/H)
+### 69. Evaluate Q = √(2CD/H)
 
 **Skills:** input, tokenisation, math module, data types, output
 
@@ -1907,7 +2067,7 @@ for d in items:
 print(','.join(value))
 ```
 
-### 68. Robot's distance from the origin
+### 70. Robot's distance from the origin
 
 **Skills:** input, sentinel loop, tokenisation, math module, selection, conditional iteration
 
@@ -1963,7 +2123,7 @@ print(int(round(math.sqrt(pos[1] ** 2 + pos[0] ** 2))))
 ```
 
 ## 14. `random`
-### 69. A random float (scaled)
+### 71. A random float (scaled)
 
 **Skills:** random numbers, output
 
@@ -1979,7 +2139,7 @@ import random
 print(random.uniform(10, 100))
 ```
 
-### 70. A random float between 5 and 95
+### 72. A random float between 5 and 95
 
 **Skills:** random numbers, output
 
@@ -1995,7 +2155,7 @@ import random
 print(random.uniform(5, 95))
 ```
 
-### 71. Random even number between 0 and 10
+### 73. Random even number between 0 and 10
 
 **Skills:** random numbers, list comprehension, selection, output
 
@@ -2011,7 +2171,7 @@ import random
 print(random.choice([i for i in range(0, 11) if i % 2 == 0]))
 ```
 
-### 72. Random number divisible by 5 and 7
+### 74. Random number divisible by 5 and 7
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -2027,7 +2187,7 @@ import random
 print(random.choice([i for i in range(0, 1001) if i % 5 == 0 and i % 7 == 0]))
 ```
 
-### 73. A list of 5 random numbers
+### 75. A list of 5 random numbers
 
 **Skills:** random numbers, output
 
@@ -2043,7 +2203,7 @@ import random
 print(random.sample(range(100, 201), 5))
 ```
 
-### 74. 5 random even numbers (100–200)
+### 76. 5 random even numbers (100–200)
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -2059,7 +2219,7 @@ import random
 print(random.sample([i for i in range(100, 201) if i % 2 == 0], 5))
 ```
 
-### 75. 5 random multiples of 5 and 7 (1–1000)
+### 77. 5 random multiples of 5 and 7 (1–1000)
 
 **Skills:** random numbers, list comprehension, filtering
 
@@ -2077,7 +2237,7 @@ multiples = [i for i in range(1, 1001) if i % 5 == 0 and i % 7 == 0]
 print(random.sample(multiples, 5))
 ```
 
-### 76. Random integer between 7 and 15
+### 78. Random integer between 7 and 15
 
 **Skills:** random numbers, output
 
@@ -2093,7 +2253,7 @@ import random
 print(random.randrange(7, 16))
 ```
 
-### 77. Shuffle a list
+### 79. Shuffle a list
 
 **Skills:** random numbers, tuple and list, output
 
@@ -2112,7 +2272,7 @@ print(li)
 ```
 
 ## 15. `timeit`
-### 78. Measure execution time
+### 80. Measure execution time
 
 **Skills:** time measurement, output
 
@@ -2131,7 +2291,7 @@ print(timer.timeit())
 
 
 ## 16. `datetime`
-### 79. HTTP date string
+### 81. HTTP date string
 
 **Skills:** date and time, string formatting, function
 

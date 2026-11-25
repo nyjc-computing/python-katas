@@ -163,6 +163,7 @@
         "Use the `**` operator."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -185,6 +186,7 @@
         "Define a function that takes two numbers as arguments and returns their sum."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -207,6 +209,7 @@
         "Use `str()` to convert a number to a string."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -230,6 +233,7 @@
         "Use `int()` to convert a string to an integer."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -252,6 +256,7 @@
         "Use `+` to concatenate strings."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -275,6 +280,7 @@
         "Use `len()` to get the length of a string."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -301,6 +307,7 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -319,6 +326,7 @@
         "Use the `%` operator to check whether a number is even or odd."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -342,6 +350,7 @@
         "Use an `if` statement to test the condition."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -360,6 +369,7 @@
         "Convert each number to a string to examine its digits."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -384,6 +394,7 @@
         "Use `range(begin, end)` to generate the numbers to check."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -408,6 +419,7 @@
         "A number divisible by both 3 and 5 is divisible by 15."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -433,6 +445,7 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -453,6 +466,7 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -471,6 +485,7 @@
         "Use `float()` to convert an integer to a float."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -489,6 +504,7 @@
         "Use `list[index]` notation to get an element from a list."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -513,6 +529,7 @@
         "Use a `for` loop to try every possible combination."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -536,6 +553,7 @@
         "Use `if`/`elif` to decide which half of the list to search next."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -560,6 +578,7 @@
         "Assume the input is supplied through the console as two comma-separated numbers."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -578,6 +597,7 @@
         "Right-align each cell with a format spec such as `{row * col:>{width}}`, where `width = len(str(n * n))`."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -601,6 +621,7 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -619,6 +640,7 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -637,6 +659,7 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
@@ -656,6 +679,7 @@
         "Test each character with `c.isalnum()` or membership in the string `\"-_.~\"`, and format the code with `f\"%{ord(c):X}\"`."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -680,6 +704,7 @@
         "Split the query string on `&` and `=`, look for the pair whose name is `url`, and decode it with `str.replace()` twice — once for `%3A`, once for `%2F`."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -704,6 +729,7 @@
         "Walk the term with an index `i`: while the character after `term[i]` matches it, extend the run and count it; when the run ends, append `f\"{count}{term[i]}\"` to the next term and move past the run."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -712,8 +738,69 @@
       ]
     },
     {
-      "id": "027-build-a-list-of-squares-1-20",
+      "id": "027-count-each-word-in-a-text-file",
       "n": 27,
+      "title": "Count each word in a text file",
+      "section": "s04",
+      "skills": [
+        "tokenisation",
+        "file IO",
+        "dict",
+        "accumulator",
+        "string methods",
+        "selection"
+      ],
+      "question": "The text file `prose.txt` is supplied with this kata and listed in its Files tab. It contains the passage:\n\n```\nThe quick brown fox jumps\nover the lazy dog.\nThe dog barks; the fox runs away.\n\n\"Where did the fox go?\" asked the dog.\nNobody knew, so the dog slept.\n```\n\nWrite a program that reads `prose.txt` and counts how many times each word appears in the passage. Capitalisation is ignored, and a word is a run of letters: whitespace and punctuation both separate words, so `barks;` and `\"Where` count as the words `barks` and `where`.\n\nThe program should print one `word,count` pair per line in first-appearance order:\n\n```\nthe,7\nquick,1\nbrown,1\nfox,3\njumps,1\nover,1\nlazy,1\ndog,4\nbarks,1\nruns,1\naway,1\nwhere,1\ndid,1\ngo,1\nasked,1\nnobody,1\nknew,1\nso,1\nslept,1\n```",
+      "hints": [
+        "Read the whole passage into a string with `f.read()` inside a `with open(\"prose.txt\") as f:` block, then loop over its characters with `for c in text:`.",
+        "Build each word in a string `word`: when `c.isalpha()`, add `c.lower()` to it. Any other character means the word has just ended.",
+        "When a word ends, count it with `counts[word] = counts.get(word, 0) + 1` and reset `word` to an empty string. The last word is still in `word` when the loop finishes, so count it once more afterwards."
+      ],
+      "starter": null,
+      "files": {
+        "prose.txt": "The quick brown fox jumps\nover the lazy dog.\nThe dog barks; the fox runs away.\n\n\"Where did the fox go?\" asked the dog.\nNobody knew, so the dog slept.\n"
+      },
+      "tests": [
+        {
+          "stdin": "",
+          "stdout": "the,7\nquick,1\nbrown,1\nfox,3\njumps,1\nover,1\nlazy,1\ndog,4\nbarks,1\nruns,1\naway,1\nwhere,1\ndid,1\ngo,1\nasked,1\nnobody,1\nknew,1\nso,1\nslept,1\n"
+        }
+      ]
+    },
+    {
+      "id": "028-parse-a-quoted-csv-file-without-the-csv-module",
+      "n": 28,
+      "title": "Parse a quoted CSV file without the csv module",
+      "section": "s04",
+      "skills": [
+        "tokenisation",
+        "file IO",
+        "conditional iteration",
+        "indexed iteration",
+        "selection",
+        "accumulator",
+        "function"
+      ],
+      "question": "A CSV file stores one row of values per line, separated by commas. A value that contains commas is enclosed in double quotes, and a double quote inside a quoted value is written twice: `\"Austen, Jane\"` holds the value `Austen, Jane`, and `\"The \"\"Outsiders\"\"\"` holds the value `The \"Outsiders\"`. Double quotes appear only in these two roles.\n\nThe text file `books.csv` is supplied with this kata and listed in its Files tab. It contains:\n\n```\n\"Emma\",\"Austen, Jane\"\n\"The \"\"Outsiders\"\"\",\"Hinton, S. E.\"\nAnimal Farm,\"Orwell, George\"\n\"Dune\",\"Herbert, Frank\"\n```\n\nWithout using the `csv` module, define a function `parse_row(line)` that takes one line of the file and returns the list of values on that line. Use it in a program that prints each line of `books.csv` as a list. A quoted value never contains a line break.\n\nThe program should print:\n\n```\n['Emma', 'Austen, Jane']\n['The \"Outsiders\"', 'Hinton, S. E.']\n['Animal Farm', 'Orwell, George']\n['Dune', 'Herbert, Frank']\n```",
+      "hints": [
+        "Walk the line one character at a time with an index in a `while i < len(line):` loop. Keep the value being built in a string, and a flag `in_quotes` that is `True` while you are inside a quoted value.",
+        "Outside quotes, a comma ends the current value — add it to the list and start a new one — and a double quote starts a quoted value. Inside quotes, every character belongs to the current value.",
+        "Inside quotes, a double quote followed by another double quote is an escaped quote: add one double quote to the value and skip both. Any other double quote ends the quoted value. Add the final value after the loop, and remove the newline from each line with `str.strip()` before parsing."
+      ],
+      "starter": null,
+      "files": {
+        "books.csv": "\"Emma\",\"Austen, Jane\"\n\"The \"\"Outsiders\"\"\",\"Hinton, S. E.\"\nAnimal Farm,\"Orwell, George\"\n\"Dune\",\"Herbert, Frank\"\n"
+      },
+      "tests": [
+        {
+          "stdin": "",
+          "stdout": "['Emma', 'Austen, Jane']\n['The \"Outsiders\"', 'Hinton, S. E.']\n['Animal Farm', 'Orwell, George']\n['Dune', 'Herbert, Frank']\n"
+        }
+      ]
+    },
+    {
+      "id": "029-build-a-list-of-squares-1-20",
+      "n": 29,
       "title": "Build a list of squares (1–20)",
       "section": "s05",
       "skills": [
@@ -727,6 +814,7 @@
         "Use the `**` operator to raise a number to a power.\nUse `range()` in a `for` loop.\nUse `list.append()` to add values to a list."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -735,8 +823,8 @@
       ]
     },
     {
-      "id": "028-first-5-elements-of-a-list",
-      "n": 28,
+      "id": "030-first-5-elements-of-a-list",
+      "n": 30,
       "title": "First 5 elements of a list",
       "section": "s05",
       "skills": [
@@ -750,6 +838,7 @@
         "Use the `**` operator to raise a number to a power.\nUse `range()` in a `for` loop.\nUse `list.append()` to add values to a list.\nUse `[n1:n2]` to slice a list."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -758,8 +847,8 @@
       ]
     },
     {
-      "id": "029-last-5-elements-of-a-list",
-      "n": 29,
+      "id": "031-last-5-elements-of-a-list",
+      "n": 31,
       "title": "Last 5 elements of a list",
       "section": "s05",
       "skills": [
@@ -773,6 +862,7 @@
         "Use the `**` operator to raise a number to a power.\nUse `range()` in a `for` loop.\nUse `list.append()` to add values to a list.\nUse `[n1:n2]` to slice a list."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -781,8 +871,8 @@
       ]
     },
     {
-      "id": "030-all-elements-except-the-first-5",
-      "n": 30,
+      "id": "032-all-elements-except-the-first-5",
+      "n": 32,
       "title": "All elements except the first 5",
       "section": "s05",
       "skills": [
@@ -796,6 +886,7 @@
         "Use the `**` operator to raise a number to a power.\nUse `range()` in a `for` loop.\nUse `list.append()` to add values to a list.\nUse `[n1:n2]` to slice a list."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -804,8 +895,8 @@
       ]
     },
     {
-      "id": "031-print-a-string-in-reverse",
-      "n": 31,
+      "id": "033-print-a-string-in-reverse",
+      "n": 33,
       "title": "Print a string in reverse",
       "section": "s05",
       "skills": [
@@ -818,11 +909,12 @@
         "Use slicing with `[::-1]` to reverse a string."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "032-characters-at-even-indexes",
-      "n": 32,
+      "id": "034-characters-at-even-indexes",
+      "n": 34,
       "title": "Characters at even indexes",
       "section": "s05",
       "skills": [
@@ -835,11 +927,12 @@
         "Use slicing with `[::2]` to take every second character."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "033-remove-duplicates-preserving-order",
-      "n": 33,
+      "id": "035-remove-duplicates-preserving-order",
+      "n": 35,
       "title": "Remove duplicates, preserving order",
       "section": "s05",
       "skills": [
@@ -853,6 +946,7 @@
         "Use `in` to test whether a value is already in the result list."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -861,8 +955,8 @@
       ]
     },
     {
-      "id": "034-comma-separated-numbers-list-and-tuple",
-      "n": 34,
+      "id": "036-comma-separated-numbers-list-and-tuple",
+      "n": 36,
       "title": "Comma-separated numbers → list and tuple",
       "section": "s06",
       "skills": [
@@ -877,11 +971,12 @@
         "Assume the input is supplied through the console.\nUse `tuple()` to convert a list to a tuple."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "035-tuple-of-squares-1-20",
-      "n": 35,
+      "id": "037-tuple-of-squares-1-20",
+      "n": 37,
       "title": "Tuple of squares (1–20)",
       "section": "s06",
       "skills": [
@@ -895,6 +990,7 @@
         "Use the `**` operator to raise a number to a power.\nUse `range()` in a `for` loop.\nUse `list.append()` to add values to a list.\nUse `tuple()` to convert a list to a tuple."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -903,8 +999,8 @@
       ]
     },
     {
-      "id": "036-print-the-two-halves-of-a-tuple",
-      "n": 36,
+      "id": "038-print-the-two-halves-of-a-tuple",
+      "n": 38,
       "title": "Print the two halves of a tuple",
       "section": "s06",
       "skills": [
@@ -917,6 +1013,7 @@
         "Use `[n1:n2]` notation to take a slice of a tuple."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -925,8 +1022,8 @@
       ]
     },
     {
-      "id": "037-even-values-of-a-tuple-as-a-new-tuple",
-      "n": 37,
+      "id": "039-even-values-of-a-tuple-as-a-new-tuple",
+      "n": 39,
       "title": "Even values of a tuple as a new tuple",
       "section": "s06",
       "skills": [
@@ -940,6 +1037,7 @@
         "Use a `for` loop to iterate over the tuple.\nUse `tuple()` to convert a list to a tuple."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -948,8 +1046,8 @@
       ]
     },
     {
-      "id": "038-dictionary-of-squares-i-i2",
-      "n": 38,
+      "id": "040-dictionary-of-squares-i-i2",
+      "n": 40,
       "title": "Dictionary of squares {i: i²}",
       "section": "s07",
       "skills": [
@@ -964,11 +1062,12 @@
         "Assume the input is supplied through the console.\nUse `dict()` or `{}` to create an empty dictionary."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "039-dictionary-of-squares-1-3",
-      "n": 39,
+      "id": "041-dictionary-of-squares-1-3",
+      "n": 41,
       "title": "Dictionary of squares, 1–3",
       "section": "s07",
       "skills": [
@@ -982,6 +1081,7 @@
         "Use the `dict[key] = value` pattern to add an entry to a dictionary.\nUse the `**` operator to raise a number to a power."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -990,8 +1090,8 @@
       ]
     },
     {
-      "id": "040-dictionary-of-squares-1-20",
-      "n": 40,
+      "id": "042-dictionary-of-squares-1-20",
+      "n": 42,
       "title": "Dictionary of squares, 1–20",
       "section": "s07",
       "skills": [
@@ -1005,6 +1105,7 @@
         "Use the `dict[key] = value` pattern to add an entry to a dictionary.\nUse the `**` operator to raise a number to a power.\nUse `range()` in a `for` loop."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1013,8 +1114,8 @@
       ]
     },
     {
-      "id": "041-dictionary-of-squares-print-the-values-only",
-      "n": 41,
+      "id": "043-dictionary-of-squares-print-the-values-only",
+      "n": 43,
       "title": "Dictionary of squares — print the values only",
       "section": "s07",
       "skills": [
@@ -1028,6 +1129,7 @@
         "Use the `dict[key] = value` pattern to add an entry to a dictionary.\nUse the `**` operator to raise a number to a power.\nUse `range()` in a `for` loop.\nUse `dict.keys()` to iterate over the keys, or `dict.items()` to iterate over key/value pairs."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1036,8 +1138,8 @@
       ]
     },
     {
-      "id": "042-dictionary-of-squares-print-the-keys-only",
-      "n": 42,
+      "id": "044-dictionary-of-squares-print-the-keys-only",
+      "n": 44,
       "title": "Dictionary of squares — print the keys only",
       "section": "s07",
       "skills": [
@@ -1051,6 +1153,7 @@
         "Use the `dict[key] = value` pattern to add an entry to a dictionary.\nUse the `**` operator to raise a number to a power.\nUse `range()` in a `for` loop.\nUse `dict.keys()` to iterate over the keys, or `dict.items()` to iterate over key/value pairs."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1059,8 +1162,8 @@
       ]
     },
     {
-      "id": "043-count-each-character-in-a-string",
-      "n": 43,
+      "id": "045-count-each-character-in-a-string",
+      "n": 45,
       "title": "Count each character in a string",
       "section": "s07",
       "skills": [
@@ -1074,11 +1177,12 @@
         "Use a `dict` to store key/value pairs.\nUse `dict.get()` to look up a key with a default value."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "044-square-each-odd-number-in-a-list",
-      "n": 44,
+      "id": "046-square-each-odd-number-in-a-list",
+      "n": 46,
       "title": "\"Square\" each odd number in a list",
       "section": "s08",
       "skills": [
@@ -1093,11 +1197,12 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "045-remove-even-numbers-from-a-list",
-      "n": 45,
+      "id": "047-remove-even-numbers-from-a-list",
+      "n": 47,
       "title": "Remove even numbers from a list",
       "section": "s08",
       "skills": [
@@ -1110,6 +1215,7 @@
         "Use a list comprehension to filter the list."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1118,8 +1224,8 @@
       ]
     },
     {
-      "id": "046-remove-numbers-divisible-by-5-and-7",
-      "n": 46,
+      "id": "048-remove-numbers-divisible-by-5-and-7",
+      "n": 48,
       "title": "Remove numbers divisible by 5 and 7",
       "section": "s08",
       "skills": [
@@ -1133,6 +1239,7 @@
         "Use a list comprehension to filter the list."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1141,8 +1248,8 @@
       ]
     },
     {
-      "id": "047-remove-all-occurrences-of-a-value",
-      "n": 47,
+      "id": "049-remove-all-occurrences-of-a-value",
+      "n": 49,
       "title": "Remove all occurrences of a value",
       "section": "s08",
       "skills": [
@@ -1155,6 +1262,7 @@
         "Use a list comprehension to keep the values that are not equal to 24."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1163,8 +1271,8 @@
       ]
     },
     {
-      "id": "048-drop-the-even-indexed-elements",
-      "n": 48,
+      "id": "050-drop-the-even-indexed-elements",
+      "n": 50,
       "title": "Drop the even-indexed elements",
       "section": "s08",
       "skills": [
@@ -1177,6 +1285,7 @@
         "Use a list comprehension to filter the list.\nUse `enumerate()` to get `(index, value)` tuples."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1185,8 +1294,8 @@
       ]
     },
     {
-      "id": "049-drop-elements-at-given-indexes",
-      "n": 49,
+      "id": "051-drop-elements-at-given-indexes",
+      "n": 51,
       "title": "Drop elements at given indexes",
       "section": "s08",
       "skills": [
@@ -1199,6 +1308,7 @@
         "Use a list comprehension to filter the list.\nUse `enumerate()` to get `(index, value)` tuples."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1207,8 +1317,8 @@
       ]
     },
     {
-      "id": "050-factorial",
-      "n": 50,
+      "id": "052-factorial",
+      "n": 52,
       "title": "Factorial",
       "section": "s09",
       "skills": [
@@ -1221,11 +1331,12 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "051-f-n-f-n-1-100",
-      "n": 51,
+      "id": "053-f-n-f-n-1-100",
+      "n": 53,
       "title": "f(n) = f(n−1) + 100",
       "section": "s09",
       "skills": [
@@ -1238,11 +1349,12 @@
         "Define a recursive function — one that calls itself — and give it a base case that stops the recursion."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "052-fibonacci-number-f-n",
-      "n": 52,
+      "id": "054-fibonacci-number-f-n",
+      "n": 54,
       "title": "Fibonacci number f(n)",
       "section": "s09",
       "skills": [
@@ -1255,11 +1367,12 @@
         "Define a recursive function — one that calls itself — and give it base cases for `n = 0` and `n = 1`."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "053-fibonacci-sequence-as-a-comma-separated-string",
-      "n": 53,
+      "id": "055-fibonacci-sequence-as-a-comma-separated-string",
+      "n": 55,
       "title": "Fibonacci sequence as a comma-separated string",
       "section": "s09",
       "skills": [
@@ -1275,11 +1388,12 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "054-a-string-handling-class",
-      "n": 54,
+      "id": "056-a-string-handling-class",
+      "n": 56,
       "title": "A string-handling class",
       "section": "s10",
       "skills": [
@@ -1293,11 +1407,12 @@
         "Use the `__init__()` method to initialise the object's attributes."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "055-class-attribute-vs-instance-attribute",
-      "n": 55,
+      "id": "057-class-attribute-vs-instance-attribute",
+      "n": 57,
       "title": "Class attribute vs instance attribute",
       "section": "s10",
       "skills": [
@@ -1310,6 +1425,7 @@
         "Set an instance attribute inside the `__init__()` method.\nAn attribute can be passed to the constructor or assigned later."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1318,8 +1434,8 @@
       ]
     },
     {
-      "id": "056-circle-with-an-area-method",
-      "n": 56,
+      "id": "058-circle-with-an-area-method",
+      "n": 58,
       "title": "Circle with an area method",
       "section": "s10",
       "skills": [
@@ -1332,6 +1448,7 @@
         "Use `def method_name(self)` to define a method."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1340,8 +1457,8 @@
       ]
     },
     {
-      "id": "057-rectangle-with-an-area-method",
-      "n": 57,
+      "id": "059-rectangle-with-an-area-method",
+      "n": 59,
       "title": "Rectangle with an area method",
       "section": "s10",
       "skills": [
@@ -1354,6 +1471,7 @@
         "Use `def method_name(self)` to define a method."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1362,8 +1480,8 @@
       ]
     },
     {
-      "id": "058-caesar-cipher-class",
-      "n": 58,
+      "id": "060-caesar-cipher-class",
+      "n": 60,
       "title": "Caesar cipher class",
       "section": "s10",
       "skills": [
@@ -1377,6 +1495,7 @@
         "Shift letters with `chr((ord(c) - base + shift) % 26 + base)`, where `base` is `ord('a')` or `ord('A')`.\nDecoding is encoding with the opposite shift."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1385,8 +1504,8 @@
       ]
     },
     {
-      "id": "059-american-and-its-subclass-newyorker",
-      "n": 59,
+      "id": "061-american-and-its-subclass-newyorker",
+      "n": 61,
       "title": "American and its subclass NewYorker",
       "section": "s11",
       "skills": [
@@ -1398,11 +1517,12 @@
         "Use `class Subclass(ParentClass)` to define a subclass."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "060-shape-and-square-overriding-area",
-      "n": 60,
+      "id": "062-shape-and-square-overriding-area",
+      "n": 62,
       "title": "Shape and Square: overriding `area()`",
       "section": "s11",
       "skills": [
@@ -1416,6 +1536,7 @@
         "To override a method of the parent class, define a method with the same name in the subclass."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1424,8 +1545,8 @@
       ]
     },
     {
-      "id": "061-person-male-female-polymorphic-get-gender",
-      "n": 61,
+      "id": "063-person-male-female-polymorphic-get-gender",
+      "n": 63,
       "title": "Person, Male, Female — polymorphic `get_gender()`",
       "section": "s11",
       "skills": [
@@ -1439,6 +1560,7 @@
         "Use `class Subclass(ParentClass)` to define a subclass."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1447,8 +1569,8 @@
       ]
     },
     {
-      "id": "062-a-class-with-a-static-method",
-      "n": 62,
+      "id": "064-a-class-with-a-static-method",
+      "n": 64,
       "title": "A class with a static method",
       "section": "s11",
       "skills": [
@@ -1461,6 +1583,7 @@
         "Use the `@staticmethod` decorator to define a static method."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1469,8 +1592,8 @@
       ]
     },
     {
-      "id": "063-raise-a-runtimeerror",
-      "n": 63,
+      "id": "065-raise-a-runtimeerror",
+      "n": 65,
       "title": "Raise a RuntimeError",
       "section": "s12",
       "skills": [
@@ -1481,11 +1604,12 @@
         "Use the `raise` statement to raise an exception."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "064-catch-a-division-by-zero",
-      "n": 64,
+      "id": "066-catch-a-division-by-zero",
+      "n": 66,
       "title": "Catch a division by zero",
       "section": "s12",
       "skills": [
@@ -1498,6 +1622,7 @@
         "Use `try`/`except` to catch exceptions, and `finally` for code that must always run."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1506,8 +1631,8 @@
       ]
     },
     {
-      "id": "065-a-custom-exception-class",
-      "n": 65,
+      "id": "067-a-custom-exception-class",
+      "n": 67,
       "title": "A custom exception class",
       "section": "s12",
       "skills": [
@@ -1519,11 +1644,12 @@
         "A custom exception is a class that inherits from `Exception`."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "066-assert-every-number-is-even",
-      "n": 66,
+      "id": "068-assert-every-number-is-even",
+      "n": 68,
       "title": "Assert every number is even",
       "section": "s12",
       "skills": [
@@ -1536,11 +1662,12 @@
         "Use `assert expression` to make an assertion."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "067-evaluate-q-2cd-h",
-      "n": 67,
+      "id": "069-evaluate-q-2cd-h",
+      "n": 69,
       "title": "Evaluate Q = √(2CD/H)",
       "section": "s13",
       "skills": [
@@ -1555,11 +1682,12 @@
         "If a result is a decimal, round it to the nearest whole number — for example, `26.0` should be printed as `26`.\nAssume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "068-robots-distance-from-the-origin",
-      "n": 68,
+      "id": "070-robots-distance-from-the-origin",
+      "n": 70,
       "title": "Robot's distance from the origin",
       "section": "s13",
       "skills": [
@@ -1575,11 +1703,12 @@
         "Assume the input is supplied through the console."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "069-a-random-float-scaled",
-      "n": 69,
+      "id": "071-a-random-float-scaled",
+      "n": 71,
       "title": "A random float (scaled)",
       "section": "s14",
       "skills": [
@@ -1591,11 +1720,12 @@
         "Use `random.uniform()` to generate a random float within a range."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "070-a-random-float-between-5-and-95",
-      "n": 70,
+      "id": "072-a-random-float-between-5-and-95",
+      "n": 72,
       "title": "A random float between 5 and 95",
       "section": "s14",
       "skills": [
@@ -1607,11 +1737,12 @@
         "Use `random.uniform()` to generate a random float within a range."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "071-random-even-number-between-0-and-10",
-      "n": 71,
+      "id": "073-random-even-number-between-0-and-10",
+      "n": 73,
       "title": "Random even number between 0 and 10",
       "section": "s14",
       "skills": [
@@ -1625,11 +1756,12 @@
         "Use `random.choice()` to pick a random element from a list."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "072-random-number-divisible-by-5-and-7",
-      "n": 72,
+      "id": "074-random-number-divisible-by-5-and-7",
+      "n": 74,
       "title": "Random number divisible by 5 and 7",
       "section": "s14",
       "skills": [
@@ -1642,11 +1774,12 @@
         "Use `random.choice()` to pick a random element from a list."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "073-a-list-of-5-random-numbers",
-      "n": 73,
+      "id": "075-a-list-of-5-random-numbers",
+      "n": 75,
       "title": "A list of 5 random numbers",
       "section": "s14",
       "skills": [
@@ -1658,11 +1791,12 @@
         "Use `random.sample()` to pick several random values without repetition."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "074-5-random-even-numbers-100-200",
-      "n": 74,
+      "id": "076-5-random-even-numbers-100-200",
+      "n": 76,
       "title": "5 random even numbers (100–200)",
       "section": "s14",
       "skills": [
@@ -1675,11 +1809,12 @@
         "Use `random.sample()` to pick several random values without repetition."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "075-5-random-multiples-of-5-and-7-1-1000",
-      "n": 75,
+      "id": "077-5-random-multiples-of-5-and-7-1-1000",
+      "n": 77,
       "title": "5 random multiples of 5 and 7 (1–1000)",
       "section": "s14",
       "skills": [
@@ -1692,11 +1827,12 @@
         "Use `random.sample()` to pick several random values without repetition."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "076-random-integer-between-7-and-15",
-      "n": 76,
+      "id": "078-random-integer-between-7-and-15",
+      "n": 78,
       "title": "Random integer between 7 and 15",
       "section": "s14",
       "skills": [
@@ -1708,11 +1844,12 @@
         "Use `random.randrange()` to get a random integer from a range."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "077-shuffle-a-list",
-      "n": 77,
+      "id": "079-shuffle-a-list",
+      "n": 79,
       "title": "Shuffle a list",
       "section": "s14",
       "skills": [
@@ -1725,11 +1862,12 @@
         "Use `random.shuffle()` to shuffle a list in place."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "078-measure-execution-time",
-      "n": 78,
+      "id": "080-measure-execution-time",
+      "n": 80,
       "title": "Measure execution time",
       "section": "s15",
       "skills": [
@@ -1741,11 +1879,12 @@
         "Use the `timeit` module to measure execution time."
       ],
       "starter": null,
+      "files": {},
       "tests": null
     },
     {
-      "id": "079-http-date-string",
-      "n": 79,
+      "id": "081-http-date-string",
+      "n": 81,
       "title": "HTTP date string",
       "section": "s16",
       "skills": [
@@ -1758,6 +1897,7 @@
         "Build a fixed datetime with `datetime(1994, 11, 6, 8, 49, 37)`.\nFormat codes: `%a` weekday abbreviation, `%d` day, `%b` month abbreviation, `%Y` year, and `%H` `%M` `%S` for hour, minute, second."
       ],
       "starter": null,
+      "files": {},
       "tests": [
         {
           "stdin": "",
@@ -1766,5 +1906,5 @@
       ]
     }
   ],
-  "digest": "a9bfc33ce3cbc3f7"
+  "digest": "fec770549367402e"
 }

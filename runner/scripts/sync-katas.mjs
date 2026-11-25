@@ -6,7 +6,9 @@
 //
 // Solutions that run cleanly and deterministically under `python3` are
 // executed here to derive the auto-check tests ({stdin, stdout} pairs);
-// input()-reading and non-deterministic solutions get `tests: null`.
+// input()-reading and non-deterministic solutions get `tests: null`. A kata's
+// own **Files:** are written next to the solution first, so solutions that
+// open() them derive tests like any other.
 
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -54,7 +56,7 @@ function auditScaffolding(katas) {
 // exact strings; anything else fails the sync (and CI). Grouping is for
 // documentation — the sync checks against the flat set.
 const SKILL_GROUPS = {
-  'Program structure': ['function', 'input', 'output', 'data types'],
+  'Program structure': ['function', 'input', 'output', 'data types', 'file IO'],
   'Operators': ['arithmetic operators', 'comparison operators', 'logical operators'],
   'Control flow': ['selection', 'fixed iteration', 'conditional iteration', 'sentinel loop', 'early return', 'recursion'],
   'Iteration patterns': ['indexed iteration', 'zipped iteration', 'window iteration', 'batched iteration', 'cartesian product'],
@@ -92,6 +94,7 @@ const SKILL_PREREQS = {
   'indexed iteration': ['list comprehension', 'fixed iteration'],
   'nested data structure': ['tuple and list'],
   'dict': ['data types'],
+  'file IO': ['fixed iteration', 'output'],
   'inheritance': ['class'],
   'polymorphism': ['inheritance'],
   'staticmethod': ['class'],
@@ -108,8 +111,9 @@ const RE_PART = /^# Part ([A-Z]) — (.+)$/
 const RE_SECTION = /^## (\d+)\. (.+)$/
 const RE_KATA = /^### (\d+)\. (.+)$/
 const RE_ORIGIN_SUFFIX = /\s\*\((?:original )?Question[^)]*\)\*$/i
-const LABELS = ['**Skills:**', '**Question:**', '**Hints:**', '**Solution:**']
+const LABELS = ['**Skills:**', '**Question:**', '**Files:**', '**Hints:**', '**Solution:**']
 const keyOf = label => label.replaceAll('*', '').replaceAll(':', '')
+const emptyBody = () => ({ prose: [], Skills: [], Question: [], Files: [], Hints: [], Solution: [] })
 
 function parse(markdown) {
   const lines = markdown.split('\n')
@@ -121,7 +125,7 @@ function parse(markdown) {
   // kata body collected as labeled sections until the next heading
   let currentLabel = null
   let currentKey = 'prose'
-  let body = { prose: [], Skills: [], Question: [], Hints: [], Solution: [] }
+  let body = emptyBody()
   let seenLabels = []
   let inFence = false
 
@@ -131,7 +135,7 @@ function parse(markdown) {
     manifest.katas.push(buildKata(kata, body, seenLabels))
     kata = null
     currentLabel = null
-    body = { prose: [], Skills: [], Question: [], Hints: [], Solution: [] }
+    body = emptyBody()
     seenLabels = []
     currentKey = 'prose'
   }
@@ -179,20 +183,22 @@ function parse(markdown) {
     const trimmed = line.trim()
 
     // Fence content is raw — no heading/label/feature interpretation inside
-    // it. Questions may carry untagged ``` blocks for sample input/output;
-    // Solutions carry exactly one tagged ```python block.
+    // it. Questions may carry untagged ``` blocks for sample input/output and
+    // Files uses them for file contents; Solutions carry exactly one tagged
+    // ```python block.
     if (inFence || trimmed.startsWith('```')) {
       if (!trimmed.startsWith('```')) {
         body[currentKey].push(line)
         continue
       }
-      if (currentLabel === '**Question:**') {
-        if (trimmed !== '```') fail(where, 'sample I/O fences in **Question:** must be untagged ``` blocks')
+      if (currentLabel === '**Question:**' || currentLabel === '**Files:**') {
+        const what = currentLabel === '**Files:**' ? 'file contents' : 'sample I/O fences'
+        if (trimmed !== '```') fail(where, `${what} in ${currentLabel} must be untagged \`\`\` blocks`)
         inFence = !inFence
         body[currentKey].push('```')
         continue
       }
-      if (currentLabel !== '**Solution:**') fail(where, 'code fence outside the **Question:** and **Solution:** sections')
+      if (currentLabel !== '**Solution:**') fail(where, 'code fence outside the **Question:**, **Files:** and **Solution:** sections')
       if (!inFence && body.Solution.some(x => typeof x !== 'string')) fail(where, 'more than one code block in **Solution:**')
       inFence = !inFence
       body[currentKey].push({ fence: trimmed })
@@ -223,9 +229,11 @@ function parse(markdown) {
       continue
     }
 
-    // stray labels that look like the real thing but aren't
-    if (/^\*\*(?:Skills|Features|Question|Hint|Hints|Solution)\*?:?\*?$/.test(trimmed)) {
-      fail(where, `malformed label "${trimmed}" — labels are exactly **Skills:**, **Question:**, **Hints:**, **Solution:**`)
+    // stray labels that look like the real thing but aren't — wrong case, a
+    // missing colon, or the colon inside the asterisks (`**Hints:**`). Exact
+    // labels never reach this check: the loop above claims them first.
+    if (/^\*\*\s*(?:Skills|Features|Question|Files?|Hints?|Solution)\s*\**\s*:?\s*\**$/i.test(trimmed)) {
+      fail(where, `malformed label "${trimmed}" — labels are exactly **Skills:**, **Question:**, **Files:**, **Hints:**, **Solution:**`)
     }
 
     if (inFence || (currentLabel === '**Solution:**' && body.Solution.length > 0)) {
@@ -261,7 +269,8 @@ function buildKata(kata, body, seenLabels) {
   if (!seenLabels.includes('**Skills:**')) fail(where, 'missing **Skills:**')
   if (!seenLabels.includes('**Question:**')) fail(where, 'missing **Question:**')
   if (!seenLabels.includes('**Solution:**')) fail(where, 'missing **Solution:**')
-  const expectedOrder = ['**Skills:**', '**Question:**', ...((seenLabels.includes('**Hints:**')) ? ['**Hints:**'] : []), '**Solution:**']
+  const optional = ['**Files:**', '**Hints:**'].filter(l => seenLabels.includes(l))
+  const expectedOrder = ['**Skills:**', '**Question:**', ...optional, '**Solution:**']
   if (seenLabels.join('|') !== expectedOrder.join('|')) fail(where, `labels out of order: ${seenLabels.join(', ')}`)
 
   if (body.prose.length > 0) fail(where, `unexpected prose: "${body.prose.join(' ').trim()}"`)
@@ -282,6 +291,9 @@ function buildKata(kata, body, seenLabels) {
   const hints = hintsRaw ? hintsRaw.split(/\n\s*\n/).map(h => h.trim()).filter(Boolean) : []
   if (hintsRaw && hints.length === 0) fail(where, '**Hints:** has no content')
 
+  const files = parseFiles(body.Files, where)
+  if (seenLabels.includes('**Files:**') && Object.keys(files).length === 0) fail(where, '**Files:** declares no files')
+
   const fenceLines = body.Solution.filter(l => typeof l !== 'string')
   if (fenceLines.length !== 2) fail(where, '**Solution:** must contain exactly one ```python code block')
   if (fenceLines[0].fence !== '```python') fail(where, `solution fence must be tagged \`python\`, got "${fenceLines[0].fence}"`)
@@ -297,9 +309,67 @@ function buildKata(kata, body, seenLabels) {
     question,
     hints,
     starter: null,
+    files,
     solution,
     tests: null,
   }
+}
+
+// A kata may ship data files (**Files:**). The sync writes them next to the
+// solution when deriving tests; the app seeds them into the learner's
+// workspace. Names follow the app's FileStore rules — a flat namespace and a
+// known text extension (ALLOWED_FILE_EXTS in src/limits.ts) — because
+// FileStore.replaceAll() silently drops anything else, which would ship a
+// kata the learner cannot solve.
+const RE_FILE_NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
+const FILE_EXTS = new Set(['py', 'csv', 'json', 'md', 'html', 'css', 'txt'])
+const MAX_FILE_CHARS = 200_000 // mirrors MAX_FILE_CHARS in src/limits.ts
+
+/** Parse a **Files:** body into { name: content }. Each file is a name line
+ * (`data.txt`, alone in backticks) followed by an untagged fence; the fenced
+ * lines become the file's lines, each ending in a newline as a real text
+ * file's do. */
+function parseFiles(lines, where) {
+  const files = {}
+  // name: waiting for a name line · await: fence not opened yet ·
+  // content: inside the fence · closed: block finished
+  let state = 'name'
+  let name = null
+  let content = []
+  for (const line of lines) {
+    if (line === '```') {
+      if (state === 'content') {
+        const text = content.length ? content.join('\n') + '\n' : ''
+        if (text.length > MAX_FILE_CHARS) fail(where, `file "${name}" exceeds ${MAX_FILE_CHARS} characters — the app drops files that large`)
+        files[name] = text
+        state = 'closed'
+      } else if (state === 'await') {
+        content = []
+        state = 'content'
+      } else {
+        fail(where, 'a ``` fence in **Files:** must follow a file name line such as `data.txt`')
+      }
+      continue
+    }
+    if (state === 'content') {
+      content.push(line)
+      continue
+    }
+    if (line.trim() === '') continue
+    const match = line.trim().match(/^`([^`]+)`$/)
+    if (!match) fail(where, `**Files:** expects a file name alone in backticks (e.g. \`data.txt\`), got "${line.trim()}"`)
+    name = match[1]
+    const ext = name.includes('.') ? name.slice(name.lastIndexOf('.') + 1).toLowerCase() : ''
+    if (!RE_FILE_NAME.test(name) || !FILE_EXTS.has(ext)) {
+      fail(where, `unsupported file name "${name}" — the app accepts a flat name with a ${[...FILE_EXTS].map(e => `.${e}`).join('/')} extension`)
+    }
+    if (name === 'main.py') fail(where, 'main.py is the learner\'s own program — ship helper files under other names')
+    if (name in files) fail(where, `duplicate file "${name}"`)
+    state = 'await'
+  }
+  // state 'content' here is an unclosed fence, which flushKata reports
+  if (state === 'await') fail(where, `file "${name}" has no content — its name line must be followed by a \`\`\` fence`)
+  return files
 }
 
 /** Split on commas that are outside backticks; backticks are styling only. */
@@ -338,6 +408,11 @@ function deriveTests(kata) {
   const dir = mkdtempSync(join(tmpdir(), 'kata-'))
   try {
     writeFileSync(join(dir, 'solution.py'), kata.solution)
+    // the kata's own files sit beside the solution, where the app puts them
+    // for the learner
+    for (const [name, content] of Object.entries(kata.files)) {
+      writeFileSync(join(dir, name), content)
+    }
     const res = spawnSync('python3', ['-I', '-B', 'solution.py'], {
       cwd: dir,
       input: '',

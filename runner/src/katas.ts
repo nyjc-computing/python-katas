@@ -35,6 +35,9 @@ export interface Kata {
   hints: string[]
   /** Optional editor prefill; null until authored per kata. */
   starter: string | null
+  /** Data files shipped with the kata (name → content), seeded into the
+   * learner's workspace by {@link loadWorkspace}. Empty for most katas. */
+  files: Record<string, string>
   /** stdin/stdout pairs for auto-checking; null when not derivable
    * (input()-reading, random/timeit, no-output katas). Reference solutions
    * are NOT shipped — they live only in the markdown. */
@@ -83,6 +86,7 @@ const ATTEMPTS_KEY = 'kata.attempts'
 const ACTIVE_KEY = 'kata.activeKata'
 const WORKSPACES_KEY = 'kata.workspaces'
 const HINTS_KEY = 'kata.hints'
+const CONTEXT_KEY = 'kata.context'
 
 const BUNDLED = raw as KataCorpus
 
@@ -90,7 +94,7 @@ const titleSlug = (id: string): string => id.replace(/^\d+-/, '')
 
 function readStoredCorpus(): KataCorpus | null {
   try {
-    const parsed = JSON.parse(localStorage.getItem(CORPUS_KEY) ?? 'null') as KataCorpus & { katas?: Array<Kata & { features?: string[] }> } | null
+    const parsed = JSON.parse(localStorage.getItem(CORPUS_KEY) ?? 'null') as KataCorpus & { katas?: Array<Kata & { features?: string[]; files?: Record<string, string> }> } | null
     if (!parsed || parsed.version !== BUNDLED.version || !Array.isArray(parsed.katas)) return null
     // Normalise snapshots taken by older builds: renamed fields get mapped
     // here so an old snapshot loads cleanly until the user accepts a refresh.
@@ -101,7 +105,9 @@ function readStoredCorpus(): KataCorpus | null {
         : Array.isArray(features)
           ? features
           : []
-      return { ...rest, skills } as Kata
+      // snapshots from before katas could ship files carry no `files` at all
+      const files = kata.files && typeof kata.files === 'object' ? kata.files : {}
+      return { ...rest, skills, files } as Kata
     })
     return { ...parsed, katas }
   } catch {
@@ -139,13 +145,31 @@ function readWorkspaces(): Record<string, Workspace> {
   }
 }
 
-/** The kata's saved codebase. One-time migration: legacy attempts stored a
- * single code string — it becomes main.py of a fresh workspace. */
+/** A context's codebase exactly as it was last saved — none of loadWorkspace's
+ * seeding or migration — or null when it has none. */
+export function storedWorkspace(id: string): Workspace | null {
+  return readWorkspaces()[id] ?? null
+}
+
+/** The kata's saved codebase. A fresh one starts from an empty main.py plus
+ * the data files the kata ships (Kata.files). Shipped files that have since
+ * gone missing from a saved codebase are put back — a learner who deletes
+ * one would otherwise have to retype it from the question — while copies
+ * that are still there stay the learner's own. One-time migration: legacy
+ * attempts stored a single code string — it becomes main.py of a fresh
+ * workspace. */
 export function loadWorkspace(id: string): Workspace {
+  const shipped = kataById(id)?.files ?? {}
   const stored = readWorkspaces()[id]
-  if (stored) return stored
+  if (stored) {
+    if (Object.keys(shipped).every((name) => name in stored.files)) return stored
+    return { ...stored, files: { ...shipped, ...stored.files } }
+  }
   const legacy = (readAttemptsRaw()[id] as Partial<AttemptState & { code: string }> | undefined)?.code
-  return { files: { 'main.py': typeof legacy === 'string' ? legacy : '' }, activeFile: 'main.py' }
+  return {
+    files: { ...shipped, 'main.py': typeof legacy === 'string' ? legacy : '' },
+    activeFile: 'main.py',
+  }
 }
 
 export function saveWorkspace(id: string, files: Record<string, string>, activeFile: string): void {
@@ -154,8 +178,15 @@ export function saveWorkspace(id: string, files: Record<string, string>, activeF
   localStorage.setItem(WORKSPACES_KEY, JSON.stringify(workspaces))
 }
 
+/** Forget every kata's saved codebase. The learner's own files ('global') are
+ * not kata progress, so they stay. */
 export function resetWorkspaces(): void {
-  localStorage.removeItem(WORKSPACES_KEY)
+  const mine = readWorkspaces().global
+  if (!mine) {
+    localStorage.removeItem(WORKSPACES_KEY)
+    return
+  }
+  localStorage.setItem(WORKSPACES_KEY, JSON.stringify({ global: mine }))
 }
 
 export function loadHintState(id: string): boolean[] {
@@ -266,6 +297,18 @@ export function activeKataId(): string | null {
 export function setActiveKata(id: string | null): void {
   if (id === null) localStorage.removeItem(ACTIVE_KEY)
   else localStorage.setItem(ACTIVE_KEY, id)
+}
+
+/** The codebase that was live when the page last closed: 'global' (the
+ * learner's own files) or a kata id. Startup restores it, instead of guessing
+ * from the side tab — see contextAtBoot(). Null for a session that predates
+ * the record. */
+export function storedContext(): string | null {
+  return localStorage.getItem(CONTEXT_KEY)
+}
+
+export function storeContext(id: 'global' | string): void {
+  localStorage.setItem(CONTEXT_KEY, id)
 }
 
 export function getKatas(): Kata[] {

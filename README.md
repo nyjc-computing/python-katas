@@ -8,7 +8,7 @@ environment, in one repo, deployed at
 
 | Path | What |
 |------|------|
-| `python-katas-by-feature.md` | The 79 katas — **source of truth**. Human-authored, questions verbatim. See [MARKDOWN-FORMAT.md](MARKDOWN-FORMAT.md) before editing. |
+| `python-katas-by-feature.md` | The 81 katas — **source of truth**. Human-authored, questions verbatim. See [MARKDOWN-FORMAT.md](MARKDOWN-FORMAT.md) before editing. |
 | `build/` | Build artifacts, generated but committed. `katas.json` is the parsed corpus the app loads. |
 | `runner/` | The practice app: CodeMirror 6 editor + Pyodide (CPython on WASM) in a worker. See [runner/README.md](runner/README.md). |
 | `.github/workflows/` | CI (markdown parseability + app build) and GitHub Pages deploy. |

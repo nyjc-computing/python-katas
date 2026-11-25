@@ -42,6 +42,17 @@ cloning or bumping the `pyodide` version in package.json.
   context: switching katas swaps `main.py` and any helper files with it.
   The plain Files workspace is reachable via the "My files" entry at the
   top of the kata list; the Files tab always manages the active context.
+- **Restoring and resetting** — the codebase that was open when the page
+  closed (a kata, or My files) is the one that reopens, whichever side tab
+  was showing. **Reset** clears verified ticks, saved kata code and attempt
+  counters; the learner's own files are kept.
+- **Shipped files** — a kata may ship the data files its program reads
+  (`files` in the corpus, from the `**Files:**` block in the markdown —
+  e.g. the `prose.txt` of *Count each word in a text file*). They're copied
+  into the workspace the first time the kata is opened, restored if the
+  learner deletes one, and re-seeded by Reset. `open()` finds them because
+  the worker mirrors every workspace file into the interpreter's working
+  directory before each run.
 - **Corpus snapshots** — the kata set is bundled at build time but the app
   runs against a localStorage snapshot taken on first visit, so deployments
   never move the corpus mid-practice. When a newer set ships, a banner shows

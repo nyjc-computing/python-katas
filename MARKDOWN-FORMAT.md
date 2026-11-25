@@ -36,7 +36,13 @@ same commit.
 **Question:**
 <verbatim question text — may span many paragraphs>
 
-**Hints:**                            ← OPTIONAL (kata 23 has none)
+**Files:**                            ← OPTIONAL — files shipped to the learner
+`data.txt`                            ← file name, alone on its line, in backticks
+```
+<the file's contents, verbatim>
+```
+
+**Hints:**                            ← OPTIONAL
 <one or more hints, separated by blank lines>
 
 **Solution:**
@@ -59,19 +65,26 @@ message:
 1. **Heading order** — katas are numbered `### N.` sequentially from 1 with
    no gaps or repeats; sections are numbered sequentially from 1.
 2. **Label order** — inside a kata, `**Skills:**`, `**Question:**`,
-   [`**Hints:**`], `**Solution:**` appear exactly once each, in that order.
-   The labels are exact: `**Hint:**`, `**hints:**`, `**Hints**` without the
-   colon are all errors, not variants. `**Skills:**` is an inline label —
-   its content sits on the same line; the other labels stand alone.
+   [`**Files:**`], [`**Hints:**`], `**Solution:**` appear exactly once each,
+   in that order. The labels are exact: `**Hint:**`, `**hints:**`, `**File:**`,
+   `**Hints**` without the colon are all errors, not variants. `**Skills:**`
+   is an inline label — its content sits on the same line; the other labels
+   stand alone.
 3. **Code fences** — the `**Solution:**` section contains exactly one fenced
    block, tagged `python`. `**Question:**` may additionally carry untagged
-   ``` blocks for sample input/output. Fences anywhere else (Hints,
-   Skills, stray labels) are errors, and an unclosed fence fails the
-   kata.
+   ``` blocks for sample input/output, and `**Files:**` uses them for file
+   contents. Fences anywhere else (Hints, Skills, stray labels) are errors,
+   and an unclosed fence fails the kata.
 4. **Non-empty content** — skills line, question, and the solution block
    must be non-empty.
 5. **Unique titles** — titles must be unique (they feed the stable slug ids;
    a duplicate would collide).
+6. **Shipped files** — every `**Files:**` entry is a file name line
+   followed by exactly one untagged fence. The name must be one the app
+   accepts: a flat name (no folders) ending in `.py`, `.csv`, `.json`, `.md`,
+   `.html`, `.css` or `.txt` — but not `main.py`, which is the learner's own
+   program. Names are unique within the kata, and no file exceeds 200,000
+   characters (the app silently drops larger ones).
 
 ## Field semantics
 
@@ -81,8 +94,9 @@ message:
 | `n`        | derived  | The `### N.` heading number, display order. |
 | `title`    | required | Heading text, minus any `*(…)*` suffix. Verbatim. |
 | `skills`   | required | The `**Skills:**` line, split on commas. Every entry must be an exact string from the fixed vocabulary below — the sync fails on anything else, so typos can't silently become new tags. |
-| `question` | required | Markdown between the Question and Hints/Solution labels. Sample input/output is fenced (untagged ``` blocks); everything outside the fences is what learners read. |
+| `question` | required | Markdown between the Question and Files/Hints/Solution labels. Sample input/output is fenced (untagged ``` blocks); everything outside the fences is what learners read. |
 | `hints`    | optional | Split on blank lines into an array, revealed progressively in the app. |
+| `files`    | optional | `{ name: content }` from `**Files:**`. The fenced lines become the file's lines, each ending in a newline, as a real text file's do. Shipped to the learner (see below); `{}` when the kata declares none. |
 | `solution` | required | The python block, verbatim, runnable as a standalone program. **Stays in the markdown only** — the sync executes it to derive tests and never copies it into `build/katas.json`. |
 | `tests`    | derived  | See below. |
 
@@ -109,6 +123,33 @@ to be picked up.
 it is executed for test derivation, then dropped. The JSON is what learners'
 browsers download; the markdown is the maintainer-facing document.
 
+A kata's shipped files are written next to the solution before it runs, so a
+solution that opens `data.txt` derives tests exactly as it will run for the
+learner.
+
+## Shipping files with a kata
+
+A program that reads a file needs the learner to have that file, and a new
+kata's workspace holds only an empty `main.py`. Declare the file under
+`**Files:**` and the app copies it into the learner's workspace the first
+time they open the kata; it then shows in the Files tab beside `main.py`,
+and `open()` finds it because the interpreter's working directory is the
+workspace. From then on the copy is the learner's to edit — except that a
+shipped file they delete is restored the next time the kata is opened, and
+**Reset** restores all of them.
+
+- **The question still has to show the data.** The app does not render
+  `files` in the kata pane, so when the learner needs to see a file's
+  contents — a short passage, or an excerpt of a larger file — quote them in
+  a sample fence inside the question. Nothing checks the two against each
+  other: copy the block verbatim.
+- **Treat a shipped file like a title: don't change it after release.** A
+  learner keeps the copy already in their workspace while the expected
+  output is re-derived from the new one, so Verify fails on a kata they may
+  have solved. If a file must change, change the title too — the refresh
+  then treats it as a removed kata and an added one, and the learner starts
+  the new one with the new file.
+
 ## Skill vocabulary
 
 The `**Skills:**` line draws from this fixed list — nothing else is accepted.
@@ -117,7 +158,7 @@ Tags name the **skills a kata trains**, never the APIs its solution uses
 
 | Group | Tags |
 |---|---|
-| Program structure | `function`, `input`, `output`, `data types` |
+| Program structure | `function`, `input`, `output`, `data types`, `file IO` |
 | Operators | `arithmetic operators`, `comparison operators`, `logical operators` |
 | Control flow | `selection`, `fixed iteration`, `conditional iteration`, `sentinel loop`, `early return`, `recursion` |
 | Iteration patterns | `indexed iteration`, `zipped iteration`, `window iteration`, `batched iteration`, `cartesian product` |
@@ -130,7 +171,7 @@ Tags name the **skills a kata trains**, never the APIs its solution uses
 | Standard library | `random numbers`, `math module`, `date and time`, `time measurement` |
 
 Tags not yet used by any kata (`zipped`, `window`, `batched` iteration,
-`date and time`, `greedy`, `ratchet`) are reserved for future katas — they
+`greedy`, `ratchet`) are reserved for future katas — they
 validate today so new exercises can adopt them without a vocabulary change.
 Adding a *new* tag means adding it to `SKILL_GROUPS` in
 `runner/scripts/sync-katas.mjs` and to this table, in the same commit.

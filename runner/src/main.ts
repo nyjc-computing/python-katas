@@ -21,6 +21,9 @@ import {
   saveHintState,
   saveWorkspace,
   setActiveKata,
+  storeContext,
+  storedContext,
+  storedWorkspace,
   type CorpusUpdate,
   type KataTest,
 } from './katas'
@@ -153,7 +156,6 @@ setInterval(drainPendingOutput, OUTPUT_TICK_MS)
 // that ships new katas only offers the refresh (banner), never auto-updates.
 const loadedCorpus = loadCorpus()
 const storedKataId = activeKataId()
-const startingInKatas = localStorage.getItem('kata.sideMode') === 'katas'
 
 // ── per-kata codebases ───────────────────────────────────────────────────────
 // Every context — the plain Files workspace ('global') and each kata — owns
@@ -161,8 +163,45 @@ const startingInKatas = localStorage.getItem('kata.sideMode') === 'katas'
 // so `main.py` and any helper files travel with their kata. The live copy
 // is captured back on every switch and again on tab hide/unload.
 type ContextId = 'global' | string
-let currentContext: ContextId =
-  startingInKatas && storedKataId && kataById(storedKataId) ? storedKataId : 'global'
+
+const sameFiles = (a: Record<string, string>, b: Record<string, string>): boolean => {
+  const names = Object.keys(a).sort()
+  if (names.join('\u0000') !== Object.keys(b).sort().join('\u0000')) return false
+  return names.every((name) => a[name] === b[name])
+}
+
+/** Which codebase to restore at startup, and whether the file set FileStore
+ * booted with (kata.files — whatever was live when the page closed) is the
+ * learner's own. rebindContext() records the live codebase, so this is
+ * normally a lookup. It used to be inferred from the side tab, which is wrong
+ * whenever the Files tab was showing inside a kata: the tab says "My files"
+ * but the booted file set is the kata's, so the kata's files were presented
+ * as the learner's own — and saved over them at the next capture. Sessions
+ * that predate the record fall back to that inference, corrected where the
+ * booted file set can be shown to be the active kata's rather than My files. */
+function contextAtBoot(): { id: ContextId; bootedSetIsMine: boolean } {
+  const recorded = storedContext()
+  if (recorded !== null) {
+    if (recorded === 'global') return { id: 'global', bootedSetIsMine: true }
+    if (kataById(recorded)) return { id: recorded, bootedSetIsMine: false }
+    // the recorded kata has left the stored set: its files are nobody's now
+    return { id: 'global', bootedSetIsMine: false }
+  }
+  const kataId = storedKataId && kataById(storedKataId) ? storedKataId : null
+  if (!kataId) return { id: 'global', bootedSetIsMine: true }
+  if (localStorage.getItem('kata.sideMode') === 'katas') return { id: kataId, bootedSetIsMine: false }
+  const live = fileStore.all()
+  const savedAs = (id: string) => {
+    const saved = storedWorkspace(id)
+    return saved !== null && sameFiles(saved.files, live)
+  }
+  const isKataNotMine = savedAs(kataId) && !savedAs('global')
+  return isKataNotMine ? { id: kataId, bootedSetIsMine: false } : { id: 'global', bootedSetIsMine: true }
+}
+
+const booted = contextAtBoot()
+let currentContext: ContextId = booted.id
+storeContext(currentContext)
 
 function captureCurrentContext(): void {
   fileStore.flush()
@@ -172,9 +211,18 @@ function captureCurrentContext(): void {
 function switchContext(next: ContextId): void {
   if (next === currentContext) return
   captureCurrentContext()
+  rebindContext(next)
+}
+
+/** Swap in another context's codebase WITHOUT saving the live one first.
+ * Only for rebinding right after a corpus refresh: by then the live files have
+ * been captured under their old id and migrated, so a capture would file them
+ * under the wrong id — under 'global' that overwrote the learner's own files. */
+function rebindContext(next: ContextId): void {
   const workspace = loadWorkspace(next)
   fileStore.replaceAll(workspace.files, workspace.activeFile)
   currentContext = next
+  storeContext(next)
 }
 
 // Seed the context store on first run after this feature ships: the booted
@@ -183,9 +231,11 @@ function switchContext(next: ContextId): void {
 if (!('global' in (JSON.parse(localStorage.getItem('kata.workspaces') ?? '{}') as object))) {
   saveWorkspace('global', fileStore.all(), fileStore.activeName())
 }
-// starting inside a kata: swap in its codebase before the editor is created
-// (safe — the FileStore change listeners attach after editor creation)
-if (currentContext !== 'global') {
+// Starting inside a kata, swap in its codebase before the editor is created
+// (safe — the FileStore change listeners attach after editor creation). Also
+// when the booted file set is not the learner's own: it must not pass for
+// My files, so show the saved one instead.
+if (currentContext !== 'global' || !booted.bootedSetIsMine) {
   const bootWorkspace = loadWorkspace(currentContext)
   fileStore.replaceAll(bootWorkspace.files, bootWorkspace.activeFile)
 }
@@ -862,19 +912,23 @@ function showCorpusBanner(update: CorpusUpdate): void {
   refresh.className = 'primary'
   refresh.textContent = 'Refresh'
   refresh.addEventListener('click', () => {
+    // Save the active codebase under its current id BEFORE the migration, so
+    // edits made since the last capture travel with it. Capturing afterwards,
+    // as a switch would, filed the kata's files under 'global'.
+    if (currentContext !== 'global') captureCurrentContext()
     const migrated = refreshCorpus()
     banner.remove()
     if (currentContext !== 'global') {
       const migratedId = migrated && kataById(migrated) ? migrated : null
       if (migratedId) {
-        // workspace + attempt migrated by slug: rebind to the new id
-        currentContext = 'global' // force the switch to re-load the workspace
-        switchContext(migratedId)
+        // workspace + attempt were migrated by slug: rebind to the new id
+        rebindContext(migratedId)
         setActiveKata(migratedId)
         renderKataPane()
       } else {
-        // the active kata vanished in the new set: fall back to Files
-        switchContext('global')
+        // the active kata vanished in the new set: fall back to the learner's
+        // own files
+        rebindContext('global')
         setActiveKata(null)
         syncEditorToActive()
       }
@@ -921,19 +975,21 @@ btnMenu.addEventListener('click', () => {
 
 // ── reset progress ───────────────────────────────────────────────────────────
 // Red button on the Katas tab: wipes attempt state (verified ticks, saved
-// code, try counters). Gated behind a confirmation; the corpus snapshot and
-// the file workspace are untouched.
+// kata code, try counters). Gated behind a confirmation; the corpus snapshot
+// and the learner's own files are untouched.
 
 btnReset.addEventListener('click', () => {
   const confirmed = confirm(
-    'Reset all kata progress?\n\nVerified ticks, saved code and attempt counters are deleted. This cannot be undone.',
+    'Reset all kata progress?\n\nVerified ticks, saved kata code and attempt counters are deleted. Your own files are kept. This cannot be undone.',
   )
   if (!confirmed) return
   localStorage.removeItem('kata.attempts')
   resetWorkspaces()
   if (currentContext !== 'global') {
-    // the active kata's workspace is gone: drop in a fresh one
-    fileStore.replaceAll({ 'main.py': '' }, 'main.py')
+    // the active kata's workspace is gone: drop in a fresh one (loadWorkspace
+    // re-seeds the kata's shipped files)
+    const fresh = loadWorkspace(currentContext)
+    fileStore.replaceAll(fresh.files, fresh.activeFile)
     saveWorkspace(currentContext, fileStore.all(), fileStore.activeName())
   }
   renderKataList()
